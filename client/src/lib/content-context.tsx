@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import defaultContent from "../config/content.json";
 
 type Content = typeof defaultContent;
@@ -7,37 +8,85 @@ interface ContentContextType {
   content: Content;
   updateContent: (newContent: Content) => void;
   resetContent: () => void;
+  isLoading: boolean;
 }
 
 const ContentContext = createContext<ContentContextType | undefined>(undefined);
 
-export function ContentProvider({ children }: { children: React.ReactNode }) {
-  const [content, setContent] = useState<Content>(defaultContent);
+async function fetchContent(): Promise<Content> {
+  const response = await fetch("/api/content");
+  if (response.status === 404) {
+    return defaultContent;
+  }
+  if (!response.ok) {
+    throw new Error("Failed to fetch content");
+  }
+  return response.json();
+}
 
-  // Load from localStorage on mount
-  useEffect(() => {
-    const saved = localStorage.getItem("site-content");
-    if (saved) {
-      try {
-        setContent(JSON.parse(saved));
-      } catch (e) {
-        console.error("Failed to parse saved content", e);
-      }
-    }
-  }, []);
+async function saveContent(content: Content): Promise<Content> {
+  const response = await fetch("/api/content", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(content),
+  });
+  if (!response.ok) {
+    throw new Error("Failed to save content");
+  }
+  return response.json();
+}
+
+async function resetToDefaults(): Promise<Content> {
+  const response = await fetch("/api/content/reset", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+  });
+  if (!response.ok) {
+    throw new Error("Failed to reset content");
+  }
+  return response.json();
+}
+
+export function ContentProvider({ children }: { children: React.ReactNode }) {
+  const queryClient = useQueryClient();
+  
+  const { data: content, isLoading } = useQuery({
+    queryKey: ["site-content"],
+    queryFn: fetchContent,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const saveMutation = useMutation({
+    mutationFn: saveContent,
+    onSuccess: (data) => {
+      queryClient.setQueryData(["site-content"], data);
+    },
+  });
+
+  const resetMutation = useMutation({
+    mutationFn: resetToDefaults,
+    onSuccess: (data) => {
+      queryClient.setQueryData(["site-content"], data);
+    },
+  });
 
   const updateContent = (newContent: Content) => {
-    setContent(newContent);
-    localStorage.setItem("site-content", JSON.stringify(newContent));
+    saveMutation.mutate(newContent);
   };
 
-  const resetContent = () => {
-    setContent(defaultContent);
-    localStorage.removeItem("site-content");
+  const resetContentFn = () => {
+    resetMutation.mutate();
   };
 
   return (
-    <ContentContext.Provider value={{ content, updateContent, resetContent }}>
+    <ContentContext.Provider 
+      value={{ 
+        content: content || defaultContent, 
+        updateContent, 
+        resetContent: resetContentFn,
+        isLoading 
+      }}
+    >
       {children}
     </ContentContext.Provider>
   );
