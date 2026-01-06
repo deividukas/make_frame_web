@@ -12,8 +12,6 @@ export default function Home() {
       <main>
         <Hero />
         <HowItWorks />
-        <UseCases />
-        <Pricing />
         
         {/* Demo CTA Section */}
         <section id="demo" className="py-24 bg-primary text-primary-foreground relative overflow-hidden">
@@ -33,6 +31,9 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        <UseCases />
+        <Pricing />
       </main>
       <Footer />
     </div>
