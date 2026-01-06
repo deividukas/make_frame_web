@@ -1,0 +1,67 @@
+{
+  "navigation": {
+    "title": "Make-frame",
+    "links": [
+      { "label": "Features", "href": "#features" },
+      { "label": "Use Cases", "href": "#use-cases" },
+      { "label": "Pricing", "href": "#pricing" }
+    ]
+  },
+  "hero": {
+    "headline": "Your Attendees Are Your Best Ad Agency",
+    "subhead": "The easiest photo frame generator built for event organizers. Transform attendee selfies into professional, branded posts that grow your organic reach.",
+    "cta": { "text": "Get Started Free", "href": "https://staging.make-frame.com/signup" }
+  },
+  "howItWorks": [
+    { "title": "1. Upload Your Frame", "description": "Create and upload your branded PNG frame. Use our Theme Editor to match the tool's look to your event's identity in minutes." },
+    { "title": "2. Share the Link", "description": "Embed the generator into your website or share a direct link. Attendees upload their selfies, and our system perfectly fits them into your frame." },
+    { "title": "3. Watch the Growth", "description": "Attendees download and share their professional, branded photos. Your event's message spreads across social feeds through authentic recommendations." }
+  ],
+  "demo": {
+    "headline": "Experience it like your attendees will",
+    "subhead": "Don't just take our word for it. Try our live demo to see how seamless the photo experience is on any device.",
+    "cta": { "text": "View Live Demo", "href": "#" }
+  },
+  "useCases": [
+    { "title": "Business Conferences & Summits", "description": "Turn networking into marketing. Give your attendees a professional way to share their experience. Boost sponsor visibility and dominate LinkedIn and X feeds with high-quality, branded content that builds professional authority." },
+    { "title": "Music Festivals & Concerts", "description": "Drive viral ticket sales. Your fans are your best promoters. Let them announce their arrival with high-energy frames designed to go viral on Instagram Stories and TikTok. Turn every selfie into an authentic organic ad that their friends can’t miss." },
+    { "title": "Grassroots Movements", "description": "Amplify your voice without a marketing budget. Whether it’s a social cause or a local rally, help supporters spread a unified message across Facebook and X. Turn every selfie into a digital placard that makes your movement impossible to ignore in social discussions." }
+  ],
+  "pricing": {
+    "free": { 
+      "price": "$0", 
+      "title": "Free Trial", 
+      "description": "Best for: Testing the experience or small, daily activations.",
+      "features": ["5 photo frames per day", "Full Admin Dashboard Access", "Frame & Theme Editor", "Iframe Integration Guide"] 
+    },
+    "premium": { 
+      "price": "$69", 
+      "title": "Premium", 
+      "description": "Best for: Professional organizers and marketing teams.",
+      "features": ["200 photo frames per month", "Extended Usage Statistics", "Rollover Credits", "Top-up Eligibility", "Everything in Free Trial"] 
+    },
+    "addOns": [
+      { "size": "Small", "count": "1,000 frames", "price": "$40", "perFrame": "$0.04 / frame" },
+      { "size": "Medium", "count": "5,000 frames", "price": "$150", "perFrame": "$0.03 / frame" },
+      { "size": "Large", "count": "20,000 frames", "price": "$400", "perFrame": "$0.02 / frame" }
+    ],
+    "fairUsage": {
+      "headline": "Never Lose What You Pay For",
+      "subhead": "Our Fair Usage Policy ensures you get every bit of value from your subscription.",
+      "points": [
+        { "title": "Smart Rollover", "description": "Unused monthly credits don’t just vanish. They automatically roll over to the next month. You can accumulate up to 600 compositions (300% of your base plan)." },
+        { "title": "Fair Usage Logic", "description": "Our system is built with your budget in mind. We always use your rolled-over credits first, followed by your current monthly limit. Your purchased add-on packs are only touched once everything else is used up." },
+        { "title": "Permanent Add-ons", "description": "Need extra capacity for a massive event? Our Top-up Packs never expire. As long as your Premium subscription is active, those credits stay in your account until you actually use them." }
+      ]
+    }
+  },
+  "footer": {
+    "copyright": "© 2026 Make-frame.com. All rights reserved.",
+    "links": [
+      { "label": "Terms", "href": "/terms" },
+      { "label": "Privacy", "href": "/privacy" },
+      { "label": "Twitter", "href": "#" },
+      { "label": "LinkedIn", "href": "#" }
+    ]
+  }
+}
