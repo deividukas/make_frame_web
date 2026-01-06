@@ -6,7 +6,7 @@ export function Footer() {
 
   return (
     <footer className="border-t bg-slate-50 dark:bg-slate-950">
-      <div className="container max-w-7xl py-12 px-4 md:px-6">
+      <div className="container max-w-7xl py-12 px-4 md:px-6 mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex flex-col gap-2">
             <span className="text-lg font-bold text-primary">{content.navigation.title}</span>

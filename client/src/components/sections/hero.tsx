@@ -7,8 +7,8 @@ export function Hero() {
   const { content } = useContent();
 
   return (
-    <section className="relative overflow-hidden bg-background py-20 md:py-32 lg:py-40">
-      <div className="container relative z-10 max-w-7xl px-4 md:px-6">
+    <section className="relative overflow-hidden bg-background py-20 md:py-28 lg:py-32 flex items-center">
+      <div className="container relative z-10 max-w-7xl px-4 md:px-6 mx-auto">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-8 items-center">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}

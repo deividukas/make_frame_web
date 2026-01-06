@@ -9,7 +9,7 @@ export function HowItWorks() {
 
   return (
     <section id="features" className="py-24 bg-slate-50 dark:bg-slate-900/50">
-      <div className="container px-4 md:px-6 max-w-7xl">
+      <div className="container px-4 md:px-6 max-w-7xl mx-auto">
         <div className="text-center mb-16 space-y-4">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
             Three steps to viral growth
