@@ -43,11 +43,6 @@ export function Navbar() {
             ))}
           </div>
           <div className="flex items-center gap-2">
-            <Link href="/admin-settings">
-              <Button variant="ghost" size="sm" className="text-muted-foreground">
-                Admin
-              </Button>
-            </Link>
             <Button size="sm" asChild className="font-semibold shadow-lg shadow-primary/20">
               <a href={content.hero.cta.href}>{content.hero.cta.text}</a>
             </Button>
@@ -56,11 +51,6 @@ export function Navbar() {
 
         {/* Mobile Nav */}
         <div className="md:hidden flex items-center gap-2">
-          <Link href="/admin-settings">
-            <Button variant="ghost" size="sm" className="text-xs">
-              Admin
-            </Button>
-          </Link>
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon">

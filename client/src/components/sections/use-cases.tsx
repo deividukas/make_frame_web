@@ -11,8 +11,8 @@ export function UseCases() {
 
   return (
     <section id="use-cases" className="py-24 bg-background">
-      <div className="container px-4 md:px-6 max-w-7xl">
-        <div className="text-center mb-16">
+      <div className="container px-4 md:px-6 max-w-7xl mx-auto">
+        <div className="text-center mb-16 px-4">
            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl mb-4">
             Built for Every Event
           </h2>

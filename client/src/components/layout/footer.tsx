@@ -25,9 +25,6 @@ export function Footer() {
                 {link.label}
               </a>
             ))}
-            <Link href="/admin-settings" className="hover:text-foreground transition-colors">
-              Admin Login
-            </Link>
           </nav>
         </div>
       </div>
