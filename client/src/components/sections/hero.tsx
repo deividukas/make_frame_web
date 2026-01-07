@@ -1,7 +1,7 @@
 import { useContent } from "@/lib/content-context";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import heroImage from "@assets/generated_images/minimalist_tech_abstract_background_with_indigo_gradients.png";
+import demoScreenshot from "@assets/staging.make-frame.com_demo_(1)_1767797297709.png";
 
 export function Hero() {
   const { content } = useContent();
@@ -44,29 +44,16 @@ export function Hero() {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="relative lg:ml-auto"
           >
-             <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-border/50 bg-white/50 backdrop-blur-sm p-2">
-                <img 
-                  src={heroImage} 
-                  alt="Abstract Tech Background" 
-                  className="rounded-xl w-full h-auto object-cover aspect-[4/3]"
-                />
-                {/* Overlay UI Mockup Element */}
-                <div className="absolute bottom-8 left-8 right-8 bg-white/90 backdrop-blur rounded-lg p-6 shadow-lg border border-border/40 hidden md:block">
-                  <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center text-primary font-bold text-xl">
-                      SF
-                    </div>
-                    <div>
-                      <div className="h-2 w-32 bg-slate-200 rounded mb-2"></div>
-                      <div className="h-2 w-20 bg-slate-100 rounded"></div>
-                    </div>
-                    <div className="ml-auto">
-                      <div className="h-8 w-24 bg-primary/10 rounded-md text-primary flex items-center justify-center text-xs font-medium">
-                        Uploaded
-                      </div>
-                    </div>
-                  </div>
+             <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-border/50 bg-gradient-to-b from-white to-slate-50">
+                <div className="h-[400px] md:h-[480px] overflow-hidden">
+                  <img 
+                    src={demoScreenshot} 
+                    alt="Make-frame Demo - Photo Frame Generator Interface" 
+                    className="w-full h-auto object-cover object-top"
+                  />
                 </div>
+                {/* Fade overlay at bottom */}
+                <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent pointer-events-none" />
              </div>
           </motion.div>
         </div>
