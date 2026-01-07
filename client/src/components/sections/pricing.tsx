@@ -45,20 +45,20 @@ export function Pricing() {
           </Card>
 
           {/* Premium Tier */}
-          <Card className="flex flex-col border-primary/20 shadow-xl shadow-primary/5 relative overflow-hidden bg-white">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
+          <Card className="flex flex-col border-primary/20 shadow-xl shadow-primary/5 relative overflow-hidden bg-white group">
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#7c3aed] via-[#db2777] to-[#7c3aed]" />
             <CardHeader>
               <div className="flex justify-between items-center mb-2">
-                 <CardTitle className="text-2xl text-primary">{content.pricing.premium.title}</CardTitle>
-                 <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider rounded-full">Popular</span>
+                 <CardTitle className="text-2xl text-primary font-heading font-bold">{content.pricing.premium.title}</CardTitle>
+                 <span className="px-3 py-1 bg-gradient-to-r from-[#7c3aed] to-[#db2777] text-white text-[10px] font-bold uppercase tracking-wider rounded-full shadow-sm">Best Value</span>
               </div>
-              <CardDescription>{content.pricing.premium.description}</CardDescription>
+              <CardDescription className="font-sans">{content.pricing.premium.description}</CardDescription>
             </CardHeader>
             <CardContent className="flex-1">
-              <div className="text-4xl font-bold mb-6">{content.pricing.premium.price} <span className="text-lg font-normal text-muted-foreground">/ mo</span></div>
+              <div className="text-4xl font-bold mb-6 font-heading">{content.pricing.premium.price} <span className="text-lg font-normal text-muted-foreground font-sans">/ mo</span></div>
               <ul className="space-y-3">
                 {content.pricing.premium.features.map((feature, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm font-medium text-slate-700">
+                  <li key={i} className="flex items-start gap-2 text-sm font-medium text-slate-700 font-sans">
                     <Check className="h-5 w-5 text-primary shrink-0" />
                     {feature}
                   </li>
@@ -66,9 +66,10 @@ export function Pricing() {
               </ul>
             </CardContent>
             <CardFooter className="flex-col gap-4">
-              <Button className="w-full h-11 text-base shadow-lg shadow-primary/20" asChild>
-                <a href={content.hero.cta.href}>Get Started</a>
+              <Button className="w-full h-12 text-base font-bold shadow-lg shadow-primary/20 bg-gradient-to-r from-[#7c3aed] to-[#db2777] hover:opacity-90 transition-opacity border-none" asChild>
+                <a href={content.hero.cta.href}>Upgrade to Premium</a>
               </Button>
+              <p className="text-[10px] text-center text-muted-foreground font-medium uppercase tracking-widest">Powered by Stripe</p>
             </CardFooter>
           </Card>
         </div>

@@ -18,7 +18,7 @@
   --color-primary-foreground: #ffffff;
   --color-secondary: var(--secondary-color);
   --color-secondary-foreground: #ffffff;
-  --color-muted: #f3f4f6;
+  --color-muted: #f8fafc;
   --color-muted-foreground: var(--theme-text-secondary);
   --color-accent: var(--accent-color);
   --color-accent-foreground: #ffffff;
@@ -28,28 +28,29 @@
   --color-input: var(--theme-border);
   --color-ring: var(--primary-color);
   
-  --font-sans: var(--font-family);
+  --font-sans: 'Inter', sans-serif;
+  --font-heading: 'Geist', sans-serif;
   --font-mono: 'Geist Mono', monospace;
 
-  --radius: var(--border-radius);
+  --radius: 0.5rem;
 }
 
 :root {
-  /* Default Typography - Source Sans Pro */
-  --font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* Default Typography */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   
-  /* Default Colors */
-  --primary-color: #3b82f6;
-  --secondary-color: #64748b;
+  /* Vibrant Theme Colors matching main app dashboard */
+  --primary-color: #7c3aed; /* Vibrant Violet/Indigo */
+  --secondary-color: #4f46e5; /* Indigo */
   --background-color: #ffffff;
-  --text-color: #1f2937;
-  --accent-color: #10b981;
+  --text-color: #0f172a;
+  --accent-color: #db2777; /* Pinkish accent for gradients */
   --danger-color: #ef4444;
   --warning-color: #f59e0b;
   
   /* Default Layout */
   --border-radius: 8px;
-  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   
   /* WordPress Theme Compatibility CSS Variables */
   --theme-primary: var(--primary-color);
@@ -57,33 +58,33 @@
   --theme-background: var(--background-color);
   --theme-card-bg: #ffffff;
   --theme-text-primary: var(--text-color);
-  --theme-text-secondary: #6b7280;
-  --theme-border: #e5e7eb;
+  --theme-text-secondary: #64748b;
+  --theme-border: #e2e8f0;
   --theme-accent: var(--accent-color);
   
   --theme-font-family: var(--font-family);
   --theme-font-size: 14px;
   --theme-heading-size: 24px;
-  --theme-font-weight: 400;
+  --theme-font-weight: 500;
   
   --theme-container-padding: 16px;
   --theme-card-padding: 16px;
-  --theme-button-padding: 8px 16px;
+  --theme-button-padding: 10px 20px;
   --theme-border-radius: 8px;
   
   /* Mobile optimizations */
-  --mobile-container-padding: 8px;
-  --mobile-card-padding: 8px;
-  --mobile-gap: 8px;
+  --mobile-container-padding: 12px;
+  --mobile-card-padding: 12px;
+  --mobile-gap: 12px;
 
   /* Legacy Fallbacks for shadcn components */
   --background: 0 0% 100%;
-  --foreground: 222.2 84% 4.9%;
-  --primary: 221.2 83.2% 53.3%;
+  --foreground: 222.2 47.4% 11.2%;
+  --primary: 262.1 83.3% 57.8%; /* Matches #7c3aed */
   --primary-foreground: 210 40% 98%;
   --border: 214.3 31.8% 91.4%;
   --input: 214.3 31.8% 91.4%;
-  --ring: 221.2 83.2% 53.3%;
+  --ring: 262.1 83.3% 57.8%;
   --radius: 0.5rem;
 }
 

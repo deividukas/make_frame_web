@@ -17,20 +17,20 @@ export function Hero() {
             className="flex flex-col justify-center space-y-8 text-center lg:text-left"
           >
             <div className="space-y-4">
-              <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl xl:text-7xl/none font-sans">
+              <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl xl:text-7xl/none font-heading">
                 {content.hero.headline}
               </h1>
-              <p className="mx-auto max-w-[600px] text-lg text-muted-foreground md:text-xl lg:mx-0 font-light leading-relaxed">
+              <p className="mx-auto max-w-[600px] text-lg text-muted-foreground md:text-xl lg:mx-0 font-sans font-light leading-relaxed">
                 {content.hero.subhead}
               </p>
             </div>
             <div className="flex flex-col gap-2 min-[400px]:flex-row justify-center lg:justify-start">
-              <Button size="lg" className="h-12 px-8 text-lg shadow-xl shadow-primary/20 hover:shadow-primary/30 transition-all" asChild>
+              <Button size="lg" className="h-12 px-8 text-lg font-bold shadow-xl shadow-primary/20 hover:shadow-primary/30 transition-all bg-primary" asChild>
                 <a href={content.hero.cta.href}>
                   {content.hero.cta.text}
                 </a>
               </Button>
-              <Button size="lg" variant="outline" className="h-12 px-8 text-lg" asChild>
+              <Button size="lg" variant="outline" className="h-12 px-8 text-lg font-bold" asChild>
                 <a href="#demo">
                   View Demo
                 </a>
