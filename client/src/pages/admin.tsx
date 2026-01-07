@@ -69,6 +69,9 @@ export default function AdminSettings() {
             </div>
           </div>
           <div className="flex gap-2">
+            <Button variant="ghost" size="sm" asChild className="text-muted-foreground mr-2">
+              <a href="https://app.make-frame.com/login">Sign in</a>
+            </Button>
             <Button variant="outline" onClick={handleReset}>
               <RotateCcw className="mr-2 h-4 w-4" />
               Reset Defaults
