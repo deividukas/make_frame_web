@@ -1,5 +1,5 @@
 import { useContent } from "@/lib/content-context";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,6 +28,31 @@ export default function AdminSettings() {
   const form = useForm({
     defaultValues: content,
     mode: "onChange"
+  });
+
+  const { fields: navLinkFields } = useFieldArray({
+    control: form.control,
+    name: "navigation.links"
+  });
+
+  const { fields: footerLinkFields } = useFieldArray({
+    control: form.control,
+    name: "footer.links"
+  });
+
+  const { fields: freeFeaturesFields } = useFieldArray({
+    control: form.control,
+    name: "pricing.free.features" as any
+  });
+
+  const { fields: premiumFeaturesFields } = useFieldArray({
+    control: form.control,
+    name: "pricing.premium.features" as any
+  });
+
+  const { fields: addOnsFields } = useFieldArray({
+    control: form.control,
+    name: "pricing.addOns"
   });
 
   // Reset form when content changes (e.g. on reset)
@@ -106,8 +131,8 @@ export default function AdminSettings() {
                   
                   <div className="space-y-4">
                     <Label>Menu Links</Label>
-                    {content.navigation.links.map((_, index) => (
-                      <div key={index} className="grid grid-cols-2 gap-4">
+                    {navLinkFields.map((field, index) => (
+                      <div key={field.id} className="grid grid-cols-2 gap-4">
                         <Input placeholder="Label" {...form.register(`navigation.links.${index}.label`)} />
                         <Input placeholder="URL (#section)" {...form.register(`navigation.links.${index}.href`)} />
                       </div>
@@ -161,9 +186,9 @@ export default function AdminSettings() {
                            <Input {...form.register("pricing.free.price")} />
                         </div>
                         <div className="grid gap-2">
-                           <Label>Features (Comma separated for now, or edit JSON)</Label>
-                           {content.pricing.free.features.map((_, i) => (
-                             <Input key={i} {...form.register(`pricing.free.features.${i}`)} />
+                           <Label>Features</Label>
+                           {freeFeaturesFields.map((field, i) => (
+                             <Input key={field.id} {...form.register(`pricing.free.features.${i}`)} />
                            ))}
                         </div>
                       </div>
@@ -178,8 +203,8 @@ export default function AdminSettings() {
                         </div>
                         <div className="grid gap-2">
                            <Label>Features</Label>
-                           {content.pricing.premium.features.map((_, i) => (
-                             <Input key={i} {...form.register(`pricing.premium.features.${i}`)} />
+                           {premiumFeaturesFields.map((field, i) => (
+                             <Input key={field.id} {...form.register(`pricing.premium.features.${i}`)} />
                            ))}
                         </div>
                       </div>
@@ -193,8 +218,8 @@ export default function AdminSettings() {
                     <CardDescription>Manage prices and details for extra frame packages.</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
-                    {content.pricing.addOns.map((addon, i) => (
-                      <div key={i} className="p-4 border rounded-lg bg-white grid md:grid-cols-4 gap-4 items-end">
+                    {addOnsFields.map((field, i) => (
+                      <div key={field.id} className="p-4 border rounded-lg bg-white grid md:grid-cols-4 gap-4 items-end">
                          <div className="grid gap-2">
                            <Label>Size Name</Label>
                            <Input {...form.register(`pricing.addOns.${i}.size`)} />
@@ -230,8 +255,8 @@ export default function AdminSettings() {
                   </div>
                   <div className="space-y-4">
                     <Label>Footer Links</Label>
-                    {content.footer.links.map((_, index) => (
-                      <div key={index} className="grid grid-cols-2 gap-4">
+                    {footerLinkFields.map((field, index) => (
+                      <div key={field.id} className="grid grid-cols-2 gap-4">
                         <Input placeholder="Label" {...form.register(`footer.links.${index}.label`)} />
                         <Input placeholder="URL" {...form.register(`footer.links.${index}.href`)} />
                       </div>
