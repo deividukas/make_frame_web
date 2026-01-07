@@ -61,6 +61,7 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
     queryKey: ["site-content"],
     queryFn: fetchContent,
     staleTime: 1000 * 60 * 5,
+    retry: 1,
   });
 
   const saveMutation = useMutation({
@@ -84,6 +85,10 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
   const resetContentFn = () => {
     resetMutation.mutate();
   };
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+  }
 
   return (
     <ContentContext.Provider 
