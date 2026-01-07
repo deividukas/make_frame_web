@@ -7,11 +7,13 @@ const Logo = ({ className = "h-10 w-auto" }: { className?: string }) => (
     xmlns="http://www.w3.org/2000/svg" 
     className={className}
   >
-    <g transform="translate(5, 5) rotate(-12, 20, 20)">
-      <rect x="6" y="12" width="28" height="8" rx="4" fill="#7c3aed" />
-      <rect x="6" y="24" width="28" height="8" rx="4" fill="#7c3aed" />
-      <rect x="12" y="6" width="8" height="28" rx="4" fill="#7c3aed" />
-      <rect x="24" y="6" width="8" height="28" rx="4" fill="#7c3aed" />
+    <g transform="translate(8, 8) rotate(-12, 17, 17)">
+      {/* Horizontal lines */}
+      <rect x="0" y="8" width="34" height="6" rx="3" fill="#7c3aed" />
+      <rect x="0" y="20" width="34" height="6" rx="3" fill="#7c3aed" />
+      {/* Vertical lines */}
+      <rect x="8" y="0" width="6" height="34" rx="3" fill="#7c3aed" />
+      <rect x="20" y="0" width="6" height="34" rx="3" fill="#7c3aed" />
     </g>
     <text 
       x="58" 
