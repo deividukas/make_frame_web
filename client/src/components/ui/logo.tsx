@@ -2,7 +2,7 @@ import React from 'react';
 
 const Logo = ({ className = "h-10 w-auto" }: { className?: string }) => (
   <svg 
-    viewBox="0 0 280 50" 
+    viewBox="0 0 320 50" 
     fill="none" 
     xmlns="http://www.w3.org/2000/svg" 
     className={className}
