@@ -8,68 +8,83 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --color-background: hsl(var(--background));
-  --color-foreground: hsl(var(--foreground));
-  --color-card: hsl(var(--card));
-  --color-card-foreground: hsl(var(--card-foreground));
-  --color-popover: hsl(var(--popover));
-  --color-popover-foreground: hsl(var(--popover-foreground));
-  --color-primary: hsl(var(--primary));
-  --color-primary-foreground: hsl(var(--primary-foreground));
-  --color-secondary: hsl(var(--secondary));
-  --color-secondary-foreground: hsl(var(--secondary-foreground));
-  --color-muted: hsl(var(--muted));
-  --color-muted-foreground: hsl(var(--muted-foreground));
-  --color-accent: hsl(var(--accent));
-  --color-accent-foreground: hsl(var(--accent-foreground));
-  --color-destructive: hsl(var(--destructive));
-  --color-destructive-foreground: hsl(var(--destructive-foreground));
-  --color-border: hsl(var(--border));
-  --color-input: hsl(var(--input));
-  --color-ring: hsl(var(--ring));
-  --color-chart-1: hsl(var(--chart-1));
-  --color-chart-2: hsl(var(--chart-2));
-  --color-chart-3: hsl(var(--chart-3));
-  --color-chart-4: hsl(var(--chart-4));
-  --color-chart-5: hsl(var(--chart-5));
+  --color-background: var(--background-color);
+  --color-foreground: var(--text-color);
+  --color-card: var(--theme-card-bg);
+  --color-card-foreground: var(--text-color);
+  --color-popover: var(--background-color);
+  --color-popover-foreground: var(--text-color);
+  --color-primary: var(--primary-color);
+  --color-primary-foreground: #ffffff;
+  --color-secondary: var(--secondary-color);
+  --color-secondary-foreground: #ffffff;
+  --color-muted: #f3f4f6;
+  --color-muted-foreground: var(--theme-text-secondary);
+  --color-accent: var(--accent-color);
+  --color-accent-foreground: #ffffff;
+  --color-destructive: var(--danger-color);
+  --color-destructive-foreground: #ffffff;
+  --color-border: var(--theme-border);
+  --color-input: var(--theme-border);
+  --color-ring: var(--primary-color);
   
-  --font-sans: 'Geist', 'Inter', sans-serif;
+  --font-sans: var(--font-family);
   --font-mono: 'Geist Mono', monospace;
 
-  --radius: 0.75rem;
+  --radius: var(--border-radius);
 }
 
 :root {
-  /* Slate/Indigo Theme */
-  --background: 220 20% 99%; /* Very light grey/blue tint */
-  --foreground: 222 47% 11%; /* Dark slate */
+  /* Default Typography - Source Sans Pro */
+  --font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  /* Default Colors */
+  --primary-color: #3b82f6;
+  --secondary-color: #64748b;
+  --background-color: #ffffff;
+  --text-color: #1f2937;
+  --accent-color: #10b981;
+  --danger-color: #ef4444;
+  --warning-color: #f59e0b;
+  
+  /* Default Layout */
+  --border-radius: 8px;
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  
+  /* WordPress Theme Compatibility CSS Variables */
+  --theme-primary: var(--primary-color);
+  --theme-secondary: var(--secondary-color);
+  --theme-background: var(--background-color);
+  --theme-card-bg: #ffffff;
+  --theme-text-primary: var(--text-color);
+  --theme-text-secondary: #6b7280;
+  --theme-border: #e5e7eb;
+  --theme-accent: var(--accent-color);
+  
+  --theme-font-family: var(--font-family);
+  --theme-font-size: 14px;
+  --theme-heading-size: 24px;
+  --theme-font-weight: 400;
+  
+  --theme-container-padding: 16px;
+  --theme-card-padding: 16px;
+  --theme-button-padding: 8px 16px;
+  --theme-border-radius: 8px;
+  
+  /* Mobile optimizations */
+  --mobile-container-padding: 8px;
+  --mobile-card-padding: 8px;
+  --mobile-gap: 8px;
 
-  --card: 0 0% 100%;
-  --card-foreground: 222 47% 11%;
-
-  --popover: 0 0% 100%;
-  --popover-foreground: 222 47% 11%;
-
-  --primary: 243 75% 59%; /* Indigo 600 */
-  --primary-foreground: 0 0% 100%;
-
-  --secondary: 210 40% 96.1%;
-  --secondary-foreground: 222.2 47.4% 11.2%;
-
-  --muted: 210 40% 96.1%;
-  --muted-foreground: 215.4 16.3% 46.9%;
-
-  --accent: 210 40% 96.1%;
-  --accent-foreground: 222.2 47.4% 11.2%;
-
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 210 40% 98%;
-
+  /* Legacy Fallbacks for shadcn components */
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --primary: 221.2 83.2% 53.3%;
+  --primary-foreground: 210 40% 98%;
   --border: 214.3 31.8% 91.4%;
   --input: 214.3 31.8% 91.4%;
-  --ring: 243 75% 59%;
-
-  --radius: 0.75rem;
+  --ring: 221.2 83.2% 53.3%;
+  --radius: 0.5rem;
 }
 
 .dark {
