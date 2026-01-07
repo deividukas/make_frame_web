@@ -15,6 +15,16 @@ export default function AdminSettings() {
   const { content, updateContent, resetContent } = useContent();
   const { toast } = useToast();
   
+  useEffect(() => {
+    const password = localStorage.getItem("admin-password");
+    if (!password) {
+      const promptPass = prompt("Enter Admin Password to enable editing:");
+      if (promptPass) {
+        localStorage.setItem("admin-password", promptPass);
+      }
+    }
+  }, []);
+
   const form = useForm({
     defaultValues: content,
     mode: "onChange"

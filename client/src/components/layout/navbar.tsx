@@ -43,6 +43,9 @@ export function Navbar() {
             ))}
           </div>
           <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" asChild className="text-muted-foreground">
+              <a href="https://app.make-frame.com/login">Sign in</a>
+            </Button>
             <Button size="sm" asChild className="font-semibold shadow-lg shadow-primary/20">
               <a href={content.hero.cta.href}>{content.hero.cta.text}</a>
             </Button>

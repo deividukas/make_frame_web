@@ -25,11 +25,18 @@ async function fetchContent(): Promise<Content> {
 }
 
 async function saveContent(content: Content): Promise<Content> {
+  const adminPassword = localStorage.getItem("admin-password");
   const response = await fetch("/api/content", {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: { 
+      "Content-Type": "application/json",
+      "X-Admin-Password": adminPassword || ""
+    },
     body: JSON.stringify(content),
   });
+  if (response.status === 401) {
+    throw new Error("Unauthorized: Please set admin password");
+  }
   if (!response.ok) {
     throw new Error("Failed to save content");
   }

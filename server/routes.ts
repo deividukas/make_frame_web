@@ -141,9 +141,14 @@ export async function registerRoutes(
     }
   });
 
-  // Update site content with validation
+  // Update site content with validation and simple password protection
   app.put("/api/content", async (req, res) => {
     try {
+      const adminPassword = req.headers["x-admin-password"];
+      if (adminPassword !== process.env.ADMIN_PASSWORD) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
       const parseResult = contentSchema.safeParse(req.body);
       if (!parseResult.success) {
         return res.status(400).json({ error: "Invalid content structure", details: parseResult.error.errors });
