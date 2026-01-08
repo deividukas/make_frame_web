@@ -144,7 +144,20 @@ export async function registerRoutes(
   // Update site content with validation and simple password protection
   app.put("/api/content", async (req, res) => {
     try {
-      const adminPassword = req.headers["x-admin-password"];
+      const encodedPassword = req.headers["x-admin-password-encoded"] as string;
+      let adminPassword = "";
+      
+      if (encodedPassword) {
+        try {
+          adminPassword = Buffer.from(encodedPassword, 'base64').toString('utf-8');
+        } catch (e) {
+          console.error("Failed to decode password header");
+        }
+      } else {
+        // Fallback for old header if needed
+        adminPassword = req.headers["x-admin-password"] as string;
+      }
+
       if (adminPassword !== process.env.ADMIN_PASSWORD) {
         return res.status(401).json({ error: "Unauthorized" });
       }

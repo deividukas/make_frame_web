@@ -25,12 +25,15 @@ async function fetchContent(): Promise<Content> {
 }
 
 async function saveContent(content: Content): Promise<Content> {
-  const adminPassword = localStorage.getItem("admin-password");
+  const adminPassword = localStorage.getItem("admin-password") || "";
+  // Encode password to Base64 to avoid non-ISO-8859-1 character issues in headers
+  const encodedPassword = btoa(unescape(encodeURIComponent(adminPassword)));
+
   const response = await fetch("/api/content", {
     method: "PUT",
     headers: { 
       "Content-Type": "application/json",
-      "X-Admin-Password": adminPassword || ""
+      "X-Admin-Password-Encoded": encodedPassword
     },
     body: JSON.stringify(content),
   });
