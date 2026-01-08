@@ -78,8 +78,8 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
     },
   });
 
-  const updateContent = (newContent: Content) => {
-    saveMutation.mutate(newContent);
+  const updateContent = async (newContent: Content) => {
+    return saveMutation.mutateAsync(newContent);
   };
 
   const resetContentFn = () => {

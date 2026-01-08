@@ -60,12 +60,41 @@ export default function AdminSettings() {
     form.reset(content);
   }, [content, form]);
 
-  const onSubmit = (data: typeof content) => {
-    updateContent(data);
-    toast({
-      title: "Settings Saved",
-      description: "Your changes have been applied to the live site.",
-    });
+  const onSubmit = async (data: typeof content) => {
+    try {
+      await updateContent(data);
+      toast({
+        title: "Settings Saved",
+        description: "Your changes have been applied to the live site.",
+      });
+    } catch (error: any) {
+      console.error("Save error:", error);
+      
+      if (error.message?.includes("Unauthorized")) {
+        localStorage.removeItem("admin-password");
+        const promptPass = prompt("Password expired or incorrect. Please enter Admin Password:");
+        if (promptPass) {
+          localStorage.setItem("admin-password", promptPass);
+          // Retry save once
+          try {
+            await updateContent(data);
+            toast({
+              title: "Settings Saved",
+              description: "Your changes have been applied after re-authentication.",
+            });
+            return;
+          } catch (retryError) {
+            console.error("Retry error:", retryError);
+          }
+        }
+      }
+
+      toast({
+        title: "Save Failed",
+        description: error.message || "An unexpected error occurred while saving.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleReset = () => {
