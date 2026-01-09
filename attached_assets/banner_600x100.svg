@@ -1,0 +1,25 @@
+<svg width="600" height="100" viewBox="0 0 600 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="paint0_linear_small" x1="0" y1="0" x2="600" y2="100" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7C3AED"/>
+      <stop offset="1" stop-color="#DB2777"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="100" fill="url(#paint0_linear_small)"/>
+  
+  <!-- Logo Hashtag -->
+  <g transform="translate(20, 33) scale(0.8) rotate(-12, 17, 17)">
+    <rect x="0" y="8" width="34" height="6" rx="3" fill="white" fill-opacity="0.9" />
+    <rect x="0" y="20" width="34" height="6" rx="3" fill="white" fill-opacity="0.9" />
+    <rect x="8" y="0" width="6" height="34" rx="3" fill="white" fill-opacity="0.9" />
+    <rect x="20" y="0" width="6" height="34" rx="3" fill="white" fill-opacity="0.9" />
+  </g>
+
+  <!-- Text Content -->
+  <text x="65" y="45" fill="white" style="font: bold 24px sans-serif">See your photo in action.</text>
+  <text x="65" y="70" fill="white" fill-opacity="0.8" style="font: 12px sans-serif">Want to see how your event frame looks? Try it for free.</text>
+  
+  <!-- CTA Button Mockup -->
+  <rect x="440" y="35" width="140" height="30" rx="4" fill="white"/>
+  <text x="510" y="55" fill="#7C3AED" text-anchor="middle" style="font: bold 12px sans-serif">Get Started Free</text>
+</svg>
