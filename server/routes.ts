@@ -56,8 +56,8 @@ const defaultContent = {
       subhead: "Our Fair Usage Policy ensures you get every bit of value from your subscription.",
       points: [
         { title: "Smart Rollover", description: "Unused monthly credits don't just vanish. They automatically roll over to the next month. You can accumulate up to 600 compositions (300% of your base plan)." },
-        { title: "Fair Usage Logic", description: "Our system is built with your budget in mind. We always use your rolled-over credits first, followed by your current monthly limit. Your purchased add-on packs are only touched once everything else is used up." },
-        { title: "Permanent Add-ons", description: "Need extra capacity for a massive event? Our Top-up Packs never expire. As long as your Premium subscription is active, those credits stay in your account until you actually use them." }
+        { title: "Fair Usage Logic", description: "Our system is built with your budget in mind. We always use your rolled-over credits first, followed by your current monthly limit. Your purchased Extra Frame Packages are only touched once everything else is used up." },
+        { title: "Permanent Add-ons", description: "Need extra capacity for a massive event? Our Extra Frame Packages never expire. As long as your Premium subscription is active, those credits stay in your account until you actually use them." }
       ]
     }
   },
