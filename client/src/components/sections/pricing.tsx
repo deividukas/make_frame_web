@@ -76,7 +76,7 @@ export function Pricing() {
 
         {/* Addons */}
         <div className="max-w-4xl mx-auto mb-20">
-          <h3 className="text-xl font-bold mb-8 text-center">Need More Power? (Add-on Packs)</h3>
+          <h3 className="text-xl font-bold mb-8 text-center">Need More Power? (Extra Frame Packages)</h3>
           <div className="grid gap-6 md:grid-cols-3">
             {content.pricing.addOns.map((addon, i) => (
               <div key={i} className="rounded-xl border bg-white p-6 shadow-sm flex flex-col items-center text-center">

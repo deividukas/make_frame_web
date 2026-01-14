@@ -243,7 +243,7 @@ export default function AdminSettings() {
 
                 <Card>
                   <CardHeader>
-                    <CardTitle>Add-on Packs</CardTitle>
+                    <CardTitle>Extra Frame Packages</CardTitle>
                     <CardDescription>Manage prices and details for extra frame packages.</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
