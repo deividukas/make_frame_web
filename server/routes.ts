@@ -8,7 +8,7 @@ const defaultContent = {
   navigation: {
     title: "Make-frame",
     links: [
-      { label: "Demo", href: "#demo" },
+      { label: "Demo", href: "https://staging.make-frame.com/demo" },
       { label: "Price", href: "#pricing" },
       { label: "FAQ", href: "#faq" },
       { label: "Resources", href: "#resources" }
@@ -27,7 +27,7 @@ const defaultContent = {
   demo: {
     headline: "Experience it like your attendees will",
     subhead: "Don't just take our word for it. Try our live demo to see how seamless the photo experience is on any device.",
-    cta: { text: "View Live Demo", href: "#" }
+    cta: { text: "View Live Demo", href: "https://staging.make-frame.com/demo" }
   },
   useCases: [
     { title: "Business Conferences & Summits", description: "Turn networking into marketing. Give your attendees a professional way to share their experience. Boost sponsor visibility and dominate LinkedIn and X feeds with high-quality, branded content that builds professional authority." },
