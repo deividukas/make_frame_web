@@ -26,7 +26,7 @@ export default function Home() {
               </div>
               <div className="flex justify-center">
                 <a 
-                  href="#" 
+                  href="https://staging.make-frame.com/demo" 
                   className="inline-flex h-12 items-center justify-center rounded-lg bg-white px-8 text-lg font-medium text-primary shadow-xl hover:bg-slate-100 transition-colors"
                 >
                   View Live Demo
