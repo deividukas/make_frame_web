@@ -186,10 +186,37 @@ export async function registerRoutes(
     }
   });
 
+  // Contact form schema
+  const contactSchema = z.object({
+    name: z.string().min(1).max(100),
+    email: z.string().email().max(255),
+    subject: z.string().min(1).max(200),
+    message: z.string().min(1).max(5000),
+    confirm_email_address: z.string().optional(),
+    loadTime: z.number(),
+    submitTime: z.number()
+  });
+
+  // HTML escape helper
+  function escapeHtml(text: string): string {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
   // Contact form endpoint with spam protection
   app.post("/api/contact", async (req, res) => {
     try {
-      const { name, email, subject, message, confirm_email_address, loadTime, submitTime } = req.body;
+      // Validate input
+      const parseResult = contactSchema.safeParse(req.body);
+      if (!parseResult.success) {
+        return res.status(400).json({ error: "Invalid form data" });
+      }
+
+      const { name, email, subject, message, confirm_email_address, loadTime, submitTime } = parseResult.data;
 
       // 1. Honeypot check
       if (confirm_email_address) {
@@ -218,6 +245,12 @@ export async function registerRoutes(
       const sentFrom = new Sender("noreply@make-frame.com", "Make-Frame Contact Form");
       const recipients = [new Recipient(adminEmail, "Admin")];
 
+      // Escape HTML to prevent injection
+      const safeName = escapeHtml(name);
+      const safeEmail = escapeHtml(email);
+      const safeSubject = escapeHtml(subject);
+      const safeMessage = escapeHtml(message);
+
       const emailParams = new EmailParams()
         .setFrom(sentFrom)
         .setTo(recipients)
@@ -225,11 +258,11 @@ export async function registerRoutes(
         .setSubject(`Contact Form: ${subject}`)
         .setHtml(`
           <h2>New Contact Form Submission</h2>
-          <p><strong>From:</strong> ${name} (${email})</p>
-          <p><strong>Subject:</strong> ${subject}</p>
+          <p><strong>From:</strong> ${safeName} (${safeEmail})</p>
+          <p><strong>Subject:</strong> ${safeSubject}</p>
           <hr>
           <p><strong>Message:</strong></p>
-          <p>${message.replace(/\n/g, '<br>')}</p>
+          <p>${safeMessage.replace(/\n/g, '<br>')}</p>
         `)
         .setText(`New Contact Form Submission\n\nFrom: ${name} (${email})\nSubject: ${subject}\n\nMessage:\n${message}`);
 
