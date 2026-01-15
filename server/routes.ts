@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
+import { MailerSend, EmailParams, Sender, Recipient } from "mailersend";
 
 const defaultContent = {
   navigation: {
@@ -203,8 +204,37 @@ export async function registerRoutes(
         return res.json({ success: true });
       }
 
-      // In a real production app, we would send an email here
-      console.log("Contact form submission validated:", { name, email, subject, message });
+      // Send email via MailerSend
+      const apiKey = process.env.MAILERSEND_API_KEY;
+      const adminEmail = process.env.ADMIN_EMAIL;
+
+      if (!apiKey || !adminEmail) {
+        console.log("MailerSend not configured, logging contact form:", { name, email, subject, message });
+        return res.json({ success: true });
+      }
+
+      const mailerSend = new MailerSend({ apiKey });
+
+      const sentFrom = new Sender("noreply@make-frame.com", "Make-Frame Contact Form");
+      const recipients = [new Recipient(adminEmail, "Admin")];
+
+      const emailParams = new EmailParams()
+        .setFrom(sentFrom)
+        .setTo(recipients)
+        .setReplyTo(new Recipient(email, name))
+        .setSubject(`Contact Form: ${subject}`)
+        .setHtml(`
+          <h2>New Contact Form Submission</h2>
+          <p><strong>From:</strong> ${name} (${email})</p>
+          <p><strong>Subject:</strong> ${subject}</p>
+          <hr>
+          <p><strong>Message:</strong></p>
+          <p>${message.replace(/\n/g, '<br>')}</p>
+        `)
+        .setText(`New Contact Form Submission\n\nFrom: ${name} (${email})\nSubject: ${subject}\n\nMessage:\n${message}`);
+
+      await mailerSend.email.send(emailParams);
+      console.log("Contact form email sent successfully to:", adminEmail);
 
       res.json({ success: true });
     } catch (error) {
