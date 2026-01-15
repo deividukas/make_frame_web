@@ -4,8 +4,15 @@ import { Hero } from "@/components/sections/hero";
 import { HowItWorks } from "@/components/sections/how-it-works";
 import { UseCases } from "@/components/sections/use-cases";
 import { Pricing } from "@/components/sections/pricing";
+import { useContent } from "@/lib/content-context";
 
 export default function Home() {
+  const { content } = useContent();
+
+  // Get Demo link from navigation
+  const demoLink = content.navigation.links.find(link => link.label === "Demo");
+  const demoHref = demoLink?.href || "#demo";
+
   return (
     <div className="min-h-screen bg-background font-sans antialiased text-foreground">
       <Navbar />
@@ -26,7 +33,7 @@ export default function Home() {
               </div>
               <div className="flex justify-center">
                 <a 
-                  href="https://staging.make-frame.com/demo" 
+                  href={demoHref} 
                   className="inline-flex h-12 items-center justify-center rounded-lg bg-white px-8 text-lg font-medium text-primary shadow-xl hover:bg-slate-100 transition-colors"
                 >
                   View Live Demo

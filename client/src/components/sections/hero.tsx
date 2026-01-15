@@ -6,6 +6,10 @@ import demoScreenshot from "@assets/staging.make-frame.com_demo_(1)_176779729770
 export function Hero() {
   const { content } = useContent();
 
+  // Get Demo link from navigation
+  const demoLink = content.navigation.links.find(link => link.label === "Demo");
+  const demoHref = demoLink?.href || "#demo";
+
   return (
     <section className="relative overflow-hidden bg-background py-20 md:py-28 lg:py-32 flex items-center">
       <div className="container relative z-10 max-w-7xl px-4 md:px-6 mx-auto">
@@ -31,7 +35,7 @@ export function Hero() {
                 </a>
               </Button>
               <Button size="lg" variant="outline" className="h-12 px-8 text-lg font-bold" asChild>
-                <a href="#demo">
+                <a href={demoHref}>
                   View Demo
                 </a>
               </Button>
