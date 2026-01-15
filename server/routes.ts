@@ -12,7 +12,9 @@ const defaultContent = {
       { label: "Price", href: "#pricing" },
       { label: "FAQ", href: "#faq" },
       { label: "Resources", href: "#resources" }
-    ]
+    ],
+    signIn: { text: "Sign in", href: "https://app.make-frame.com/login" },
+    getStarted: { text: "Get Started Free", href: "https://staging.make-frame.com/signup" }
   },
   hero: {
     headline: "Your Attendees Are Your Best Ad Agency",
@@ -78,7 +80,9 @@ const defaultContent = {
 const contentSchema = z.object({
   navigation: z.object({
     title: z.string(),
-    links: z.array(z.object({ label: z.string(), href: z.string() }))
+    links: z.array(z.object({ label: z.string(), href: z.string() })),
+    signIn: z.object({ text: z.string(), href: z.string() }).optional(),
+    getStarted: z.object({ text: z.string(), href: z.string() }).optional()
   }),
   hero: z.object({
     headline: z.string(),

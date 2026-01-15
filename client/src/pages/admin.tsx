@@ -123,9 +123,6 @@ export default function AdminSettings() {
             </div>
           </div>
           <div className="flex gap-2">
-            <Button variant="ghost" size="sm" asChild className="text-muted-foreground mr-2">
-              <a href="https://app.make-frame.com/login">Sign in</a>
-            </Button>
             <Button variant="outline" onClick={handleReset}>
               <RotateCcw className="mr-2 h-4 w-4" />
               Reset Defaults
@@ -166,6 +163,38 @@ export default function AdminSettings() {
                         <Input placeholder="URL (#section)" {...form.register(`navigation.links.${index}.href`)} />
                       </div>
                     ))}
+                  </div>
+
+                  <div className="pt-6 border-t space-y-4">
+                    <Label className="text-base font-semibold">Header Buttons</Label>
+                    <div className="grid gap-4">
+                      <div className="p-4 border rounded-lg bg-slate-50">
+                        <h4 className="font-medium mb-3">Sign In Button</h4>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="grid gap-2">
+                            <Label>Text</Label>
+                            <Input {...form.register("navigation.signIn.text")} placeholder="Sign in" />
+                          </div>
+                          <div className="grid gap-2">
+                            <Label>URL</Label>
+                            <Input {...form.register("navigation.signIn.href")} placeholder="https://app.make-frame.com/login" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="p-4 border rounded-lg bg-indigo-50/50 border-indigo-100">
+                        <h4 className="font-medium mb-3 text-primary">Get Started Button</h4>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="grid gap-2">
+                            <Label>Text</Label>
+                            <Input {...form.register("navigation.getStarted.text")} placeholder="Get Started Free" />
+                          </div>
+                          <div className="grid gap-2">
+                            <Label>URL</Label>
+                            <Input {...form.register("navigation.getStarted.href")} placeholder="https://staging.make-frame.com/signup" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

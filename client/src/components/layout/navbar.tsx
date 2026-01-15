@@ -45,10 +45,14 @@ export function Navbar() {
           </div>
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="sm" asChild className="text-muted-foreground font-semibold px-4">
-              <a href="https://app.make-frame.com/login">Sign in</a>
+              <a href={content.navigation.signIn?.href || "https://app.make-frame.com/login"}>
+                {content.navigation.signIn?.text || "Sign in"}
+              </a>
             </Button>
             <Button size="sm" asChild className="font-semibold px-6 h-10 shadow-lg shadow-primary/20">
-              <a href={content.hero.cta.href}>{content.hero.cta.text}</a>
+              <a href={content.navigation.getStarted?.href || content.hero.cta.href}>
+                {content.navigation.getStarted?.text || content.hero.cta.text}
+              </a>
             </Button>
           </div>
         </div>
@@ -74,8 +78,15 @@ export function Navbar() {
                     {link.label}
                   </a>
                 ))}
-                <Button className="w-full mt-4" asChild>
-                  <a href={content.hero.cta.href}>{content.hero.cta.text}</a>
+                <Button variant="ghost" className="w-full mt-4" asChild>
+                  <a href={content.navigation.signIn?.href || "https://app.make-frame.com/login"}>
+                    {content.navigation.signIn?.text || "Sign in"}
+                  </a>
+                </Button>
+                <Button className="w-full" asChild>
+                  <a href={content.navigation.getStarted?.href || content.hero.cta.href}>
+                    {content.navigation.getStarted?.text || content.hero.cta.text}
+                  </a>
                 </Button>
               </div>
             </SheetContent>
