@@ -185,5 +185,34 @@ export async function registerRoutes(
     }
   });
 
+  // Contact form endpoint with spam protection
+  app.post("/api/contact", async (req, res) => {
+    try {
+      const { name, email, subject, message, confirm_email_address, loadTime, submitTime } = req.body;
+
+      // 1. Honeypot check
+      if (confirm_email_address) {
+        console.log("Spam detected: Honeypot field filled");
+        return res.json({ success: true }); // Return success to avoid hints
+      }
+
+      // 2. Timestamp check (5 second threshold)
+      const duration = submitTime - loadTime;
+      if (duration < 5000) {
+        console.log(\`Spam detected: Form submitted in \${duration}ms\`);
+        return res.json({ success: true }); // Return success to avoid hints
+      }
+
+      // In a real production app, we would send an email here via SendGrid/Resend
+      // For now we log it as the user hasn't provided API keys for mailers
+      console.log("Contact form submission validated:", { name, email, subject, message });
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error processing contact form:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
   return httpServer;
 }

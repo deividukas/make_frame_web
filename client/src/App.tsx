@@ -10,6 +10,7 @@ import Home from "@/pages/home";
 import AdminSettings from "@/pages/admin";
 import Privacy from "@/pages/privacy";
 import Terms from "@/pages/terms";
+import Contacts from "@/pages/contacts";
 
 function Router() {
   return (
@@ -18,6 +19,7 @@ function Router() {
       <Route path="/admin-settings" component={AdminSettings} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/terms" component={Terms} />
+      <Route path="/contacts" component={Contacts} />
       <Route component={NotFound} />
     </Switch>
   );
