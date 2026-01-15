@@ -193,18 +193,17 @@ export async function registerRoutes(
       // 1. Honeypot check
       if (confirm_email_address) {
         console.log("Spam detected: Honeypot field filled");
-        return res.json({ success: true }); // Return success to avoid hints
+        return res.json({ success: true });
       }
 
       // 2. Timestamp check (5 second threshold)
       const duration = submitTime - loadTime;
       if (duration < 5000) {
-        console.log(\`Spam detected: Form submitted in \${duration}ms\`);
-        return res.json({ success: true }); // Return success to avoid hints
+        console.log(`Spam detected: Form submitted in ${duration}ms`);
+        return res.json({ success: true });
       }
 
-      // In a real production app, we would send an email here via SendGrid/Resend
-      // For now we log it as the user hasn't provided API keys for mailers
+      // In a real production app, we would send an email here
       console.log("Contact form submission validated:", { name, email, subject, message });
 
       res.json({ success: true });
