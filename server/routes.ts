@@ -65,7 +65,7 @@ const defaultContent = {
     copyright: "© 2026 Make-frame.com. All rights reserved.",
     links: [
       { label: "About", href: "#" },
-      { label: "Contacts", href: "mailto:hello@make-frame.com" },
+      { label: "Contacts", href: "/contacts" },
       { label: "Terms", href: "/terms" },
       { label: "Privacy", href: "/privacy" },
       { label: "Twitter", href: "#" },

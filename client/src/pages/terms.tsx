@@ -79,7 +79,7 @@ export default function Terms() {
           <section className="mb-12">
             <h2 className="text-2xl font-semibold mb-4">10. Contact Information</h2>
             <p>
-              For questions regarding these Terms, please contact us at: <a href="mailto:hello@make-frame.com" className="text-primary hover:underline">hello@make-frame.com</a>.
+              For questions regarding these Terms, please contact us at: <a href="/contacts" className="text-primary hover:underline">Contact Form</a>.
             </p>
           </section>
         </motion.div>

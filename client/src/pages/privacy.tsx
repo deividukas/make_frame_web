@@ -59,7 +59,7 @@ export default function Privacy() {
           <section className="mb-12">
             <h2 className="text-2xl font-semibold mb-4">6. Contact Us</h2>
             <p>
-              For any privacy-related inquiries, please contact us at: <a href="mailto:hello@make-frame.com" className="text-primary hover:underline">hello@make-frame.com</a>.
+              For any privacy-related inquiries, please contact us at: <a href="/contacts" className="text-primary hover:underline">Contact Form</a>.
             </p>
           </section>
         </motion.div>
