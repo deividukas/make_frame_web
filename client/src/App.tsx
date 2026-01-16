@@ -8,18 +8,24 @@ import { CookieBanner } from "@/components/ui/cookie-banner";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import AdminSettings from "@/pages/admin";
+import AdminResources from "@/pages/admin-resources";
 import Privacy from "@/pages/privacy";
 import Terms from "@/pages/terms";
 import Contacts from "@/pages/contacts";
+import Resources from "@/pages/resources";
+import ResourceArticle from "@/pages/resource-article";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/admin-settings" component={AdminSettings} />
+      <Route path="/admin-settings/resources" component={AdminResources} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/terms" component={Terms} />
       <Route path="/contacts" component={Contacts} />
+      <Route path="/resources" component={Resources} />
+      <Route path="/resources/:slug" component={ResourceArticle} />
       <Route component={NotFound} />
     </Switch>
   );
