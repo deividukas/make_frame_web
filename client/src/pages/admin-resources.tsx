@@ -48,7 +48,7 @@ export default function AdminResources() {
   });
 
   useEffect(() => {
-    const storedPassword = localStorage.getItem("adminPassword");
+    const storedPassword = localStorage.getItem("admin-password");
     if (storedPassword) {
       setPassword(storedPassword);
       setIsAuthenticated(true);
@@ -160,7 +160,7 @@ export default function AdminResources() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    localStorage.setItem("adminPassword", password);
+    localStorage.setItem("admin-password", password);
     setIsAuthenticated(true);
   };
 

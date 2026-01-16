@@ -355,16 +355,21 @@ export async function registerRoutes(
       }
       
       const baseUrl = "https://make-frame.com";
-      const title = resource.metaTitle || resource.title;
-      const description = resource.metaDescription || resource.excerpt || '';
+      const rawTitle = resource.metaTitle || resource.title;
+      const rawDescription = resource.metaDescription || resource.excerpt || '';
       const image = resource.featuredImage || '';
       const url = `${baseUrl}/resources/${resource.slug}`;
+      
+      const safeTitle = escapeHtml(rawTitle);
+      const safeDescription = escapeHtml(rawDescription);
+      const safeHeadline = escapeHtml(resource.title);
+      const safeContent = escapeHtml(resource.content);
       
       const jsonLd = {
         "@context": "https://schema.org",
         "@type": "Article",
         "headline": resource.title,
-        "description": description,
+        "description": rawDescription,
         "image": image || undefined,
         "datePublished": resource.publishedAt,
         "dateModified": resource.updatedAt,
@@ -389,24 +394,24 @@ export async function registerRoutes(
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${title} | Make-frame</title>
-  <meta name="description" content="${description}">
+  <title>${safeTitle} | Make-frame</title>
+  <meta name="description" content="${safeDescription}">
   <meta property="og:type" content="article">
-  <meta property="og:title" content="${title}">
-  <meta property="og:description" content="${description}">
+  <meta property="og:title" content="${safeTitle}">
+  <meta property="og:description" content="${safeDescription}">
   <meta property="og:url" content="${url}">
-  ${image ? `<meta property="og:image" content="${image}">` : ''}
+  ${image ? `<meta property="og:image" content="${escapeHtml(image)}">` : ''}
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="${title}">
-  <meta name="twitter:description" content="${description}">
-  ${image ? `<meta name="twitter:image" content="${image}">` : ''}
+  <meta name="twitter:title" content="${safeTitle}">
+  <meta name="twitter:description" content="${safeDescription}">
+  ${image ? `<meta name="twitter:image" content="${escapeHtml(image)}">` : ''}
   <link rel="canonical" href="${url}">
   <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
 </head>
 <body>
   <article>
-    <h1>${resource.title}</h1>
-    ${resource.content}
+    <h1>${safeHeadline}</h1>
+    <div>${safeContent}</div>
   </article>
 </body>
 </html>`;
