@@ -281,6 +281,143 @@ export async function registerRoutes(
     }
   });
 
+  // ============ SITEMAP ============
+  
+  app.get("/sitemap.xml", async (req, res) => {
+    try {
+      const resources = await storage.getPublishedResources();
+      const baseUrl = "https://make-frame.com";
+      
+      let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>${baseUrl}/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/resources</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/contacts</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/privacy</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/terms</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>`;
+      
+      for (const resource of resources) {
+        const lastmod = resource.updatedAt ? new Date(resource.updatedAt).toISOString().split('T')[0] : '';
+        sitemap += `
+  <url>
+    <loc>${baseUrl}/resources/${resource.slug}</loc>
+    ${lastmod ? `<lastmod>${lastmod}</lastmod>` : ''}
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>`;
+      }
+      
+      sitemap += `
+</urlset>`;
+      
+      res.set('Content-Type', 'application/xml');
+      res.send(sitemap);
+    } catch (error) {
+      console.error("Error generating sitemap:", error);
+      res.status(500).send("Error generating sitemap");
+    }
+  });
+
+  // ============ SEO META FOR BOTS ============
+  
+  app.get("/resources/:slug", async (req, res, next) => {
+    const userAgent = req.headers['user-agent'] || '';
+    const isBot = /googlebot|bingbot|slurp|duckduckbot|baiduspider|yandexbot|facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegram|discord/i.test(userAgent);
+    
+    if (!isBot) {
+      return next();
+    }
+    
+    try {
+      const resource = await storage.getResourceBySlug(req.params.slug);
+      if (!resource || !resource.isPublished) {
+        return next();
+      }
+      
+      const baseUrl = "https://make-frame.com";
+      const title = resource.metaTitle || resource.title;
+      const description = resource.metaDescription || resource.excerpt || '';
+      const image = resource.featuredImage || '';
+      const url = `${baseUrl}/resources/${resource.slug}`;
+      
+      const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": resource.title,
+        "description": description,
+        "image": image || undefined,
+        "datePublished": resource.publishedAt,
+        "dateModified": resource.updatedAt,
+        "author": {
+          "@type": "Organization",
+          "name": "Make-frame",
+          "url": baseUrl
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Make-frame",
+          "url": baseUrl
+        },
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": url
+        }
+      };
+      
+      const html = `<!DOCTYPE html>
+<html lang="lt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title} | Make-frame</title>
+  <meta name="description" content="${description}">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="${title}">
+  <meta property="og:description" content="${description}">
+  <meta property="og:url" content="${url}">
+  ${image ? `<meta property="og:image" content="${image}">` : ''}
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${title}">
+  <meta name="twitter:description" content="${description}">
+  ${image ? `<meta name="twitter:image" content="${image}">` : ''}
+  <link rel="canonical" href="${url}">
+  <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
+</head>
+<body>
+  <article>
+    <h1>${resource.title}</h1>
+    ${resource.content}
+  </article>
+</body>
+</html>`;
+      
+      res.send(html);
+    } catch (error) {
+      console.error("Error serving bot content:", error);
+      next();
+    }
+  });
+
   // ============ RESOURCES API ============
 
   // Helper to verify admin password

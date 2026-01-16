@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Save, RotateCcw } from "lucide-react";
+import { ArrowLeft, Save, RotateCcw, FileText } from "lucide-react";
 import { Link } from "wouter";
 import { useEffect } from "react";
 
@@ -123,6 +123,12 @@ export default function AdminSettings() {
             </div>
           </div>
           <div className="flex gap-2">
+            <Link href="/admin-settings/resources">
+              <Button variant="outline">
+                <FileText className="mr-2 h-4 w-4" />
+                Straipsniai
+              </Button>
+            </Link>
             <Button variant="outline" onClick={handleReset}>
               <RotateCcw className="mr-2 h-4 w-4" />
               Reset Defaults
