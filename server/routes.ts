@@ -131,9 +131,12 @@ const contentSchema = z.object({
     links: z.array(z.object({ label: z.string(), href: z.string() }))
   }),
   resourcesPage: z.object({
-    headline: z.string().default("News & Tips"),
-    subhead: z.string().default("Learn more about event photography, social media marketing, and Make-frame capabilities.")
-  }).optional().default({ headline: "News & Tips", subhead: "Learn more about event photography, social media marketing, and Make-frame capabilities." })
+    headline: z.string().optional(),
+    subhead: z.string().optional()
+  }).optional().transform((val) => ({
+    headline: val?.headline || "News & Tips",
+    subhead: val?.subhead || "Learn more about event photography, social media marketing, and Make-frame capabilities."
+  }))
 });
 
 export async function registerRoutes(
