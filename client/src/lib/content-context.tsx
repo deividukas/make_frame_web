@@ -29,13 +29,22 @@ async function saveContent(content: Content): Promise<Content> {
   // Encode password to Base64 to avoid non-ISO-8859-1 character issues in headers
   const encodedPassword = btoa(unescape(encodeURIComponent(adminPassword)));
 
+  // Ensure resourcesPage has default values if missing
+  const contentWithDefaults = {
+    ...content,
+    resourcesPage: content.resourcesPage || {
+      headline: "News & Tips",
+      subhead: "Learn more about event photography, social media marketing, and Make-frame capabilities."
+    }
+  };
+
   const response = await fetch("/api/content", {
     method: "PUT",
     headers: { 
       "Content-Type": "application/json",
       "X-Admin-Password-Encoded": encodedPassword
     },
-    body: JSON.stringify(content),
+    body: JSON.stringify(contentWithDefaults),
   });
   if (response.status === 401) {
     throw new Error("Unauthorized: Please set admin password");
