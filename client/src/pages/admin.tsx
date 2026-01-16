@@ -157,12 +157,23 @@ export default function AdminSettings() {
                   
                   <div className="space-y-4">
                     <Label>Menu Links</Label>
-                    {navLinkFields.map((field, index) => (
-                      <div key={field.id} className="grid grid-cols-2 gap-4">
-                        <Input placeholder="Label" {...form.register(`navigation.links.${index}.label`)} />
-                        <Input placeholder="URL (#section)" {...form.register(`navigation.links.${index}.href`)} />
-                      </div>
-                    ))}
+                    <div className="space-y-4">
+                      {navLinkFields.map((field, index) => (
+                        <div key={field.id} className="p-4 border rounded-lg bg-slate-50">
+                          <h4 className="font-medium mb-3">Link {index + 1}</h4>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="grid gap-2">
+                              <Label>Label</Label>
+                              <Input placeholder="Label" {...form.register(`navigation.links.${index}.label`)} />
+                            </div>
+                            <div className="grid gap-2">
+                              <Label>URL</Label>
+                              <Input placeholder="URL (#section)" {...form.register(`navigation.links.${index}.href`)} />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
 
                   <div className="pt-6 border-t space-y-4">
@@ -313,12 +324,23 @@ export default function AdminSettings() {
                   </div>
                   <div className="space-y-4">
                     <Label>Footer Links</Label>
-                    {footerLinkFields.map((field, index) => (
-                      <div key={field.id} className="grid grid-cols-2 gap-4">
-                        <Input placeholder="Label" {...form.register(`footer.links.${index}.label`)} />
-                        <Input placeholder="URL" {...form.register(`footer.links.${index}.href`)} />
-                      </div>
-                    ))}
+                    <div className="grid gap-4">
+                      {footerLinkFields.map((field, index) => (
+                        <div key={field.id} className="p-4 border rounded-lg bg-slate-50">
+                          <h4 className="font-medium mb-3">Link {index + 1}</h4>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="grid gap-2">
+                              <Label>Label</Label>
+                              <Input placeholder="Label" {...form.register(`footer.links.${index}.label`)} />
+                            </div>
+                            <div className="grid gap-2">
+                              <Label>URL</Label>
+                              <Input placeholder="URL" {...form.register(`footer.links.${index}.href`)} />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
