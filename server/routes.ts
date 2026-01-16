@@ -164,6 +164,7 @@ export async function registerRoutes(
       if (encodedPassword) {
         try {
           adminPassword = Buffer.from(encodedPassword, 'base64').toString('utf-8');
+          console.log("Decoded password from header:", adminPassword);
         } catch (e) {
           console.error("Failed to decode password header");
         }
@@ -173,6 +174,7 @@ export async function registerRoutes(
       }
 
       if (adminPassword !== process.env.ADMIN_PASSWORD) {
+        console.error("Authentication failed: Passwords do not match. Received:", adminPassword, "Expected:", process.env.ADMIN_PASSWORD);
         return res.status(401).json({ error: "Unauthorized" });
       }
 
