@@ -126,7 +126,7 @@ export default function AdminSettings() {
             <Link href="/admin-settings/resources">
               <Button variant="outline">
                 <FileText className="mr-2 h-4 w-4" />
-                Straipsniai
+                Articles
               </Button>
             </Link>
             <Button variant="outline" onClick={handleReset}>
@@ -147,6 +147,7 @@ export default function AdminSettings() {
               <TabsTrigger value="hero" className="h-10">Hero Section</TabsTrigger>
               <TabsTrigger value="pricing" className="h-10">Pricing & Add-ons</TabsTrigger>
               <TabsTrigger value="footer" className="h-10">Footer</TabsTrigger>
+              <TabsTrigger value="resources" className="h-10">Resources Page</TabsTrigger>
             </TabsList>
 
             <TabsContent value="general">
@@ -347,6 +348,25 @@ export default function AdminSettings() {
                         </div>
                       ))}
                     </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="resources">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Resources Page</CardTitle>
+                  <CardDescription>Configure the header text for the Resources/Blog page.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid gap-2">
+                    <Label>Headline</Label>
+                    <Input {...form.register("resourcesPage.headline")} placeholder="News & Tips" />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label>Subheadline</Label>
+                    <Textarea {...form.register("resourcesPage.subhead")} placeholder="Learn more about..." />
                   </div>
                 </CardContent>
               </Card>

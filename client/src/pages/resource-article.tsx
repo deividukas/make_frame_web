@@ -5,7 +5,6 @@ import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { Calendar, ArrowLeft, Share2 } from "lucide-react";
 import { format } from "date-fns";
-import { lt } from "date-fns/locale";
 import { useEffect } from "react";
 import type { Resource } from "@shared/schema";
 
@@ -110,7 +109,7 @@ export default function ResourceArticle() {
       }
     } else {
       navigator.clipboard.writeText(window.location.href);
-      alert("Nuoroda nukopijuota!");
+      alert("Link copied!");
     }
   };
 
@@ -119,7 +118,7 @@ export default function ResourceArticle() {
       <div className="min-h-screen flex flex-col">
         <Navbar />
         <main className="flex-1 flex items-center justify-center">
-          <p className="text-muted-foreground">Kraunama...</p>
+          <p className="text-muted-foreground">Loading...</p>
         </main>
         <Footer />
       </div>
@@ -132,9 +131,9 @@ export default function ResourceArticle() {
         <Navbar />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4">Straipsnis nerastas</h1>
+            <h1 className="text-2xl font-bold mb-4">Article not found</h1>
             <Link href="/resources">
-              <Button>Grįžti į straipsnių sąrašą</Button>
+              <Button>Back to articles</Button>
             </Link>
           </div>
         </main>
@@ -153,7 +152,7 @@ export default function ResourceArticle() {
               <Link href="/resources">
                 <Button variant="ghost" className="gap-2 mb-6">
                   <ArrowLeft className="h-4 w-4" />
-                  Visi straipsniai
+                  All articles
                 </Button>
               </Link>
 
@@ -167,13 +166,13 @@ export default function ResourceArticle() {
                     <Calendar className="h-4 w-4" />
                     {resource.publishedAt && (
                       <time dateTime={new Date(resource.publishedAt).toISOString()}>
-                        {format(new Date(resource.publishedAt), "yyyy 'm.' MMMM d 'd.'", { locale: lt })}
+                        {format(new Date(resource.publishedAt), "MMMM d, yyyy")}
                       </time>
                     )}
                   </div>
                   <Button variant="outline" size="sm" onClick={handleShare} className="gap-2">
                     <Share2 className="h-4 w-4" />
-                    Dalintis
+                    Share
                   </Button>
                 </div>
               </header>
@@ -198,7 +197,7 @@ export default function ResourceArticle() {
               <Link href="/resources">
                 <Button variant="outline" className="gap-2">
                   <ArrowLeft className="h-4 w-4" />
-                  Grįžti į straipsnių sąrašą
+                  Back to articles
                 </Button>
               </Link>
             </div>

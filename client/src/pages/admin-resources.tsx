@@ -90,12 +90,12 @@ export default function AdminResources() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-resources"] });
-      toast({ title: "Straipsnis sukurtas!" });
+      toast({ title: "Article created!" });
       resetForm();
       setIsEditorOpen(false);
     },
     onError: (error: Error) => {
-      toast({ title: "Klaida", description: error.message, variant: "destructive" });
+      toast({ title: "Error", description: error.message, variant: "destructive" });
     },
   });
 
@@ -117,13 +117,13 @@ export default function AdminResources() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-resources"] });
-      toast({ title: "Straipsnis atnaujintas!" });
+      toast({ title: "Article updated!" });
       resetForm();
       setIsEditorOpen(false);
       setEditingResource(null);
     },
     onError: (error: Error) => {
-      toast({ title: "Klaida", description: error.message, variant: "destructive" });
+      toast({ title: "Error", description: error.message, variant: "destructive" });
     },
   });
 
@@ -138,10 +138,10 @@ export default function AdminResources() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-resources"] });
-      toast({ title: "Straipsnis i\u0161trintas!" });
+      toast({ title: "Article deleted!" });
     },
     onError: () => {
-      toast({ title: "Klaida trinant straipsn\u012f", variant: "destructive" });
+      toast({ title: "Error deleting article", variant: "destructive" });
     },
   });
 
@@ -206,21 +206,21 @@ export default function AdminResources() {
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle>Administratoriaus prisijungimas</CardTitle>
+            <CardTitle>Admin Login</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="grid gap-2">
-                <Label>Slaptažodis</Label>
+                <Label>Password</Label>
                 <Input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Įveskite admin slaptažodį"
+                  placeholder="Enter admin password"
                 />
               </div>
               <Button type="submit" className="w-full">
-                Prisijungti
+                Login
               </Button>
             </form>
           </CardContent>
@@ -239,25 +239,25 @@ export default function AdminResources() {
                 <ArrowLeft className="h-5 w-5" />
               </Button>
             </Link>
-            <h1 className="text-2xl font-bold">Straipsniai (Resources)</h1>
+            <h1 className="text-2xl font-bold">Articles (Resources)</h1>
           </div>
           <Button onClick={() => openEditor()} className="gap-2">
             <Plus className="h-4 w-4" />
-            Naujas straipsnis
+            New article
           </Button>
         </div>
 
         {isLoading ? (
           <div className="text-center py-12 text-muted-foreground">
-            Kraunama...
+            Loading...
           </div>
         ) : resources.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center">
-              <p className="text-muted-foreground mb-4">Nėra sukurtų straipsnių</p>
+              <p className="text-muted-foreground mb-4">No articles created yet</p>
               <Button onClick={() => openEditor()} className="gap-2">
                 <Plus className="h-4 w-4" />
-                Sukurti pirmą straipsnį
+                Create first article
               </Button>
             </CardContent>
           </Card>
@@ -273,12 +273,12 @@ export default function AdminResources() {
                         {resource.isPublished ? (
                           <span className="inline-flex items-center gap-1 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
                             <Eye className="h-3 w-3" />
-                            Publikuotas
+                            Published
                           </span>
                         ) : (
                           <span className="inline-flex items-center gap-1 text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">
                             <EyeOff className="h-3 w-3" />
-                            Juodraštis
+                            Draft
                           </span>
                         )}
                       </div>
@@ -310,7 +310,7 @@ export default function AdminResources() {
                         variant="ghost"
                         size="icon"
                         onClick={() => {
-                          if (confirm("Ar tikrai norite ištrinti šį straipsnį?")) {
+                          if (confirm("Are you sure you want to delete this article?")) {
                             deleteMutation.mutate(resource.id);
                           }
                         }}
@@ -329,23 +329,23 @@ export default function AdminResources() {
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>
-                {editingResource ? "Redaguoti straipsnį" : "Naujas straipsnis"}
+                {editingResource ? "Edit article" : "New article"}
               </DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-6">
               <Tabs defaultValue="content">
                 <TabsList className="w-full">
-                  <TabsTrigger value="content" className="flex-1">Turinys</TabsTrigger>
+                  <TabsTrigger value="content" className="flex-1">Content</TabsTrigger>
                   <TabsTrigger value="seo" className="flex-1">SEO</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="content" className="space-y-4 mt-4">
                   <div className="grid gap-2">
-                    <Label>Pavadinimas *</Label>
+                    <Label>Title *</Label>
                     <Input
                       value={formData.title}
                       onChange={(e) => handleTitleChange(e.target.value)}
-                      placeholder="Straipsnio pavadinimas"
+                      placeholder="Article title"
                       required
                     />
                   </div>
@@ -355,26 +355,26 @@ export default function AdminResources() {
                     <Input
                       value={formData.slug}
                       onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                      placeholder="straipsnio-pavadinimas"
+                      placeholder="article-title"
                       required
                     />
                     <p className="text-xs text-muted-foreground">
-                      Adresas: /resources/{formData.slug || "..."}
+                      URL: /resources/{formData.slug || "..."}
                     </p>
                   </div>
 
                   <div className="grid gap-2">
-                    <Label>Trumpas aprašymas (Excerpt)</Label>
+                    <Label>Excerpt</Label>
                     <Textarea
                       value={formData.excerpt}
                       onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-                      placeholder="Trumpas straipsnio aprašymas rodomas sąraše..."
+                      placeholder="Short description shown in article list..."
                       rows={3}
                     />
                   </div>
 
                   <div className="grid gap-2">
-                    <Label>Paveiksliukas (Featured Image URL)</Label>
+                    <Label>Featured Image URL</Label>
                     <Input
                       value={formData.featuredImage}
                       onChange={(e) => setFormData({ ...formData, featuredImage: e.target.value })}
@@ -383,7 +383,7 @@ export default function AdminResources() {
                   </div>
 
                   <div className="grid gap-2">
-                    <Label>Turinys *</Label>
+                    <Label>Content *</Label>
                     <RichTextEditor
                       content={formData.content}
                       onChange={(content) => setFormData({ ...formData, content })}
@@ -397,50 +397,50 @@ export default function AdminResources() {
                         setFormData({ ...formData, isPublished: checked })
                       }
                     />
-                    <Label>Publikuoti straipsnį</Label>
+                    <Label>Publish article</Label>
                   </div>
                 </TabsContent>
 
                 <TabsContent value="seo" className="space-y-4 mt-4">
                   <div className="grid gap-2">
-                    <Label>SEO Pavadinimas (Meta Title)</Label>
+                    <Label>SEO Title (Meta Title)</Label>
                     <Input
                       value={formData.metaTitle}
                       onChange={(e) => setFormData({ ...formData, metaTitle: e.target.value })}
-                      placeholder="Pasirinktinis SEO pavadinimas (maks. 60 simbolių)"
+                      placeholder="Custom SEO title (max. 60 characters)"
                       maxLength={60}
                     />
                     <p className="text-xs text-muted-foreground">
-                      {formData.metaTitle.length}/60 simbolių
+                      {formData.metaTitle.length}/60 characters
                     </p>
                   </div>
 
                   <div className="grid gap-2">
-                    <Label>SEO Aprašymas (Meta Description)</Label>
+                    <Label>SEO Description (Meta Description)</Label>
                     <Textarea
                       value={formData.metaDescription}
                       onChange={(e) => setFormData({ ...formData, metaDescription: e.target.value })}
-                      placeholder="Pasirinktinis SEO aprašymas (maks. 160 simbolių)"
+                      placeholder="Custom SEO description (max. 160 characters)"
                       maxLength={160}
                       rows={3}
                     />
                     <p className="text-xs text-muted-foreground">
-                      {formData.metaDescription.length}/160 simbolių
+                      {formData.metaDescription.length}/160 characters
                     </p>
                   </div>
 
                   <Card className="bg-slate-50">
                     <CardContent className="pt-4">
-                      <p className="text-sm font-medium mb-2">Google peržiūra:</p>
+                      <p className="text-sm font-medium mb-2">Google Preview:</p>
                       <div className="space-y-1">
                         <p className="text-blue-600 text-lg">
-                          {formData.metaTitle || formData.title || "Straipsnio pavadinimas"}
+                          {formData.metaTitle || formData.title || "Article title"}
                         </p>
                         <p className="text-green-700 text-sm">
                           make-frame.com/resources/{formData.slug || "..."}
                         </p>
                         <p className="text-sm text-slate-600">
-                          {formData.metaDescription || formData.excerpt || "Straipsnio aprašymas..."}
+                          {formData.metaDescription || formData.excerpt || "Article description..."}
                         </p>
                       </div>
                     </CardContent>
@@ -458,17 +458,17 @@ export default function AdminResources() {
                     resetForm();
                   }}
                 >
-                  Atšaukti
+                  Cancel
                 </Button>
                 <Button
                   type="submit"
                   disabled={createMutation.isPending || updateMutation.isPending}
                 >
                   {createMutation.isPending || updateMutation.isPending
-                    ? "Saugoma..."
+                    ? "Saving..."
                     : editingResource
-                    ? "Atnaujinti"
-                    : "Sukurti"}
+                    ? "Update"
+                    : "Create"}
                 </Button>
               </div>
             </form>

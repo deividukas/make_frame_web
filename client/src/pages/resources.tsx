@@ -5,10 +5,12 @@ import { Footer } from "@/components/layout/footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, ArrowRight } from "lucide-react";
 import { format } from "date-fns";
-import { lt } from "date-fns/locale";
+import { useContent } from "@/lib/content-context";
 import type { Resource } from "@shared/schema";
 
 export default function Resources() {
+  const { content } = useContent();
+  
   const { data: resources = [], isLoading } = useQuery<Resource[]>({
     queryKey: ["resources"],
     queryFn: async () => {
@@ -18,6 +20,9 @@ export default function Resources() {
     },
   });
 
+  const headline = content.resourcesPage?.headline || "News & Tips";
+  const subhead = content.resourcesPage?.subhead || "Learn more about event photography, social media marketing, and Make-frame capabilities.";
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -26,20 +31,20 @@ export default function Resources() {
           <div className="container max-w-7xl px-4 md:px-6 mx-auto">
             <div className="text-center mb-12">
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
-                Naujienos ir patarimai
+                {headline}
               </h1>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Sužinokite daugiau apie rengini\u0173 fotografij\u0105, socialini\u0173 tinkl\u0173 marketingą ir Make-frame galimybes.
+                {subhead}
               </p>
             </div>
 
             {isLoading ? (
               <div className="text-center py-12 text-muted-foreground">
-                Kraunama...
+                Loading...
               </div>
             ) : resources.length === 0 ? (
               <div className="text-center py-12">
-                <p className="text-muted-foreground">Šiuo metu straipsnių nėra.</p>
+                <p className="text-muted-foreground">No articles available at this time.</p>
               </div>
             ) : (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -63,7 +68,7 @@ export default function Resources() {
                           <Calendar className="h-4 w-4" />
                           {resource.publishedAt && (
                             <time dateTime={new Date(resource.publishedAt).toISOString()}>
-                              {format(new Date(resource.publishedAt), "yyyy 'm.' MMMM d 'd.'", { locale: lt })}
+                              {format(new Date(resource.publishedAt), "MMMM d, yyyy")}
                             </time>
                           )}
                         </div>
@@ -76,7 +81,7 @@ export default function Resources() {
                           </p>
                         )}
                         <span className="inline-flex items-center gap-1 text-primary font-medium text-sm">
-                          Skaityti daugiau
+                          Read more
                           <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                         </span>
                       </CardContent>

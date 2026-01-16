@@ -75,6 +75,10 @@ const defaultContent = {
       { label: "Twitter", href: "#" },
       { label: "LinkedIn", href: "#" }
     ]
+  },
+  resourcesPage: {
+    headline: "News & Tips",
+    subhead: "Learn more about event photography, social media marketing, and Make-frame capabilities."
   }
 };
 
@@ -125,7 +129,11 @@ const contentSchema = z.object({
   footer: z.object({
     copyright: z.string(),
     links: z.array(z.object({ label: z.string(), href: z.string() }))
-  })
+  }),
+  resourcesPage: z.object({
+    headline: z.string(),
+    subhead: z.string()
+  }).optional()
 });
 
 export async function registerRoutes(

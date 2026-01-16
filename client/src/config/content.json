@@ -68,5 +68,9 @@
       { "label": "Twitter", "href": "#" },
       { "label": "LinkedIn", "href": "#" }
     ]
+  },
+  "resourcesPage": {
+    "headline": "News & Tips",
+    "subhead": "Learn more about event photography, social media marketing, and Make-frame capabilities."
   }
 }
