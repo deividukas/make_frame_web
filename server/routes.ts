@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
 import { MailerSend, EmailParams, Sender, Recipient } from "mailersend";
+import { insertResourceSchema } from "@shared/schema";
 
 const defaultContent = {
   navigation: {
@@ -277,6 +278,159 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Error processing contact form:", error);
       res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  // ============ RESOURCES API ============
+
+  // Helper to verify admin password
+  const verifyAdminPassword = (req: any): boolean => {
+    const encodedPassword = req.headers["x-admin-password-encoded"] as string;
+    let adminPassword = "";
+    
+    if (encodedPassword) {
+      try {
+        adminPassword = Buffer.from(encodedPassword, 'base64').toString('utf-8');
+      } catch (e) {
+        console.error("Failed to decode password header");
+      }
+    } else {
+      adminPassword = req.headers["x-admin-password"] as string;
+    }
+
+    return adminPassword === process.env.ADMIN_PASSWORD;
+  };
+
+  // Get all published resources (public)
+  app.get("/api/resources", async (req, res) => {
+    try {
+      const resources = await storage.getPublishedResources();
+      res.json(resources);
+    } catch (error) {
+      console.error("Error fetching resources:", error);
+      res.status(500).json({ error: "Failed to fetch resources" });
+    }
+  });
+
+  // Get all resources including drafts (admin only)
+  app.get("/api/admin/resources", async (req, res) => {
+    try {
+      if (!verifyAdminPassword(req)) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      const resources = await storage.getAllResources();
+      res.json(resources);
+    } catch (error) {
+      console.error("Error fetching all resources:", error);
+      res.status(500).json({ error: "Failed to fetch resources" });
+    }
+  });
+
+  // Get single resource by slug (public)
+  app.get("/api/resources/:slug", async (req, res) => {
+    try {
+      const resource = await storage.getResourceBySlug(req.params.slug);
+      if (!resource) {
+        return res.status(404).json({ error: "Resource not found" });
+      }
+      if (!resource.isPublished) {
+        return res.status(404).json({ error: "Resource not found" });
+      }
+      res.json(resource);
+    } catch (error) {
+      console.error("Error fetching resource:", error);
+      res.status(500).json({ error: "Failed to fetch resource" });
+    }
+  });
+
+  // Get single resource by ID (admin only)
+  app.get("/api/admin/resources/:id", async (req, res) => {
+    try {
+      if (!verifyAdminPassword(req)) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      const resource = await storage.getResourceById(parseInt(req.params.id));
+      if (!resource) {
+        return res.status(404).json({ error: "Resource not found" });
+      }
+      res.json(resource);
+    } catch (error) {
+      console.error("Error fetching resource:", error);
+      res.status(500).json({ error: "Failed to fetch resource" });
+    }
+  });
+
+  // Create resource (admin only)
+  app.post("/api/admin/resources", async (req, res) => {
+    try {
+      if (!verifyAdminPassword(req)) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      const parseResult = insertResourceSchema.safeParse(req.body);
+      if (!parseResult.success) {
+        return res.status(400).json({ error: "Invalid resource data", details: parseResult.error.errors });
+      }
+
+      // Check for duplicate slug
+      const existingResource = await storage.getResourceBySlug(parseResult.data.slug);
+      if (existingResource) {
+        return res.status(400).json({ error: "A resource with this slug already exists" });
+      }
+
+      const resource = await storage.createResource(parseResult.data);
+      res.status(201).json(resource);
+    } catch (error) {
+      console.error("Error creating resource:", error);
+      res.status(500).json({ error: "Failed to create resource" });
+    }
+  });
+
+  // Update resource (admin only)
+  app.put("/api/admin/resources/:id", async (req, res) => {
+    try {
+      if (!verifyAdminPassword(req)) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      const id = parseInt(req.params.id);
+      const existingResource = await storage.getResourceById(id);
+      if (!existingResource) {
+        return res.status(404).json({ error: "Resource not found" });
+      }
+
+      // Check for duplicate slug if it changed
+      if (req.body.slug && req.body.slug !== existingResource.slug) {
+        const slugResource = await storage.getResourceBySlug(req.body.slug);
+        if (slugResource) {
+          return res.status(400).json({ error: "A resource with this slug already exists" });
+        }
+      }
+
+      const resource = await storage.updateResource(id, req.body);
+      res.json(resource);
+    } catch (error) {
+      console.error("Error updating resource:", error);
+      res.status(500).json({ error: "Failed to update resource" });
+    }
+  });
+
+  // Delete resource (admin only)
+  app.delete("/api/admin/resources/:id", async (req, res) => {
+    try {
+      if (!verifyAdminPassword(req)) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deleteResource(id);
+      if (!deleted) {
+        return res.status(404).json({ error: "Resource not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting resource:", error);
+      res.status(500).json({ error: "Failed to delete resource" });
     }
   });
 
