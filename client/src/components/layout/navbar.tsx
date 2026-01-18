@@ -14,6 +14,11 @@ export function Navbar() {
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, href: string) => {
     if (href.startsWith("#")) {
       e.preventDefault();
+      // If not on homepage, navigate to homepage with anchor
+      if (location !== "/") {
+        window.location.href = "/" + href;
+        return;
+      }
       const element = document.querySelector(href);
       if (element) {
         element.scrollIntoView({ behavior: "smooth" });
