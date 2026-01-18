@@ -1,7 +1,7 @@
 import { useContent } from "@/lib/content-context";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import demoScreenshot from "@assets/Screenshot_2026-01-18_at_18.38.53_1768754682751.png";
+import demoScreenshot from "@assets/Screenshot_2026-01-18_at_22.52.49_1768769601506.png";
 
 export function Hero() {
   const { content } = useContent();
