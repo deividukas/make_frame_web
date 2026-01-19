@@ -1,0 +1,78 @@
+Technical Requirements Document: SEO & AI Optimization for make-frame.com
+1. Project Core Principles
+Environment: Everything must be developed and hosted on Replit.
+
+Single Source of Truth (SSOT): No in-memory storage. All persistent data (including SEO metadata, UI texts, and template paths) must reside in PostgreSQL.
+
+Type Safety: Strict TypeScript control. No any types. All database schemas must have corresponding TypeScript interfaces (using Drizzle ORM).
+
+Performance: Target the US market. Minimize LCP (Largest Contentful Paint) and CLS (Cumulative Layout Shift).
+
+2. Technical SEO Requirements
+Server-Side Metadata: All SEO titles, descriptions, and OpenGraph tags must be dynamic. Fetch them from the texts or seo_metadata table in PostgreSQL.
+
+Semantic HTML5: Use proper semantic tags: <main>, <article>, <section>, <header>, <footer>. Avoid "div-soup".
+
+Heading Hierarchy: * Strict <h1> to <h6> structure.
+
+Only one <h1> per page.
+
+Font family: Geist for headings.
+
+URL Structure: Implement clean, descriptive slugs (e.g., /resources/how-to-use-frame-generator).
+
+Image Optimization: Use the sharp library for server-side image processing. Generate AVIF or WebP versions of images to improve load speeds.
+
+3. Typography & Accessibility (AIO/SEO Overrides)
+Base Font Size: Override the default 14px for content-heavy pages (Resources/Blog). Use 16px for body text to meet Google’s mobile-friendliness standards.
+
+Line Height: Minimum 1.5 for body text.
+
+Fonts: * Primary (Sans): Inter
+
+Headings: Geist
+
+Mono: Geist Mono
+
+Contrast: Ensure all text colors (using the project's HSL variables) meet WCAG 2.1 AA standards (minimum 4.5:1 ratio).
+
+4. AI Optimization (AIO) & Structured Data
+JSON-LD Schema: Automatically generate and inject JSON-LD scripts for:
+
+SoftwareApplication (for the generator tool).
+
+Article (for the resources section).
+
+Organization (for make-frame.com).
+
+AI Contextual Anchors: Add a "Key Takeaways" or "Summary" section at the top of long-form content to help LLMs (Gemini, ChatGPT) index and cite the site.
+
+Logical Chunking: Use <section> with clear id attributes to help AI models navigate content structure.
+
+5. Implementation Specifications
+Database (PostgreSQL via Drizzle):
+
+Create a seo_metadata table: id, path, title, description, og_image, canonical_url.
+
+Create a resources table: id, slug, title, content, published_at.
+
+Styles (Tailwind CSS):
+
+--radius: 0.5rem (8px)
+
+--primary: #7c3aed
+
+--background: hsl(240, 5%, 98%)
+
+Image Processing: Use sharp to composite images. Constraint: Never modify original source PNGs; always output a new buffer or file.
+
+6. Target Output for Replit Agent
+When generating new pages or components:
+
+Check if the page has a corresponding entry in the seo_metadata DB table.
+
+Ensure all images have alt tags fetched from DB.
+
+Apply the hsl(240, 5%, 98%) background and 16px Inter font for readability.
+
+Verify that no TypeScript errors exist in the generated code.
