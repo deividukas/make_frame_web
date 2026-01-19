@@ -43,7 +43,9 @@ export default function AdminResources() {
     slug: "",
     content: "",
     excerpt: "",
+    keyTakeaways: "",
     featuredImage: "",
+    featuredImageAlt: "",
     metaTitle: "",
     metaDescription: "",
     isPublished: false,
@@ -153,7 +155,9 @@ export default function AdminResources() {
       slug: "",
       content: "",
       excerpt: "",
+      keyTakeaways: "",
       featuredImage: "",
+      featuredImageAlt: "",
       metaTitle: "",
       metaDescription: "",
       isPublished: false,
@@ -174,7 +178,9 @@ export default function AdminResources() {
         slug: resource.slug,
         content: resource.content,
         excerpt: resource.excerpt || "",
+        keyTakeaways: resource.keyTakeaways || "",
         featuredImage: resource.featuredImage || "",
+        featuredImageAlt: resource.featuredImageAlt || "",
         metaTitle: resource.metaTitle || "",
         metaDescription: resource.metaDescription || "",
         isPublished: resource.isPublished,
@@ -376,6 +382,19 @@ export default function AdminResources() {
                   </div>
 
                   <div className="grid gap-2">
+                    <Label>Key Takeaways (AI Optimization)</Label>
+                    <Textarea
+                      value={formData.keyTakeaways}
+                      onChange={(e) => setFormData({ ...formData, keyTakeaways: e.target.value })}
+                      placeholder="Summarize key points for AI/search engines. Use bullet points: • Point 1 • Point 2"
+                      rows={4}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Displayed at top of article. Helps AI engines understand and cite content.
+                    </p>
+                  </div>
+
+                  <div className="grid gap-2">
                     <Label>Featured Image</Label>
                     <div className="flex gap-2 items-start">
                       <div className="flex-1">
@@ -426,6 +445,15 @@ export default function AdminResources() {
                         />
                         <p className="text-xs text-muted-foreground mt-1">Upload an image or paste a URL above</p>
                       </div>
+                    </div>
+                    <div className="mt-2">
+                      <Label className="text-sm">Alt Text (Image Description)</Label>
+                      <Input
+                        value={formData.featuredImageAlt}
+                        onChange={(e) => setFormData({ ...formData, featuredImageAlt: e.target.value })}
+                        placeholder="Describe the image for accessibility and SEO"
+                        className="mt-1"
+                      />
                     </div>
                   </div>
 

@@ -5,6 +5,7 @@ import { z } from "zod";
 import { MailerSend, EmailParams, Sender, Recipient } from "mailersend";
 import { insertResourceSchema, insertSeoMetadataSchema } from "@shared/schema";
 import { registerObjectStorageRoutes } from "./replit_integrations/object_storage";
+import { registerImageOptimizationRoutes } from "./image-optimizer";
 
 const defaultContent = {
   navigation: {
@@ -439,6 +440,7 @@ export async function registerRoutes(
   // ============ RESOURCES API ============
 
   registerObjectStorageRoutes(app);
+  registerImageOptimizationRoutes(app);
 
   // Helper to verify admin password
   const verifyAdminPassword = (req: any): boolean => {

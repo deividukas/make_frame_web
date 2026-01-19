@@ -182,10 +182,22 @@ export default function ResourceArticle() {
               <figure className="mb-8">
                 <img
                   src={resource.featuredImage}
-                  alt={resource.title}
+                  alt={resource.featuredImageAlt || resource.title}
                   className="w-full rounded-lg shadow-lg"
                 />
               </figure>
+            )}
+
+            {resource.keyTakeaways && (
+              <section id="key-takeaways" className="mb-8 p-6 bg-primary/5 border border-primary/20 rounded-lg">
+                <h2 className="text-xl font-bold mb-4 text-primary">Key Takeaways</h2>
+                <div 
+                  className="prose prose-sm max-w-none"
+                  style={{ whiteSpace: 'pre-wrap' }}
+                >
+                  {resource.keyTakeaways}
+                </div>
+              </section>
             )}
 
             <div 

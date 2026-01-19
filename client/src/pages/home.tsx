@@ -5,6 +5,7 @@ import { HowItWorks } from "@/components/sections/how-it-works";
 import { UseCases } from "@/components/sections/use-cases";
 import { Pricing } from "@/components/sections/pricing";
 import { useContent } from "@/lib/content-context";
+import { SoftwareApplicationJsonLd, OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo/json-ld";
 
 export default function Home() {
   const { content } = useContent();
@@ -15,6 +16,9 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background font-sans antialiased text-foreground">
+      <SoftwareApplicationJsonLd />
+      <OrganizationJsonLd />
+      <WebSiteJsonLd />
       <Navbar />
       <main>
         <Hero />
