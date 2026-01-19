@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
 import { MailerSend, EmailParams, Sender, Recipient } from "mailersend";
-import { insertResourceSchema } from "@shared/schema";
+import { registerObjectStorageRoutes } from "./replit_integrations/object_storage";
 
 const defaultContent = {
   navigation: {
@@ -92,7 +92,8 @@ const contentSchema = z.object({
   hero: z.object({
     headline: z.string(),
     subhead: z.string(),
-    cta: z.object({ text: z.string(), href: z.string() })
+    cta: z.object({ text: z.string(), href: z.string() }),
+    backgroundImage: z.string().optional()
   }),
   howItWorks: z.array(z.object({ title: z.string(), description: z.string() })),
   demo: z.object({
@@ -435,6 +436,8 @@ export async function registerRoutes(
   });
 
   // ============ RESOURCES API ============
+
+  registerObjectStorageRoutes(app);
 
   // Helper to verify admin password
   const verifyAdminPassword = (req: any): boolean => {

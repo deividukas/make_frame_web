@@ -7,13 +7,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Save, RotateCcw, FileText } from "lucide-react";
+import { ArrowLeft, Save, RotateCcw, FileText, Upload } from "lucide-react";
 import { Link } from "wouter";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useUpload } from "@/hooks/use-upload";
 
 export default function AdminSettings() {
   const { content, updateContent, resetContent } = useContent();
   const { toast } = useToast();
+  const { uploadFile, isUploading } = useUpload();
   
   useEffect(() => {
     const password = localStorage.getItem("admin-password");
@@ -241,6 +243,49 @@ export default function AdminSettings() {
                     <div className="grid gap-2">
                       <Label>CTA Link</Label>
                       <Input {...form.register("hero.cta.href")} />
+                    </div>
+                  </div>
+
+                  <div className="pt-6 border-t space-y-4">
+                    <Label className="text-base font-semibold">Hero Image</Label>
+                    <div className="flex items-center gap-4">
+                      <div className="relative w-40 h-24 rounded-lg border overflow-hidden bg-slate-100">
+                        <img 
+                          src={form.watch("hero.backgroundImage") || "/placeholder-hero.png"} 
+                          alt="Hero Preview" 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          className="max-w-xs"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              try {
+                                const response = await uploadFile(file);
+                                if (response) {
+                                  form.setValue("hero.backgroundImage", response.objectPath);
+                                  toast({
+                                    title: "Image Uploaded",
+                                    description: "Hero image has been uploaded successfully. Don't forget to save changes!",
+                                  });
+                                }
+                              } catch (err) {
+                                toast({
+                                  title: "Upload Failed",
+                                  description: "Failed to upload hero image.",
+                                  variant: "destructive",
+                                });
+                              }
+                            }
+                          }}
+                          disabled={isUploading}
+                        />
+                        <p className="text-xs text-muted-foreground">Recommended size: 1200x800px. Max 10MB.</p>
+                      </div>
                     </div>
                   </div>
                 </CardContent>

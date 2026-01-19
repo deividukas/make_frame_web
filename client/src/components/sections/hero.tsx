@@ -6,6 +6,8 @@ import demoScreenshot from "@assets/Screenshot_2026-01-18_at_22.52.49_1768769601
 export function Hero() {
   const { content } = useContent();
 
+  const heroImage = content.hero.backgroundImage || demoScreenshot;
+
   // Get Demo link from navigation
   const demoLink = content.navigation.links.find(link => link.label === "Demo");
   const demoHref = demoLink?.href || "#demo";
@@ -51,7 +53,7 @@ export function Hero() {
              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-border/50 bg-gradient-to-b from-white to-slate-50">
                 <div className="h-[400px] md:h-[480px] overflow-hidden">
                   <img 
-                    src={demoScreenshot} 
+                    src={heroImage} 
                     alt="Make-frame Demo - Photo Frame Generator Interface" 
                     className="w-full h-auto object-cover object-top"
                   />
