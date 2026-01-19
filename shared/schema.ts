@@ -32,7 +32,9 @@ export const resources = pgTable("resources", {
   slug: varchar("slug", { length: 255 }).notNull().unique(),
   content: text("content").notNull(),
   excerpt: text("excerpt"),
+  keyTakeaways: text("key_takeaways"),
   featuredImage: text("featured_image"),
+  featuredImageAlt: varchar("featured_image_alt", { length: 255 }),
   metaTitle: varchar("meta_title", { length: 255 }),
   metaDescription: text("meta_description"),
   isPublished: boolean("is_published").default(false).notNull(),
@@ -49,3 +51,23 @@ export const insertResourceSchema = createInsertSchema(resources).omit({
 
 export type InsertResource = z.infer<typeof insertResourceSchema>;
 export type Resource = typeof resources.$inferSelect;
+
+export const seoMetadata = pgTable("seo_metadata", {
+  id: serial("id").primaryKey(),
+  path: varchar("path", { length: 255 }).notNull().unique(),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description"),
+  ogImage: text("og_image"),
+  canonicalUrl: text("canonical_url"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertSeoMetadataSchema = createInsertSchema(seoMetadata).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertSeoMetadata = z.infer<typeof insertSeoMetadataSchema>;
+export type SeoMetadata = typeof seoMetadata.$inferSelect;

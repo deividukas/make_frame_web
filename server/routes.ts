@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
 import { MailerSend, EmailParams, Sender, Recipient } from "mailersend";
-import { insertResourceSchema } from "@shared/schema";
+import { insertResourceSchema, insertSeoMetadataSchema } from "@shared/schema";
 import { registerObjectStorageRoutes } from "./replit_integrations/object_storage";
 
 const defaultContent = {
@@ -588,6 +588,128 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Error deleting resource:", error);
       res.status(500).json({ error: "Failed to delete resource" });
+    }
+  });
+
+  // ============ SEO METADATA API ============
+
+  // Get all SEO metadata (admin only)
+  app.get("/api/admin/seo-metadata", async (req, res) => {
+    try {
+      if (!verifyAdminPassword(req)) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      const seoList = await storage.getAllSeoMetadata();
+      res.json(seoList);
+    } catch (error) {
+      console.error("Error fetching SEO metadata:", error);
+      res.status(500).json({ error: "Failed to fetch SEO metadata" });
+    }
+  });
+
+  // Get SEO metadata by path (public, for SSR)
+  app.get("/api/seo-metadata", async (req, res) => {
+    try {
+      const path = req.query.path as string;
+      if (!path) {
+        return res.status(400).json({ error: "Path parameter required" });
+      }
+      const seo = await storage.getSeoMetadataByPath(path);
+      res.json(seo || null);
+    } catch (error) {
+      console.error("Error fetching SEO metadata:", error);
+      res.status(500).json({ error: "Failed to fetch SEO metadata" });
+    }
+  });
+
+  // Get SEO metadata by ID (admin only)
+  app.get("/api/admin/seo-metadata/:id", async (req, res) => {
+    try {
+      if (!verifyAdminPassword(req)) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      const seo = await storage.getSeoMetadataById(parseInt(req.params.id));
+      if (!seo) {
+        return res.status(404).json({ error: "SEO metadata not found" });
+      }
+      res.json(seo);
+    } catch (error) {
+      console.error("Error fetching SEO metadata:", error);
+      res.status(500).json({ error: "Failed to fetch SEO metadata" });
+    }
+  });
+
+  // Create SEO metadata (admin only)
+  app.post("/api/admin/seo-metadata", async (req, res) => {
+    try {
+      if (!verifyAdminPassword(req)) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      const parseResult = insertSeoMetadataSchema.safeParse(req.body);
+      if (!parseResult.success) {
+        return res.status(400).json({ error: "Invalid SEO metadata", details: parseResult.error.errors });
+      }
+
+      // Check for duplicate path
+      const existing = await storage.getSeoMetadataByPath(parseResult.data.path);
+      if (existing) {
+        return res.status(400).json({ error: "SEO metadata for this path already exists" });
+      }
+
+      const seo = await storage.createSeoMetadata(parseResult.data);
+      res.status(201).json(seo);
+    } catch (error) {
+      console.error("Error creating SEO metadata:", error);
+      res.status(500).json({ error: "Failed to create SEO metadata" });
+    }
+  });
+
+  // Update SEO metadata (admin only)
+  app.put("/api/admin/seo-metadata/:id", async (req, res) => {
+    try {
+      if (!verifyAdminPassword(req)) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      const id = parseInt(req.params.id);
+      const existing = await storage.getSeoMetadataById(id);
+      if (!existing) {
+        return res.status(404).json({ error: "SEO metadata not found" });
+      }
+
+      // Check for duplicate path if it changed
+      if (req.body.path && req.body.path !== existing.path) {
+        const pathExists = await storage.getSeoMetadataByPath(req.body.path);
+        if (pathExists) {
+          return res.status(400).json({ error: "SEO metadata for this path already exists" });
+        }
+      }
+
+      const seo = await storage.updateSeoMetadata(id, req.body);
+      res.json(seo);
+    } catch (error) {
+      console.error("Error updating SEO metadata:", error);
+      res.status(500).json({ error: "Failed to update SEO metadata" });
+    }
+  });
+
+  // Delete SEO metadata (admin only)
+  app.delete("/api/admin/seo-metadata/:id", async (req, res) => {
+    try {
+      if (!verifyAdminPassword(req)) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deleteSeoMetadata(id);
+      if (!deleted) {
+        return res.status(404).json({ error: "SEO metadata not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting SEO metadata:", error);
+      res.status(500).json({ error: "Failed to delete SEO metadata" });
     }
   });
 

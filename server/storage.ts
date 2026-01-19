@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type SiteContent, type Resource, type InsertResource, users, siteContent, resources } from "@shared/schema";
+import { type User, type InsertUser, type SiteContent, type Resource, type InsertResource, type SeoMetadata, type InsertSeoMetadata, users, siteContent, resources, seoMetadata } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
 
@@ -16,6 +16,13 @@ export interface IStorage {
   createResource(resource: InsertResource): Promise<Resource>;
   updateResource(id: number, resource: Partial<InsertResource>): Promise<Resource | undefined>;
   deleteResource(id: number): Promise<boolean>;
+
+  getAllSeoMetadata(): Promise<SeoMetadata[]>;
+  getSeoMetadataByPath(path: string): Promise<SeoMetadata | undefined>;
+  getSeoMetadataById(id: number): Promise<SeoMetadata | undefined>;
+  createSeoMetadata(seo: InsertSeoMetadata): Promise<SeoMetadata>;
+  updateSeoMetadata(id: number, seo: Partial<InsertSeoMetadata>): Promise<SeoMetadata | undefined>;
+  deleteSeoMetadata(id: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -85,6 +92,39 @@ export class DatabaseStorage implements IStorage {
 
   async deleteResource(id: number): Promise<boolean> {
     const result = await db.delete(resources).where(eq(resources.id, id)).returning();
+    return result.length > 0;
+  }
+
+  async getAllSeoMetadata(): Promise<SeoMetadata[]> {
+    return db.select().from(seoMetadata).orderBy(seoMetadata.path);
+  }
+
+  async getSeoMetadataByPath(path: string): Promise<SeoMetadata | undefined> {
+    const [result] = await db.select().from(seoMetadata).where(eq(seoMetadata.path, path));
+    return result;
+  }
+
+  async getSeoMetadataById(id: number): Promise<SeoMetadata | undefined> {
+    const [result] = await db.select().from(seoMetadata).where(eq(seoMetadata.id, id));
+    return result;
+  }
+
+  async createSeoMetadata(seo: InsertSeoMetadata): Promise<SeoMetadata> {
+    const [result] = await db.insert(seoMetadata).values(seo).returning();
+    return result;
+  }
+
+  async updateSeoMetadata(id: number, seo: Partial<InsertSeoMetadata>): Promise<SeoMetadata | undefined> {
+    const [result] = await db
+      .update(seoMetadata)
+      .set({ ...seo, updatedAt: new Date() })
+      .where(eq(seoMetadata.id, id))
+      .returning();
+    return result;
+  }
+
+  async deleteSeoMetadata(id: number): Promise<boolean> {
+    const result = await db.delete(seoMetadata).where(eq(seoMetadata.id, id)).returning();
     return result.length > 0;
   }
 }
