@@ -251,7 +251,7 @@ export default function AdminSettings() {
                     <div className="flex items-center gap-4">
                       <div className="relative w-40 h-24 rounded-lg border overflow-hidden bg-slate-100">
                         <img 
-                          src={form.watch("hero.backgroundImage") || "/placeholder-hero.png"} 
+                          src={(form.watch("hero.backgroundImage" as any) as string) || "/placeholder-hero.png"} 
                           alt="Hero Preview" 
                           className="w-full h-full object-cover"
                         />
@@ -267,7 +267,7 @@ export default function AdminSettings() {
                               try {
                                 const response = await uploadFile(file);
                                 if (response) {
-                                  form.setValue("hero.backgroundImage", response.objectPath);
+                                  form.setValue("hero.backgroundImage" as any, response.objectPath);
                                   toast({
                                     title: "Image Uploaded",
                                     description: "Hero image has been uploaded successfully. Don't forget to save changes!",

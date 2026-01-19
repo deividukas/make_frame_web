@@ -13,7 +13,8 @@
   "hero": {
     "headline": "Your Attendees Are Your Best Ad Agency",
     "subhead": "The easiest photo frame generator built for event organizers. Transform attendee selfies into professional, branded posts that grow your organic reach.",
-    "cta": { "text": "Get Started Free", "href": "https://app.make-frame.com/register" }
+    "cta": { "text": "Get Started Free", "href": "https://app.make-frame.com/register" },
+    "backgroundImage": ""
   },
   "howItWorks": [
     { "title": "1. Upload Your Frame", "description": "Create and upload your branded PNG frame. Use our Theme Editor to match the tool's look to your event's identity in minutes." },
