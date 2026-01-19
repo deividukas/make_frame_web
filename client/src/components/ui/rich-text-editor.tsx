@@ -5,15 +5,13 @@ import Link from '@tiptap/extension-link';
 import TextAlign from '@tiptap/extension-text-align';
 import Underline from '@tiptap/extension-underline';
 import Highlight from '@tiptap/extension-highlight';
-import TextStyle from '@tiptap/extension-text-style';
-import Color from '@tiptap/extension-color';
-import Table from '@tiptap/extension-table';
-import TableRow from '@tiptap/extension-table-row';
-import TableCell from '@tiptap/extension-table-cell';
-import TableHeader from '@tiptap/extension-table-header';
+import { TextStyle } from '@tiptap/extension-text-style';
+import { Color } from '@tiptap/extension-color';
+import { Table, TableRow, TableCell, TableHeader } from '@tiptap/extension-table';
 import Youtube from '@tiptap/extension-youtube';
 import Subscript from '@tiptap/extension-subscript';
 import Superscript from '@tiptap/extension-superscript';
+import { FontSize, LineHeight } from '@/lib/tiptap-extensions';
 import { Button } from '@/components/ui/button';
 import { 
   Bold, Italic, Underline as UnderlineIcon, List, ListOrdered, 
@@ -107,6 +105,8 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
         multicolor: true,
       }),
       TextStyle,
+      FontSize,
+      LineHeight,
       Color,
       Table.configure({
         resizable: true,
@@ -191,10 +191,19 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
     };
     
     if (size === 'normal') {
-      editor.chain().focus().unsetMark('textStyle').run();
+      editor.chain().focus().unsetFontSize().run();
     } else {
-      editor.chain().focus().setMark('textStyle', { fontSize: sizes[size] }).run();
+      editor.chain().focus().setFontSize(sizes[size]).run();
     }
+  };
+
+  const setLineSpacing = (spacing: 'tight' | 'normal' | 'relaxed') => {
+    const spacings = {
+      tight: '1.2',
+      normal: '1.5',
+      relaxed: '2',
+    };
+    editor.chain().focus().setLineHeight(spacings[spacing]).run();
   };
 
   return (
@@ -208,6 +217,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={editor.isActive('bold') ? 'bg-slate-200' : ''}
           title="Bold"
+          data-testid="button-bold"
         >
           <Bold className="h-4 w-4" />
         </Button>
@@ -218,6 +228,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           onClick={() => editor.chain().focus().toggleItalic().run()}
           className={editor.isActive('italic') ? 'bg-slate-200' : ''}
           title="Italic"
+          data-testid="button-italic"
         >
           <Italic className="h-4 w-4" />
         </Button>
@@ -228,6 +239,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           onClick={() => editor.chain().focus().toggleUnderline().run()}
           className={editor.isActive('underline') ? 'bg-slate-200' : ''}
           title="Underline"
+          data-testid="button-underline"
         >
           <UnderlineIcon className="h-4 w-4" />
         </Button>
@@ -238,6 +250,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           onClick={() => editor.chain().focus().toggleStrike().run()}
           className={editor.isActive('strike') ? 'bg-slate-200' : ''}
           title="Strikethrough"
+          data-testid="button-strikethrough"
         >
           <Strikethrough className="h-4 w-4" />
         </Button>
@@ -248,6 +261,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           onClick={() => editor.chain().focus().toggleSubscript().run()}
           className={editor.isActive('subscript') ? 'bg-slate-200' : ''}
           title="Subscript"
+          data-testid="button-subscript"
         >
           <SubscriptIcon className="h-4 w-4" />
         </Button>
@@ -258,6 +272,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           onClick={() => editor.chain().focus().toggleSuperscript().run()}
           className={editor.isActive('superscript') ? 'bg-slate-200' : ''}
           title="Superscript"
+          data-testid="button-superscript"
         >
           <SuperscriptIcon className="h-4 w-4" />
         </Button>
@@ -267,18 +282,18 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
         {/* Text Size */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button type="button" variant="ghost" size="sm" title="Text Size">
+            <Button type="button" variant="ghost" size="sm" title="Text Size" data-testid="button-text-size">
               <span className="text-xs font-medium">Size</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem onClick={() => setTextSize('small')}>
+            <DropdownMenuItem onClick={() => setTextSize('small')} data-testid="option-size-small">
               <span className="text-sm">Small</span>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTextSize('normal')}>
+            <DropdownMenuItem onClick={() => setTextSize('normal')} data-testid="option-size-normal">
               <span className="text-base">Normal</span>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTextSize('large')}>
+            <DropdownMenuItem onClick={() => setTextSize('large')} data-testid="option-size-large">
               <span className="text-lg">Large</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -287,7 +302,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
         {/* Text Color */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button type="button" variant="ghost" size="sm" title="Text Color">
+            <Button type="button" variant="ghost" size="sm" title="Text Color" data-testid="button-text-color">
               <span className="text-xs font-medium underline decoration-2" style={{ textDecorationColor: editor.getAttributes('textStyle').color || '#000' }}>A</span>
             </Button>
           </DropdownMenuTrigger>
@@ -295,6 +310,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
             {TEXT_COLORS.map((color) => (
               <DropdownMenuItem
                 key={color.name}
+                data-testid={`option-color-${color.name.toLowerCase()}`}
                 onClick={() => {
                   if (color.value) {
                     editor.chain().focus().setColor(color.value).run();
@@ -324,6 +340,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
               size="sm" 
               className={editor.isActive('highlight') ? 'bg-slate-200' : ''}
               title="Highlight"
+              data-testid="button-highlight"
             >
               <Highlighter className="h-4 w-4" />
             </Button>
@@ -332,6 +349,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
             {HIGHLIGHT_COLORS.map((color) => (
               <DropdownMenuItem
                 key={color.name}
+                data-testid={`option-highlight-${color.name.toLowerCase()}`}
                 onClick={() => {
                   if (color.value) {
                     editor.chain().focus().toggleHighlight({ color: color.value }).run();
@@ -362,6 +380,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
           className={editor.isActive('heading', { level: 2 }) ? 'bg-slate-200' : ''}
           title="Heading 2"
+          data-testid="button-heading-2"
         >
           <Heading2 className="h-4 w-4" />
         </Button>
@@ -372,6 +391,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
           className={editor.isActive('heading', { level: 3 }) ? 'bg-slate-200' : ''}
           title="Heading 3"
+          data-testid="button-heading-3"
         >
           <Heading3 className="h-4 w-4" />
         </Button>
@@ -386,6 +406,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           onClick={() => editor.chain().focus().setTextAlign('left').run()}
           className={editor.isActive({ textAlign: 'left' }) ? 'bg-slate-200' : ''}
           title="Align Left"
+          data-testid="button-align-left"
         >
           <AlignLeft className="h-4 w-4" />
         </Button>
@@ -396,6 +417,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           onClick={() => editor.chain().focus().setTextAlign('center').run()}
           className={editor.isActive({ textAlign: 'center' }) ? 'bg-slate-200' : ''}
           title="Align Center"
+          data-testid="button-align-center"
         >
           <AlignCenter className="h-4 w-4" />
         </Button>
@@ -406,6 +428,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           onClick={() => editor.chain().focus().setTextAlign('right').run()}
           className={editor.isActive({ textAlign: 'right' }) ? 'bg-slate-200' : ''}
           title="Align Right"
+          data-testid="button-align-right"
         >
           <AlignRight className="h-4 w-4" />
         </Button>
@@ -416,6 +439,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           onClick={() => editor.chain().focus().setTextAlign('justify').run()}
           className={editor.isActive({ textAlign: 'justify' }) ? 'bg-slate-200' : ''}
           title="Justify"
+          data-testid="button-align-justify"
         >
           <AlignJustify className="h-4 w-4" />
         </Button>
@@ -430,6 +454,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           className={editor.isActive('bulletList') ? 'bg-slate-200' : ''}
           title="Bullet List"
+          data-testid="button-bullet-list"
         >
           <List className="h-4 w-4" />
         </Button>
@@ -440,6 +465,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           className={editor.isActive('orderedList') ? 'bg-slate-200' : ''}
           title="Numbered List"
+          data-testid="button-ordered-list"
         >
           <ListOrdered className="h-4 w-4" />
         </Button>
@@ -452,6 +478,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
           className={editor.isActive('blockquote') ? 'bg-slate-200' : ''}
           title="Quote"
+          data-testid="button-quote"
         >
           <Quote className="h-4 w-4" />
         </Button>
@@ -463,6 +490,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           size="sm"
           onClick={() => editor.chain().focus().setHorizontalRule().run()}
           title="Horizontal Line"
+          data-testid="button-horizontal-rule"
         >
           <Minus className="h-4 w-4" />
         </Button>
@@ -477,6 +505,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           onClick={addLink}
           className={editor.isActive('link') ? 'bg-slate-200' : ''}
           title="Insert Link"
+          data-testid="button-link"
         >
           <LinkIcon className="h-4 w-4" />
         </Button>
@@ -488,6 +517,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           size="sm"
           onClick={addImage}
           title="Insert Image"
+          data-testid="button-image"
         >
           <ImageIcon className="h-4 w-4" />
         </Button>
@@ -500,46 +530,47 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
               variant="ghost" 
               size="sm"
               title="Table"
+              data-testid="button-table"
             >
               <TableIcon className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem onClick={insertTable}>
+            <DropdownMenuItem onClick={insertTable} data-testid="option-insert-table">
               Insert Table (3x3)
             </DropdownMenuItem>
             {editor.can().addColumnBefore() && (
-              <DropdownMenuItem onClick={() => editor.chain().focus().addColumnBefore().run()}>
+              <DropdownMenuItem onClick={() => editor.chain().focus().addColumnBefore().run()} data-testid="option-add-col-before">
                 Add Column Before
               </DropdownMenuItem>
             )}
             {editor.can().addColumnAfter() && (
-              <DropdownMenuItem onClick={() => editor.chain().focus().addColumnAfter().run()}>
+              <DropdownMenuItem onClick={() => editor.chain().focus().addColumnAfter().run()} data-testid="option-add-col-after">
                 Add Column After
               </DropdownMenuItem>
             )}
             {editor.can().addRowBefore() && (
-              <DropdownMenuItem onClick={() => editor.chain().focus().addRowBefore().run()}>
+              <DropdownMenuItem onClick={() => editor.chain().focus().addRowBefore().run()} data-testid="option-add-row-before">
                 Add Row Before
               </DropdownMenuItem>
             )}
             {editor.can().addRowAfter() && (
-              <DropdownMenuItem onClick={() => editor.chain().focus().addRowAfter().run()}>
+              <DropdownMenuItem onClick={() => editor.chain().focus().addRowAfter().run()} data-testid="option-add-row-after">
                 Add Row After
               </DropdownMenuItem>
             )}
             {editor.can().deleteColumn() && (
-              <DropdownMenuItem onClick={() => editor.chain().focus().deleteColumn().run()}>
+              <DropdownMenuItem onClick={() => editor.chain().focus().deleteColumn().run()} data-testid="option-delete-column">
                 Delete Column
               </DropdownMenuItem>
             )}
             {editor.can().deleteRow() && (
-              <DropdownMenuItem onClick={() => editor.chain().focus().deleteRow().run()}>
+              <DropdownMenuItem onClick={() => editor.chain().focus().deleteRow().run()} data-testid="option-delete-row">
                 Delete Row
               </DropdownMenuItem>
             )}
             {editor.can().deleteTable() && (
-              <DropdownMenuItem onClick={() => editor.chain().focus().deleteTable().run()}>
+              <DropdownMenuItem onClick={() => editor.chain().focus().deleteTable().run()} data-testid="option-delete-table">
                 Delete Table
               </DropdownMenuItem>
             )}
@@ -554,6 +585,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
               variant="ghost" 
               size="sm"
               title="Insert YouTube Video"
+              data-testid="button-youtube"
             >
               <YoutubeIcon className="h-4 w-4" />
             </Button>
@@ -573,9 +605,10 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
                   placeholder="https://www.youtube.com/watch?v=..."
                   value={youtubeUrl}
                   onChange={(e) => setYoutubeUrl(e.target.value)}
+                  data-testid="input-youtube-url"
                 />
               </div>
-              <Button type="button" onClick={addYoutube} disabled={!youtubeUrl}>
+              <Button type="button" onClick={addYoutube} disabled={!youtubeUrl} data-testid="button-insert-youtube">
                 Insert Video
               </Button>
             </div>
@@ -592,6 +625,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           onClick={() => editor.chain().focus().undo().run()}
           disabled={!editor.can().undo()}
           title="Undo"
+          data-testid="button-undo"
         >
           <Undo className="h-4 w-4" />
         </Button>
@@ -602,6 +636,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           onClick={() => editor.chain().focus().redo().run()}
           disabled={!editor.can().redo()}
           title="Redo"
+          data-testid="button-redo"
         >
           <Redo className="h-4 w-4" />
         </Button>
@@ -615,9 +650,8 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           variant="ghost"
           size="sm"
           className="h-6 px-2 text-xs"
-          onClick={() => {
-            editor.chain().focus().updateAttributes('paragraph', { style: 'line-height: 1.2' }).run();
-          }}
+          onClick={() => setLineSpacing('tight')}
+          data-testid="button-spacing-tight"
         >
           Tight
         </Button>
@@ -626,9 +660,8 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           variant="ghost"
           size="sm"
           className="h-6 px-2 text-xs"
-          onClick={() => {
-            editor.chain().focus().updateAttributes('paragraph', { style: 'line-height: 1.5' }).run();
-          }}
+          onClick={() => setLineSpacing('normal')}
+          data-testid="button-spacing-normal"
         >
           Normal
         </Button>
@@ -637,9 +670,8 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           variant="ghost"
           size="sm"
           className="h-6 px-2 text-xs"
-          onClick={() => {
-            editor.chain().focus().updateAttributes('paragraph', { style: 'line-height: 2' }).run();
-          }}
+          onClick={() => setLineSpacing('relaxed')}
+          data-testid="button-spacing-relaxed"
         >
           Relaxed
         </Button>
