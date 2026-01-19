@@ -24,16 +24,16 @@ export default function Resources() {
   const subhead = content.resourcesPage?.subhead || "Learn more about event photography, social media marketing, and Make-frame capabilities.";
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ fontSize: '16px' }}>
       <Navbar />
       <main className="flex-1">
         <section className="py-16 md:py-24 bg-gradient-to-b from-purple-50 to-white">
           <div className="container max-w-7xl px-4 md:px-6 mx-auto">
             <div className="text-center mb-12">
-              <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
+              <h1 className="text-[32px] md:text-[40px] font-bold tracking-tight mb-4 leading-tight">
                 {headline}
               </h1>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
                 {subhead}
               </p>
             </div>
@@ -63,7 +63,7 @@ export default function Resources() {
                           />
                         </div>
                       )}
-                      <CardContent className="p-6">
+                      <CardContent className="p-4 md:p-6">
                         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
                           <Calendar className="h-4 w-4" />
                           {resource.publishedAt && (
@@ -72,15 +72,15 @@ export default function Resources() {
                             </time>
                           )}
                         </div>
-                        <h2 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
+                        <h2 className="text-xl font-semibold mb-3 group-hover:text-primary transition-colors leading-snug">
                           {resource.title}
                         </h2>
                         {resource.excerpt && (
-                          <p className="text-muted-foreground line-clamp-3 mb-4">
+                          <p className="text-muted-foreground line-clamp-3 mb-4 text-base leading-relaxed">
                             {resource.excerpt}
                           </p>
                         )}
-                        <span className="inline-flex items-center gap-1 text-primary font-medium text-sm">
+                        <span className="inline-flex items-center gap-1 text-primary font-semibold text-sm">
                           Read more
                           <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                         </span>

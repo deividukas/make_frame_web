@@ -10,8 +10,9 @@ import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
-import { ArrowLeft, Plus, Pencil, Trash2, Eye, EyeOff, ExternalLink } from "lucide-react";
+import { ArrowLeft, Plus, Pencil, Trash2, Eye, EyeOff, ExternalLink, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useUpload } from "@/hooks/use-upload";
 import type { Resource } from "@shared/schema";
 
 function generateSlug(title: string): string {
@@ -35,6 +36,7 @@ export default function AdminResources() {
   const [editingResource, setEditingResource] = useState<Resource | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { uploadFile, isUploading } = useUpload();
 
   const [formData, setFormData] = useState({
     title: "",
@@ -374,12 +376,57 @@ export default function AdminResources() {
                   </div>
 
                   <div className="grid gap-2">
-                    <Label>Featured Image URL</Label>
-                    <Input
-                      value={formData.featuredImage}
-                      onChange={(e) => setFormData({ ...formData, featuredImage: e.target.value })}
-                      placeholder="https://example.com/image.jpg"
-                    />
+                    <Label>Featured Image</Label>
+                    <div className="flex gap-2 items-start">
+                      <div className="flex-1">
+                        <Input
+                          value={formData.featuredImage}
+                          onChange={(e) => setFormData({ ...formData, featuredImage: e.target.value })}
+                          placeholder="https://example.com/image.jpg or upload below"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4 mt-2">
+                      {formData.featuredImage && (
+                        <div className="relative w-24 h-16 rounded border overflow-hidden bg-slate-100">
+                          <img 
+                            src={formData.featuredImage} 
+                            alt="Featured preview" 
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+                      <div className="flex-1">
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          className="max-w-xs"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              try {
+                                const response = await uploadFile(file);
+                                if (response) {
+                                  setFormData({ ...formData, featuredImage: response.objectPath });
+                                  toast({
+                                    title: "Image Uploaded",
+                                    description: "Featured image has been uploaded successfully.",
+                                  });
+                                }
+                              } catch (err) {
+                                toast({
+                                  title: "Upload Failed",
+                                  description: "Failed to upload image.",
+                                  variant: "destructive",
+                                });
+                              }
+                            }
+                          }}
+                          disabled={isUploading}
+                        />
+                        <p className="text-xs text-muted-foreground mt-1">Upload an image or paste a URL above</p>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="grid gap-2">

@@ -143,7 +143,7 @@ export default function ResourceArticle() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ fontSize: '16px' }}>
       <Navbar />
       <main className="flex-1">
         <article className="py-12 md:py-16">
@@ -157,7 +157,7 @@ export default function ResourceArticle() {
               </Link>
 
               <header>
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
+                <h1 className="text-[32px] md:text-[36px] lg:text-[40px] font-bold tracking-tight mb-4 leading-tight">
                   {resource.title}
                 </h1>
                 
@@ -189,7 +189,8 @@ export default function ResourceArticle() {
             )}
 
             <div 
-              className="prose prose-lg max-w-none prose-headings:font-bold prose-a:text-primary prose-img:rounded-lg"
+              className="prose prose-lg max-w-none prose-headings:font-bold prose-a:text-primary prose-img:rounded-lg prose-p:text-base prose-p:leading-relaxed prose-li:text-base prose-strong:font-semibold"
+              style={{ fontSize: '16px', lineHeight: '1.75' }}
               dangerouslySetInnerHTML={{ __html: resource.content }}
             />
 
