@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import defaultContent from "../config/content.json";
 
@@ -11,31 +11,7 @@ interface ContentContextType {
   isLoading: boolean;
 }
 
-declare global {
-  interface Window {
-    __INITIAL_DATA__?: Content | null;
-  }
-}
-
 const ContentContext = createContext<ContentContextType | undefined>(undefined);
-
-// Get and consume initial data from server-injected script (only once)
-let cachedInitialData: Content | null = null;
-let initialDataConsumed = false;
-
-function getInitialData(): Content | null {
-  if (initialDataConsumed) {
-    return cachedInitialData;
-  }
-  
-  if (typeof window !== "undefined" && window.__INITIAL_DATA__) {
-    cachedInitialData = window.__INITIAL_DATA__;
-    window.__INITIAL_DATA__ = null;
-  }
-  initialDataConsumed = true;
-  
-  return cachedInitialData;
-}
 
 async function fetchContent(): Promise<Content> {
   const response = await fetch("/api/content");
@@ -93,23 +69,11 @@ async function resetToDefaults(): Promise<Content> {
 export function ContentProvider({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();
   
-  // Get server-injected data (if available)
-  const serverData = getInitialData();
-  const hasServerData = serverData !== null;
-  
-  // Check if we're on an admin page (always needs fresh data from API)
-  const isAdminPage = typeof window !== "undefined" && window.location.pathname.includes("admin");
-  
   const { data: content, isLoading } = useQuery({
     queryKey: ["site-content"],
     queryFn: fetchContent,
-    staleTime: Infinity,
-    gcTime: Infinity,
+    staleTime: 1000 * 60 * 5,
     retry: 1,
-    // Use server data if available, otherwise fetch from API
-    initialData: serverData || undefined,
-    // Only skip API call if we have real server-injected data (not admin page)
-    enabled: !hasServerData || isAdminPage,
   });
 
   const saveMutation = useMutation({
@@ -134,15 +98,14 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
     resetMutation.mutate();
   };
 
-  // Only show loading if we don't have any content at all
-  if (isLoading && !content && !serverData) {
+  if (isLoading) {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
 
   return (
     <ContentContext.Provider 
       value={{ 
-        content: content || serverData || defaultContent, 
+        content: content || defaultContent, 
         updateContent, 
         resetContent: resetContentFn,
         isLoading 

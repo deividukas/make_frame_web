@@ -184,7 +184,6 @@ export default function ResourceArticle() {
                   src={resource.featuredImage}
                   alt={resource.featuredImageAlt || resource.title}
                   className="w-full rounded-lg shadow-lg"
-                  loading="lazy"
                 />
               </figure>
             )}
