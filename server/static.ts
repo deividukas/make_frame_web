@@ -22,10 +22,13 @@ export function serveStatic(app: Express) {
       // Fetch initial content from database
       const siteContent = await storage.getSiteContent();
       
-      if (siteContent) {
+      if (siteContent && siteContent.content) {
+        // Extract just the content object, not the database row wrapper
+        const contentOnly = siteContent.content;
+        
         // Safely serialize JSON for inline script to prevent XSS
         // Replace </script> and other potentially dangerous sequences
-        const safeJson = JSON.stringify(siteContent)
+        const safeJson = JSON.stringify(contentOnly)
           .replace(/</g, '\\u003c')
           .replace(/>/g, '\\u003e')
           .replace(/&/g, '\\u0026')
