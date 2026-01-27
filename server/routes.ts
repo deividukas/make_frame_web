@@ -328,6 +328,11 @@ export async function registerRoutes(
     <loc>${baseUrl}/terms</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/faq</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>`;
       
       for (const resource of resources) {
