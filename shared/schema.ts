@@ -71,3 +71,24 @@ export const insertSeoMetadataSchema = createInsertSchema(seoMetadata).omit({
 
 export type InsertSeoMetadata = z.infer<typeof insertSeoMetadataSchema>;
 export type SeoMetadata = typeof seoMetadata.$inferSelect;
+
+export const faqItems = pgTable("faq_items", {
+  id: serial("id").primaryKey(),
+  category: varchar("category", { length: 255 }).notNull(),
+  question: text("question").notNull(),
+  answer: text("answer").notNull(),
+  sortOrder: serial("sort_order"),
+  isPublished: boolean("is_published").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertFaqItemSchema = createInsertSchema(faqItems).omit({
+  id: true,
+  sortOrder: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertFaqItem = z.infer<typeof insertFaqItemSchema>;
+export type FaqItem = typeof faqItems.$inferSelect;

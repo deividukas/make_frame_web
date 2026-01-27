@@ -715,5 +715,97 @@ export async function registerRoutes(
     }
   });
 
+  // ============ FAQ API ============
+
+  // Get all published FAQ items (public)
+  app.get("/api/faq", async (req, res) => {
+    try {
+      const items = await storage.getPublishedFaqItems();
+      res.json(items);
+    } catch (error) {
+      console.error("Error fetching FAQ items:", error);
+      res.status(500).json({ error: "Failed to fetch FAQ items" });
+    }
+  });
+
+  // Get all FAQ items (admin only)
+  app.get("/api/admin/faq", async (req, res) => {
+    try {
+      if (!verifyAdminPassword(req)) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      const items = await storage.getAllFaqItems();
+      res.json(items);
+    } catch (error) {
+      console.error("Error fetching all FAQ items:", error);
+      res.status(500).json({ error: "Failed to fetch FAQ items" });
+    }
+  });
+
+  // Create FAQ item (admin only)
+  app.post("/api/admin/faq", async (req, res) => {
+    try {
+      if (!verifyAdminPassword(req)) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      const { category, question, answer, isPublished } = req.body;
+      if (!category || !question || !answer) {
+        return res.status(400).json({ error: "Category, question, and answer are required" });
+      }
+
+      const faq = await storage.createFaqItem({
+        category,
+        question,
+        answer,
+        isPublished: isPublished ?? true,
+      });
+      res.status(201).json(faq);
+    } catch (error) {
+      console.error("Error creating FAQ item:", error);
+      res.status(500).json({ error: "Failed to create FAQ item" });
+    }
+  });
+
+  // Update FAQ item (admin only)
+  app.put("/api/admin/faq/:id", async (req, res) => {
+    try {
+      if (!verifyAdminPassword(req)) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      const id = parseInt(req.params.id);
+      const existing = await storage.getFaqItemById(id);
+      if (!existing) {
+        return res.status(404).json({ error: "FAQ item not found" });
+      }
+
+      const faq = await storage.updateFaqItem(id, req.body);
+      res.json(faq);
+    } catch (error) {
+      console.error("Error updating FAQ item:", error);
+      res.status(500).json({ error: "Failed to update FAQ item" });
+    }
+  });
+
+  // Delete FAQ item (admin only)
+  app.delete("/api/admin/faq/:id", async (req, res) => {
+    try {
+      if (!verifyAdminPassword(req)) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deleteFaqItem(id);
+      if (!deleted) {
+        return res.status(404).json({ error: "FAQ item not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting FAQ item:", error);
+      res.status(500).json({ error: "Failed to delete FAQ item" });
+    }
+  });
+
   return httpServer;
 }

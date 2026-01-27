@@ -1,6 +1,6 @@
-import { type User, type InsertUser, type SiteContent, type Resource, type InsertResource, type SeoMetadata, type InsertSeoMetadata, users, siteContent, resources, seoMetadata } from "@shared/schema";
+import { type User, type InsertUser, type SiteContent, type Resource, type InsertResource, type SeoMetadata, type InsertSeoMetadata, type FaqItem, type InsertFaqItem, users, siteContent, resources, seoMetadata, faqItems } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, asc } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -23,6 +23,13 @@ export interface IStorage {
   createSeoMetadata(seo: InsertSeoMetadata): Promise<SeoMetadata>;
   updateSeoMetadata(id: number, seo: Partial<InsertSeoMetadata>): Promise<SeoMetadata | undefined>;
   deleteSeoMetadata(id: number): Promise<boolean>;
+
+  getAllFaqItems(): Promise<FaqItem[]>;
+  getPublishedFaqItems(): Promise<FaqItem[]>;
+  getFaqItemById(id: number): Promise<FaqItem | undefined>;
+  createFaqItem(faq: InsertFaqItem): Promise<FaqItem>;
+  updateFaqItem(id: number, faq: Partial<InsertFaqItem>): Promise<FaqItem | undefined>;
+  deleteFaqItem(id: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -125,6 +132,38 @@ export class DatabaseStorage implements IStorage {
 
   async deleteSeoMetadata(id: number): Promise<boolean> {
     const result = await db.delete(seoMetadata).where(eq(seoMetadata.id, id)).returning();
+    return result.length > 0;
+  }
+
+  async getAllFaqItems(): Promise<FaqItem[]> {
+    return db.select().from(faqItems).orderBy(asc(faqItems.category), asc(faqItems.sortOrder));
+  }
+
+  async getPublishedFaqItems(): Promise<FaqItem[]> {
+    return db.select().from(faqItems).where(eq(faqItems.isPublished, true)).orderBy(asc(faqItems.category), asc(faqItems.sortOrder));
+  }
+
+  async getFaqItemById(id: number): Promise<FaqItem | undefined> {
+    const [result] = await db.select().from(faqItems).where(eq(faqItems.id, id));
+    return result;
+  }
+
+  async createFaqItem(faq: InsertFaqItem): Promise<FaqItem> {
+    const [result] = await db.insert(faqItems).values(faq).returning();
+    return result;
+  }
+
+  async updateFaqItem(id: number, faq: Partial<InsertFaqItem>): Promise<FaqItem | undefined> {
+    const [result] = await db
+      .update(faqItems)
+      .set({ ...faq, updatedAt: new Date() })
+      .where(eq(faqItems.id, id))
+      .returning();
+    return result;
+  }
+
+  async deleteFaqItem(id: number): Promise<boolean> {
+    const result = await db.delete(faqItems).where(eq(faqItems.id, id)).returning();
     return result.length > 0;
   }
 }
