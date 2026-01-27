@@ -25,6 +25,7 @@ export function Footer() {
                   src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" 
                   alt="Stripe" 
                   className="h-4 w-auto opacity-80"
+                  loading="lazy"
                 />
               </div>
             </div>

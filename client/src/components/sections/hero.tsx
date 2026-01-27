@@ -56,6 +56,8 @@ export function Hero() {
                     src={heroImage} 
                     alt="Make-frame Demo - Photo Frame Generator Interface" 
                     className="w-full h-auto object-cover object-top"
+                    loading="eager"
+                    fetchPriority="high"
                   />
                 </div>
                 {/* Fade overlay at bottom */}
