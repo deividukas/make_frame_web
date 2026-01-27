@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import defaultContent from "../config/content.json";
 
@@ -11,9 +11,31 @@ interface ContentContextType {
   isLoading: boolean;
 }
 
+declare global {
+  interface Window {
+    __INITIAL_DATA__?: Content | null;
+  }
+}
+
 const ContentContext = createContext<ContentContextType | undefined>(undefined);
 
+// Get initial data from server-injected script or null
+function getInitialData(): Content | null {
+  if (typeof window !== "undefined" && window.__INITIAL_DATA__) {
+    return window.__INITIAL_DATA__;
+  }
+  return null;
+}
+
 async function fetchContent(): Promise<Content> {
+  // First check if we have server-injected data
+  const initialData = getInitialData();
+  if (initialData) {
+    // Clear it after first use to allow fresh fetches on navigation
+    window.__INITIAL_DATA__ = null;
+    return initialData;
+  }
+  
   const response = await fetch("/api/content");
   if (response.status === 404) {
     return defaultContent;
@@ -69,11 +91,18 @@ async function resetToDefaults(): Promise<Content> {
 export function ContentProvider({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();
   
+  // Use server-injected data as initial data for instant render
+  const initialData = getInitialData();
+  
   const { data: content, isLoading } = useQuery({
     queryKey: ["site-content"],
     queryFn: fetchContent,
     staleTime: 1000 * 60 * 5,
     retry: 1,
+    // If we have initial data, use it immediately without showing loading state
+    initialData: initialData || undefined,
+    // Prevent refetch on mount if we have initial data
+    refetchOnMount: !initialData,
   });
 
   const saveMutation = useMutation({
@@ -98,14 +127,15 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
     resetMutation.mutate();
   };
 
-  if (isLoading) {
+  // Only show loading if we don't have any content at all
+  if (isLoading && !content && !initialData) {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
 
   return (
     <ContentContext.Provider 
       value={{ 
-        content: content || defaultContent, 
+        content: content || initialData || defaultContent, 
         updateContent, 
         resetContent: resetContentFn,
         isLoading 
