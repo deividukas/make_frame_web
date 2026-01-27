@@ -1,18 +1,11 @@
-import { Suspense, lazy } from "react";
 import { Navbar } from "@/components/layout/navbar";
+import { Footer } from "@/components/layout/footer";
 import { Hero } from "@/components/sections/hero";
 import { HowItWorks } from "@/components/sections/how-it-works";
+import { UseCases } from "@/components/sections/use-cases";
+import { Pricing } from "@/components/sections/pricing";
 import { useContent } from "@/lib/content-context";
 import { SoftwareApplicationJsonLd, OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo/json-ld";
-
-// Lazy load below-the-fold components
-const UseCases = lazy(() => import("@/components/sections/use-cases").then(m => ({ default: m.UseCases })));
-const Pricing = lazy(() => import("@/components/sections/pricing").then(m => ({ default: m.Pricing })));
-const Footer = lazy(() => import("@/components/layout/footer").then(m => ({ default: m.Footer })));
-
-function SectionFallback() {
-  return <div className="py-24 animate-pulse bg-slate-50/50" />;
-}
 
 export default function Home() {
   const { content } = useContent();
@@ -54,16 +47,10 @@ export default function Home() {
           </div>
         </section>
 
-        <Suspense fallback={<SectionFallback />}>
-          <UseCases />
-        </Suspense>
-        <Suspense fallback={<SectionFallback />}>
-          <Pricing />
-        </Suspense>
+        <UseCases />
+        <Pricing />
       </main>
-      <Suspense fallback={<SectionFallback />}>
-        <Footer />
-      </Suspense>
+      <Footer />
     </div>
   );
 }
