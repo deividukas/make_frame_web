@@ -3,10 +3,18 @@ import { Button } from "@/components/ui/button";
 import { LazyMotion, domAnimation, m } from "framer-motion";
 import demoScreenshot from "@assets/Screenshot_2026-01-18_at_22.52.49_1768769601506.png";
 
+function getOptimizedImageUrl(imageUrl: string, width: number, format: string = "webp"): string {
+  if (imageUrl.startsWith("/objects/")) {
+    return `/api/img?url=${encodeURIComponent(imageUrl)}&w=${width}&f=${format}`;
+  }
+  return imageUrl;
+}
+
 export function Hero() {
   const { content } = useContent();
 
   const heroImage = content.hero.backgroundImage || demoScreenshot;
+  const isObjectStorageImage = heroImage.startsWith("/objects/");
 
   // Get Demo link from navigation
   const demoLink = content.navigation.links.find(link => link.label === "Demo");
@@ -54,13 +62,14 @@ export function Hero() {
                <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-border/50 bg-gradient-to-b from-white to-slate-50">
                   <div className="h-[400px] md:h-[480px] overflow-hidden">
                     <img 
-                      src={`${heroImage}?w=800&fmt=webp`}
-                      srcSet={`
-                        ${heroImage}?w=600&fmt=webp 600w,
-                        ${heroImage}?w=800&fmt=webp 800w,
-                        ${heroImage}?w=1000&fmt=webp 1000w
-                      `}
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 50vw"
+                      src={isObjectStorageImage ? getOptimizedImageUrl(heroImage, 800) : heroImage}
+                      srcSet={isObjectStorageImage ? `
+                        ${getOptimizedImageUrl(heroImage, 480)} 480w,
+                        ${getOptimizedImageUrl(heroImage, 640)} 640w,
+                        ${getOptimizedImageUrl(heroImage, 800)} 800w,
+                        ${getOptimizedImageUrl(heroImage, 1000)} 1000w
+                      ` : undefined}
+                      sizes={isObjectStorageImage ? "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px" : undefined}
                       alt="Make-frame Demo - Photo Frame Generator Interface" 
                       className="w-full h-auto object-cover object-top"
                       loading="eager"
