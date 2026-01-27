@@ -47,7 +47,7 @@ export function ResponsiveImage({
   const desktopAvif = buildOptimizedUrl(src, desktopWidth, "avif", quality);
 
   return (
-    <picture>
+    <picture className="block w-full">
       <source
         type="image/avif"
         srcSet={`${mobileAvif} ${mobileWidth}w, ${desktopAvif} ${desktopWidth}w`}
