@@ -19,12 +19,6 @@ export function serveStatic(app: Express) {
       const htmlPath = path.resolve(distPath, "index.html");
       let html = fs.readFileSync(htmlPath, "utf-8");
       
-      // Make CSS load async to reduce render-blocking
-      html = html.replace(
-        /<link rel="stylesheet" crossorigin href="(\/assets\/[^"]+\.css)">/g,
-        '<link rel="preload" href="$1" as="style" onload="this.onload=null;this.rel=\'stylesheet\'"><noscript><link rel="stylesheet" href="$1"></noscript>'
-      );
-      
       // Fetch initial content from database
       const siteContent = await storage.getSiteContent();
       
