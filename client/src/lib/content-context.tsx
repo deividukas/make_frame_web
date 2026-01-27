@@ -19,23 +19,25 @@ declare global {
 
 const ContentContext = createContext<ContentContextType | undefined>(undefined);
 
-// Get initial data from server-injected script or null
+// Get and consume initial data from server-injected script (only once)
+let cachedInitialData: Content | null = null;
+let initialDataConsumed = false;
+
 function getInitialData(): Content | null {
-  if (typeof window !== "undefined" && window.__INITIAL_DATA__) {
-    return window.__INITIAL_DATA__;
+  if (initialDataConsumed) {
+    return cachedInitialData;
   }
-  return null;
+  
+  if (typeof window !== "undefined" && window.__INITIAL_DATA__) {
+    cachedInitialData = window.__INITIAL_DATA__;
+    window.__INITIAL_DATA__ = null;
+  }
+  initialDataConsumed = true;
+  
+  return cachedInitialData;
 }
 
 async function fetchContent(): Promise<Content> {
-  // First check if we have server-injected data
-  const initialData = getInitialData();
-  if (initialData) {
-    // Clear it after first use to allow fresh fetches on navigation
-    window.__INITIAL_DATA__ = null;
-    return initialData;
-  }
-  
   const response = await fetch("/api/content");
   if (response.status === 404) {
     return defaultContent;
@@ -91,7 +93,7 @@ async function resetToDefaults(): Promise<Content> {
 export function ContentProvider({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();
   
-  // Use server-injected data as initial data for instant render
+  // Get server-injected data (if available)
   const initialData = getInitialData();
   
   const { data: content, isLoading } = useQuery({
@@ -101,8 +103,6 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
     retry: 1,
     // If we have initial data, use it immediately without showing loading state
     initialData: initialData || undefined,
-    // Prevent refetch on mount if we have initial data
-    refetchOnMount: !initialData,
   });
 
   const saveMutation = useMutation({
