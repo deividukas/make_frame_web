@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Save, RotateCcw, FileText, Upload } from "lucide-react";
+import { ArrowLeft, Save, RotateCcw, FileText, Upload, HelpCircle } from "lucide-react";
 import { Link } from "wouter";
 import { useEffect, useState } from "react";
 import { useUpload } from "@/hooks/use-upload";
@@ -129,6 +129,12 @@ export default function AdminSettings() {
               <Button variant="outline">
                 <FileText className="mr-2 h-4 w-4" />
                 Articles
+              </Button>
+            </Link>
+            <Link href="/admin-settings/faq">
+              <Button variant="outline">
+                <HelpCircle className="mr-2 h-4 w-4" />
+                FAQ
               </Button>
             </Link>
             <Button variant="outline" onClick={handleReset}>

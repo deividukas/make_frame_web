@@ -14,6 +14,8 @@ import Terms from "@/pages/terms";
 import Contacts from "@/pages/contacts";
 import Resources from "@/pages/resources";
 import ResourceArticle from "@/pages/resource-article";
+import FAQ from "@/pages/faq";
+import AdminFaq from "@/pages/admin-faq";
 
 function Router() {
   return (
@@ -21,11 +23,13 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/admin-settings" component={AdminSettings} />
       <Route path="/admin-settings/resources" component={AdminResources} />
+      <Route path="/admin-settings/faq" component={AdminFaq} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/terms" component={Terms} />
       <Route path="/contacts" component={Contacts} />
       <Route path="/resources" component={Resources} />
       <Route path="/resources/:slug" component={ResourceArticle} />
+      <Route path="/faq" component={FAQ} />
       <Route component={NotFound} />
     </Switch>
   );
