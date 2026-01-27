@@ -99,9 +99,10 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
   const { data: content, isLoading } = useQuery({
     queryKey: ["site-content"],
     queryFn: fetchContent,
-    staleTime: 1000 * 60 * 5,
+    staleTime: Infinity,
+    gcTime: Infinity,
     retry: 1,
-    // If we have initial data, use it immediately without showing loading state
+    // If we have initial data, don't refetch on mount (unless manually triggered)
     initialData: initialData || undefined,
   });
 

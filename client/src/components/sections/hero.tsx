@@ -54,11 +54,19 @@ export function Hero() {
                <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-border/50 bg-gradient-to-b from-white to-slate-50">
                   <div className="h-[400px] md:h-[480px] overflow-hidden">
                     <img 
-                      src={heroImage} 
+                      src={`${heroImage}?w=800&fmt=webp`}
+                      srcSet={`
+                        ${heroImage}?w=600&fmt=webp 600w,
+                        ${heroImage}?w=800&fmt=webp 800w,
+                        ${heroImage}?w=1000&fmt=webp 1000w
+                      `}
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 50vw"
                       alt="Make-frame Demo - Photo Frame Generator Interface" 
                       className="w-full h-auto object-cover object-top"
                       loading="eager"
                       fetchPriority="high"
+                      width={950}
+                      height={873}
                     />
                   </div>
                   {/* Fade overlay at bottom */}
