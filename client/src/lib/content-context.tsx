@@ -94,7 +94,11 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();
   
   // Get server-injected data (if available)
-  const initialData = getInitialData();
+  const serverData = getInitialData();
+  const hasServerData = serverData !== null;
+  
+  // Check if we're on an admin page (always needs fresh data from API)
+  const isAdminPage = typeof window !== "undefined" && window.location.pathname.includes("admin");
   
   const { data: content, isLoading } = useQuery({
     queryKey: ["site-content"],
@@ -102,8 +106,10 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
     staleTime: Infinity,
     gcTime: Infinity,
     retry: 1,
-    // If we have initial data, don't refetch on mount (unless manually triggered)
-    initialData: initialData || undefined,
+    // Use server data if available, otherwise fetch from API
+    initialData: serverData || undefined,
+    // Only skip API call if we have real server-injected data (not admin page)
+    enabled: !hasServerData || isAdminPage,
   });
 
   const saveMutation = useMutation({
@@ -129,14 +135,14 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
   };
 
   // Only show loading if we don't have any content at all
-  if (isLoading && !content && !initialData) {
+  if (isLoading && !content && !serverData) {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
 
   return (
     <ContentContext.Provider 
       value={{ 
-        content: content || initialData || defaultContent, 
+        content: content || serverData || defaultContent, 
         updateContent, 
         resetContent: resetContentFn,
         isLoading 
