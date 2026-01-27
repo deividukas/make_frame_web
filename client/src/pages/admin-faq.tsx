@@ -66,6 +66,15 @@ export default function AdminFaq() {
     },
   });
 
+  const handleAuthError = () => {
+    localStorage.removeItem("admin-password");
+    const promptPass = prompt("Password incorrect or expired. Please enter Admin Password:");
+    if (promptPass) {
+      localStorage.setItem("admin-password", promptPass);
+      queryClient.invalidateQueries({ queryKey: ["admin-faq"] });
+    }
+  };
+
   const createMutation = useMutation({
     mutationFn: async (data: FaqFormData) => {
       const res = await fetch("/api/admin/faq", {
@@ -73,6 +82,10 @@ export default function AdminFaq() {
         headers: getAuthHeaders(),
         body: JSON.stringify(data),
       });
+      if (res.status === 401) {
+        handleAuthError();
+        throw new Error("Unauthorized - please try again");
+      }
       if (!res.ok) throw new Error("Failed to create FAQ item");
       return res.json();
     },
@@ -94,6 +107,10 @@ export default function AdminFaq() {
         headers: getAuthHeaders(),
         body: JSON.stringify(data),
       });
+      if (res.status === 401) {
+        handleAuthError();
+        throw new Error("Unauthorized - please try again");
+      }
       if (!res.ok) throw new Error("Failed to update FAQ item");
       return res.json();
     },
@@ -114,6 +131,10 @@ export default function AdminFaq() {
         method: "DELETE",
         headers: getAuthHeaders(),
       });
+      if (res.status === 401) {
+        handleAuthError();
+        throw new Error("Unauthorized - please try again");
+      }
       if (!res.ok) throw new Error("Failed to delete FAQ item");
       return res.json();
     },
