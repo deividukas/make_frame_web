@@ -126,13 +126,13 @@ export default function AdminSettings() {
           </div>
           <div className="flex gap-2">
             <Link href="/admin-settings/resources">
-              <Button variant="outline">
+              <Button variant="outline" data-testid="admin-articles-button">
                 <FileText className="mr-2 h-4 w-4" />
                 Articles
               </Button>
             </Link>
             <Link href="/admin-settings/faq">
-              <Button variant="outline">
+              <Button variant="outline" data-testid="admin-faq-button">
                 <HelpCircle className="mr-2 h-4 w-4" />
                 FAQ
               </Button>

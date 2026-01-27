@@ -306,7 +306,7 @@ export default function AdminFaq() {
 
         <div className="text-center pt-8">
           <Link href="/faq">
-            <Button variant="outline">View Public FAQ Page</Button>
+            <Button variant="outline" data-testid="view-public-faq-button">View Public FAQ Page</Button>
           </Link>
         </div>
       </div>
