@@ -1,8 +1,5 @@
 import { useContent } from "@/lib/content-context";
-import { motion } from "framer-motion";
-import Briefcase from "lucide-react/dist/esm/icons/briefcase";
-import Music from "lucide-react/dist/esm/icons/music";
-import Users from "lucide-react/dist/esm/icons/users";
+import { Briefcase, Music, Users } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 const icons = [Briefcase, Music, Users];
@@ -29,12 +26,10 @@ export function UseCases() {
             const colorClass = colors[index];
             
             return (
-              <motion.div
+              <div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
+                className="animate-fade-in-up"
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <Card className="h-full border-none shadow-lg hover:shadow-xl transition-shadow bg-slate-50/50">
                   <CardHeader>
@@ -49,7 +44,7 @@ export function UseCases() {
                     </CardDescription>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </div>
             );
           })}
         </div>

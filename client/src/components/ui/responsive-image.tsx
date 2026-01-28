@@ -8,6 +8,8 @@ interface ResponsiveImageProps {
   quality?: number;
   loading?: "lazy" | "eager";
   fetchPriority?: "high" | "low" | "auto";
+  width?: number;
+  height?: number;
 }
 
 function buildOptimizedUrl(src: string, width: number, format: "webp" | "avif", quality: number): string {
@@ -27,7 +29,9 @@ export function ResponsiveImage({
   desktopWidth = 1600,
   quality = 85,
   loading = "lazy",
-  fetchPriority = "auto"
+  fetchPriority = "auto",
+  width,
+  height
 }: ResponsiveImageProps) {
   if (!isObjectStorageUrl(src)) {
     return (
@@ -37,6 +41,8 @@ export function ResponsiveImage({
         className={className}
         loading={loading}
         fetchPriority={fetchPriority}
+        width={width}
+        height={height}
       />
     );
   }
@@ -64,6 +70,8 @@ export function ResponsiveImage({
         className={className}
         loading={loading}
         fetchPriority={fetchPriority}
+        width={width}
+        height={height}
       />
     </picture>
   );

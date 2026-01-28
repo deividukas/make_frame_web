@@ -61,12 +61,16 @@ export function Hero() {
                       sizes="(max-width: 768px) 100vw, 700px"
                       loading="eager"
                       fetchPriority="high"
+                      width={700}
+                      height={480}
                     />
                   ) : (
                     <img 
                       src={heroImage} 
                       alt="Make-frame Demo - Photo Frame Generator Interface" 
                       className="w-full h-auto object-cover object-top"
+                      width={700}
+                      height={480}
                     />
                   )}
                 </div>
