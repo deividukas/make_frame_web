@@ -5,17 +5,27 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ContentProvider } from "@/lib/content-context";
 import { CookieBanner } from "@/components/ui/cookie-banner";
-import NotFound from "@/pages/not-found";
+import { Suspense, lazy } from "react";
 import Home from "@/pages/home";
-import AdminSettings from "@/pages/admin";
-import AdminResources from "@/pages/admin-resources";
-import Privacy from "@/pages/privacy";
-import Terms from "@/pages/terms";
-import Contacts from "@/pages/contacts";
-import Resources from "@/pages/resources";
-import ResourceArticle from "@/pages/resource-article";
-import FAQ from "@/pages/faq";
-import AdminFaq from "@/pages/admin-faq";
+
+const AdminSettings = lazy(() => import("@/pages/admin"));
+const AdminResources = lazy(() => import("@/pages/admin-resources"));
+const AdminFaq = lazy(() => import("@/pages/admin-faq"));
+const Privacy = lazy(() => import("@/pages/privacy"));
+const Terms = lazy(() => import("@/pages/terms"));
+const Contacts = lazy(() => import("@/pages/contacts"));
+const Resources = lazy(() => import("@/pages/resources"));
+const ResourceArticle = lazy(() => import("@/pages/resource-article"));
+const FAQ = lazy(() => import("@/pages/faq"));
+const NotFound = lazy(() => import("@/pages/not-found"));
+
+function PageLoader() {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    </div>
+  );
+}
 
 function Router() {
   return (
@@ -41,7 +51,9 @@ function App() {
       <ContentProvider>
         <TooltipProvider>
           <Toaster />
-          <Router />
+          <Suspense fallback={<PageLoader />}>
+            <Router />
+          </Suspense>
           <CookieBanner />
         </TooltipProvider>
       </ContentProvider>

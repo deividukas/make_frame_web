@@ -1,11 +1,19 @@
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { Hero } from "@/components/sections/hero";
-import { HowItWorks } from "@/components/sections/how-it-works";
-import { UseCases } from "@/components/sections/use-cases";
-import { Pricing } from "@/components/sections/pricing";
 import { useContent } from "@/lib/content-context";
 import { SoftwareApplicationJsonLd, OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo/json-ld";
+import { Suspense, lazy } from "react";
+
+const HowItWorks = lazy(() => import("@/components/sections/how-it-works").then(m => ({ default: m.HowItWorks })));
+const UseCases = lazy(() => import("@/components/sections/use-cases").then(m => ({ default: m.UseCases })));
+const Pricing = lazy(() => import("@/components/sections/pricing").then(m => ({ default: m.Pricing })));
+
+function SectionSkeleton({ height = "h-96" }: { height?: string }) {
+  return (
+    <div className={`${height} bg-muted/30 animate-pulse`} />
+  );
+}
 
 export default function Home() {
   const { content } = useContent();
@@ -22,7 +30,9 @@ export default function Home() {
       <Navbar />
       <main>
         <Hero />
-        <HowItWorks />
+        <Suspense fallback={<SectionSkeleton height="h-64" />}>
+          <HowItWorks />
+        </Suspense>
         
         {/* Demo CTA Section */}
         <section id="demo" className="py-24 bg-primary text-primary-foreground relative overflow-hidden flex items-center justify-center">
@@ -47,8 +57,12 @@ export default function Home() {
           </div>
         </section>
 
-        <UseCases />
-        <Pricing />
+        <Suspense fallback={<SectionSkeleton height="h-96" />}>
+          <UseCases />
+        </Suspense>
+        <Suspense fallback={<SectionSkeleton height="h-[600px]" />}>
+          <Pricing />
+        </Suspense>
       </main>
       <Footer />
     </div>
