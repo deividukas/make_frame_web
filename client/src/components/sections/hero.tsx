@@ -4,6 +4,10 @@ import { ResponsiveImage } from "@/components/ui/responsive-image";
 import { motion } from "framer-motion";
 import demoScreenshot from "@assets/Screenshot_2026-01-18_at_22.52.49_1768769601506.png";
 
+function isObjectStorageUrl(src: string): boolean {
+  return src.startsWith("/objects/") || src.startsWith("/api/objects/");
+}
+
 export function Hero() {
   const { content } = useContent();
 
@@ -53,16 +57,24 @@ export function Hero() {
           >
              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-border/50 bg-gradient-to-b from-white to-slate-50">
                 <div className="h-[400px] md:h-[480px] overflow-hidden">
-                  <ResponsiveImage 
-                    src={heroImage} 
-                    alt="Make-frame Demo - Photo Frame Generator Interface" 
-                    className="w-full h-auto object-cover object-top"
-                    mobileWidth={800}
-                    desktopWidth={1400}
-                    sizes="(max-width: 768px) 100vw, 700px"
-                    loading="eager"
-                    fetchPriority="high"
-                  />
+                  {isObjectStorageUrl(heroImage) ? (
+                    <ResponsiveImage 
+                      src={heroImage} 
+                      alt="Make-frame Demo - Photo Frame Generator Interface" 
+                      className="w-full h-auto object-cover object-top"
+                      mobileWidth={800}
+                      desktopWidth={1400}
+                      sizes="(max-width: 768px) 100vw, 700px"
+                      loading="eager"
+                      fetchPriority="high"
+                    />
+                  ) : (
+                    <img 
+                      src={heroImage} 
+                      alt="Make-frame Demo - Photo Frame Generator Interface" 
+                      className="w-full h-auto object-cover object-top"
+                    />
+                  )}
                 </div>
                 {/* Fade overlay at bottom */}
                 <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent pointer-events-none" />
