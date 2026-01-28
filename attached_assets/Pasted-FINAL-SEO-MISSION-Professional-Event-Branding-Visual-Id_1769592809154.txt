@@ -1,0 +1,58 @@
+FINAL SEO MISSION: Professional Event Branding & Visual Identity
+Objective: Optimize the Landing Page SEO for event organizers (conferences, exhibitions) and ensure the brand logo appears prominently in search results and social media shares.
+
+CRITICAL CONSTRAINTS:
+
+Language: All metadata, headings, and descriptions must be in ENGLISH ONLY.
+
+Core Message: "The easiest way for event organizers to turn attendee selfies into branded, shareable social posts."
+
+Visual Identity: Ensure the official high-resolution logo is used for all external previews.
+
+1. Metadata & Header Tags
+Meta Title: Make-Frame | Branded Social Media Photo Frames for Events (<60 chars).
+
+Meta Description: The easiest way for event organizers to turn attendee selfies into branded, shareable social posts. Boost engagement for conferences, exhibitions, concerts, and movements. (~155 chars).
+
+Canonical URL: Add <link rel="canonical" href="https://make-frame.com/" />.
+
+Language Attribute: Ensure <html lang="en">.
+
+2. Visual Identity (Search & Social Logos)
+Favicon & Touch Icons: ensure standard <link rel="icon"> and <link rel="apple-touch-icon"> tags point to the correct logo assets in the <head>.
+
+Social Sharing Image (OG Image):
+
+Update the og:image and twitter:image meta tags.
+
+CRITICAL: Point these tags to an absolute URL (e.g., https://make-frame.com/social-share-banner.jpg) of a high-resolution (at least 1200x630px) branded banner that features the logo prominently. Do not use a small icon file here.
+
+Schema Markup (Logo in Google Search):
+
+Inject the following JSON-LD structured data into the <head> to tell Google which image is your official organization logo:
+
+HTML
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Make-Frame",
+  "url": "https://make-frame.com",
+  "logo": "https://make-frame.com/path/to/your/high-res-logo.png" 
+}
+</script>
+(Note to Agent: Replace /path/to/your/high-res-logo.png with the actual absolute path to the highest quality logo file available in the project public assets).
+
+3. Semantic Content Hierarchy
+H1: "Turn Attendee Selfies into Your Event’s Most Viral Marketing."
+
+H2s: "Professional Branding for Conferences & Exhibitions", "Boost Engagement at Concerts & Festivals", "Empower Civic Actions & Social Movements".
+
+4. Image & Asset Optimization
+Alt Attributes: Assign descriptive English alt tags to every image. E.g., "Custom branded photo frame for a professional tech conference".
+
+5. Links & Accessibility (SEO Signals)
+Descriptive Link Text: Replace generic text with keyword-rich English text (e.g., "Start Branding Your Event").
+
+Aria-Labels: Add English aria-label attributes to icon-only buttons.
