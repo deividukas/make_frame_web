@@ -22,11 +22,9 @@ export function Footer() {
               <div className="flex items-center gap-1.5 px-3 py-1 bg-white border rounded-md shadow-sm">
                 <span className="text-[10px] uppercase tracking-wider font-bold text-slate-400 whitespace-nowrap">Secure payments by</span>
                 <img 
-                  src="/stripe-logo.svg" 
+                  src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" 
                   alt="Stripe" 
                   className="h-4 w-auto opacity-80"
-                  width="52"
-                  height="22"
                 />
               </div>
             </div>
