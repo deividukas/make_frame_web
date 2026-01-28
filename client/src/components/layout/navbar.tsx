@@ -2,7 +2,7 @@ import { Link, useLocation } from "wouter";
 import { useContent } from "@/lib/content-context";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
+import Menu from "lucide-react/dist/esm/icons/menu";
 import { useState } from "react";
 import Logo from "@/components/ui/logo";
 

@@ -8,7 +8,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { MessageCircle, ChevronRight } from "lucide-react";
+import MessageCircle from "lucide-react/dist/esm/icons/message-circle";
+import ChevronRight from "lucide-react/dist/esm/icons/chevron-right";
 import { useEffect, useMemo } from "react";
 import type { FaqItem } from "@shared/schema";
 

@@ -1,5 +1,7 @@
 import { useContent } from "@/lib/content-context";
-import { Upload, Share2, TrendingUp } from "lucide-react";
+import Upload from "lucide-react/dist/esm/icons/upload";
+import Share2 from "lucide-react/dist/esm/icons/share-2";
+import TrendingUp from "lucide-react/dist/esm/icons/trending-up";
 import { motion } from "framer-motion";
 
 const icons = [Upload, Share2, TrendingUp];

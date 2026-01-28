@@ -1,6 +1,8 @@
 import { useContent } from "@/lib/content-context";
 import { motion } from "framer-motion";
-import { Briefcase, Music, Users } from "lucide-react";
+import Briefcase from "lucide-react/dist/esm/icons/briefcase";
+import Music from "lucide-react/dist/esm/icons/music";
+import Users from "lucide-react/dist/esm/icons/users";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 const icons = [Briefcase, Music, Users];

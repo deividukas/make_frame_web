@@ -13,14 +13,29 @@ import Subscript from '@tiptap/extension-subscript';
 import Superscript from '@tiptap/extension-superscript';
 import { FontSize, LineHeight } from '@/lib/tiptap-extensions';
 import { Button } from '@/components/ui/button';
-import { 
-  Bold, Italic, Underline as UnderlineIcon, List, ListOrdered, 
-  Heading2, Heading3, Link as LinkIcon, Image as ImageIcon, 
-  Undo, Redo, AlignLeft, AlignCenter, AlignRight, AlignJustify,
-  Highlighter, Table as TableIcon, Youtube as YoutubeIcon,
-  Subscript as SubscriptIcon, Superscript as SuperscriptIcon,
-  Strikethrough, Quote, Minus
-} from 'lucide-react';
+import Bold from 'lucide-react/dist/esm/icons/bold';
+import Italic from 'lucide-react/dist/esm/icons/italic';
+import UnderlineIcon from 'lucide-react/dist/esm/icons/underline';
+import List from 'lucide-react/dist/esm/icons/list';
+import ListOrdered from 'lucide-react/dist/esm/icons/list-ordered';
+import Heading2 from 'lucide-react/dist/esm/icons/heading-2';
+import Heading3 from 'lucide-react/dist/esm/icons/heading-3';
+import LinkIcon from 'lucide-react/dist/esm/icons/link';
+import ImageIcon from 'lucide-react/dist/esm/icons/image';
+import Undo from 'lucide-react/dist/esm/icons/undo';
+import Redo from 'lucide-react/dist/esm/icons/redo';
+import AlignLeft from 'lucide-react/dist/esm/icons/align-left';
+import AlignCenter from 'lucide-react/dist/esm/icons/align-center';
+import AlignRight from 'lucide-react/dist/esm/icons/align-right';
+import AlignJustify from 'lucide-react/dist/esm/icons/align-justify';
+import Highlighter from 'lucide-react/dist/esm/icons/highlighter';
+import TableIcon from 'lucide-react/dist/esm/icons/table';
+import YoutubeIcon from 'lucide-react/dist/esm/icons/youtube';
+import SubscriptIcon from 'lucide-react/dist/esm/icons/subscript';
+import SuperscriptIcon from 'lucide-react/dist/esm/icons/superscript';
+import Strikethrough from 'lucide-react/dist/esm/icons/strikethrough';
+import Quote from 'lucide-react/dist/esm/icons/quote';
+import Minus from 'lucide-react/dist/esm/icons/minus';
 import { useEffect, useState } from 'react';
 import {
   DropdownMenu,

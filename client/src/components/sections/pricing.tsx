@@ -1,5 +1,6 @@
 import { useContent } from "@/lib/content-context";
-import { Check, Info } from "lucide-react";
+import Check from "lucide-react/dist/esm/icons/check";
+import Info from "lucide-react/dist/esm/icons/info";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
