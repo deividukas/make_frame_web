@@ -2,7 +2,7 @@ import { Link, useLocation } from "wouter";
 import { useContent } from "@/lib/content-context";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import Menu from "lucide-react/dist/esm/icons/menu";
+import { Menu } from "lucide-react";
 import { useState } from "react";
 import Logo from "@/components/ui/logo";
 
@@ -66,7 +66,7 @@ export function Navbar() {
         <div className="md:hidden flex items-center gap-2">
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" aria-label="Open navigation menu">
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Toggle menu</span>
               </Button>

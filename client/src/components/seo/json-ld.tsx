@@ -59,10 +59,10 @@ export function OrganizationJsonLd() {
   const data = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "Make-frame",
+    "name": "Make-Frame",
     "url": "https://make-frame.com",
     "logo": "https://make-frame.com/logo.png",
-    "description": "The easiest photo frame generator built for event organizers. Transform attendee selfies into professional, branded posts.",
+    "description": "The easiest way for event organizers to turn attendee selfies into branded, shareable social posts. Boost engagement for conferences, exhibitions, concerts, and movements.",
     "foundingDate": "2024",
     "contactPoint": {
       "@type": "ContactPoint",
