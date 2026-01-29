@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ContentProvider } from "@/lib/content-context";
 import { CookieBanner } from "@/components/ui/cookie-banner";
+import { GoogleTagManager } from "@/components/analytics/gtm";
 import { Suspense, lazy } from "react";
 import Home from "@/pages/home";
 
@@ -50,6 +51,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ContentProvider>
         <TooltipProvider>
+          <GoogleTagManager />
           <Toaster />
           <Suspense fallback={<PageLoader />}>
             <Router />

@@ -812,5 +812,34 @@ export async function registerRoutes(
     }
   });
 
+  // ============ SITE SETTINGS API ============
+
+  // Get site settings (public - for GTM injection)
+  app.get("/api/settings", async (req, res) => {
+    try {
+      const settings = await storage.getSiteSettings();
+      res.json(settings || { gtmId: null });
+    } catch (error) {
+      console.error("Error fetching site settings:", error);
+      res.status(500).json({ error: "Failed to fetch site settings" });
+    }
+  });
+
+  // Update site settings (admin only)
+  app.put("/api/admin/settings", async (req, res) => {
+    try {
+      if (!verifyAdminPassword(req)) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      const { gtmId } = req.body;
+      const settings = await storage.upsertSiteSettings({ gtmId: gtmId || null });
+      res.json(settings);
+    } catch (error) {
+      console.error("Error updating site settings:", error);
+      res.status(500).json({ error: "Failed to update site settings" });
+    }
+  });
+
   return httpServer;
 }

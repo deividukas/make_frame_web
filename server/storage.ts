@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type SiteContent, type Resource, type InsertResource, type SeoMetadata, type InsertSeoMetadata, type FaqItem, type InsertFaqItem, users, siteContent, resources, seoMetadata, faqItems } from "@shared/schema";
+import { type User, type InsertUser, type SiteContent, type Resource, type InsertResource, type SeoMetadata, type InsertSeoMetadata, type FaqItem, type InsertFaqItem, type SiteSettings, type InsertSiteSettings, users, siteContent, resources, seoMetadata, faqItems, siteSettings } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, asc } from "drizzle-orm";
 
@@ -30,6 +30,9 @@ export interface IStorage {
   createFaqItem(faq: InsertFaqItem): Promise<FaqItem>;
   updateFaqItem(id: number, faq: Partial<InsertFaqItem>): Promise<FaqItem | undefined>;
   deleteFaqItem(id: number): Promise<boolean>;
+
+  getSiteSettings(): Promise<SiteSettings | undefined>;
+  upsertSiteSettings(settings: InsertSiteSettings): Promise<SiteSettings>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -165,6 +168,23 @@ export class DatabaseStorage implements IStorage {
   async deleteFaqItem(id: number): Promise<boolean> {
     const result = await db.delete(faqItems).where(eq(faqItems.id, id)).returning();
     return result.length > 0;
+  }
+
+  async getSiteSettings(): Promise<SiteSettings | undefined> {
+    const [settings] = await db.select().from(siteSettings).where(eq(siteSettings.id, "main"));
+    return settings;
+  }
+
+  async upsertSiteSettings(settings: InsertSiteSettings): Promise<SiteSettings> {
+    const [result] = await db
+      .insert(siteSettings)
+      .values({ id: "main", ...settings })
+      .onConflictDoUpdate({
+        target: siteSettings.id,
+        set: { ...settings, updatedAt: new Date() },
+      })
+      .returning();
+    return result;
   }
 }
 

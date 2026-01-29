@@ -7,20 +7,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import ArrowLeft from "lucide-react/dist/esm/icons/arrow-left";
-import Save from "lucide-react/dist/esm/icons/save";
-import RotateCcw from "lucide-react/dist/esm/icons/rotate-ccw";
-import FileText from "lucide-react/dist/esm/icons/file-text";
-import Upload from "lucide-react/dist/esm/icons/upload";
-import HelpCircle from "lucide-react/dist/esm/icons/help-circle";
+import { ArrowLeft, Save, RotateCcw, FileText, HelpCircle, Settings } from "lucide-react";
 import { Link } from "wouter";
 import { useEffect, useState } from "react";
 import { useUpload } from "@/hooks/use-upload";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function AdminSettings() {
   const { content, updateContent, resetContent } = useContent();
   const { toast } = useToast();
   const { uploadFile, isUploading } = useUpload();
+  const queryClient = useQueryClient();
+  const [gtmId, setGtmId] = useState("");
   
   useEffect(() => {
     const password = localStorage.getItem("admin-password");
@@ -31,6 +29,54 @@ export default function AdminSettings() {
       }
     }
   }, []);
+
+  const { data: siteSettings } = useQuery({
+    queryKey: ["/api/settings"],
+    queryFn: async () => {
+      const res = await fetch("/api/settings");
+      if (!res.ok) throw new Error("Failed to fetch settings");
+      return res.json();
+    }
+  });
+
+  useEffect(() => {
+    if (siteSettings?.gtmId) {
+      setGtmId(siteSettings.gtmId);
+    }
+  }, [siteSettings]);
+
+  const saveSettingsMutation = useMutation({
+    mutationFn: async (data: { gtmId: string }) => {
+      const password = localStorage.getItem("admin-password") || "";
+      const res = await fetch("/api/admin/settings", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-password-encoded": btoa(password)
+        },
+        body: JSON.stringify(data)
+      });
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || "Failed to save settings");
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/settings"] });
+      toast({
+        title: "Settings Saved",
+        description: "GTM configuration updated. Reload the page to apply changes.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Save Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  });
 
   const form = useForm({
     defaultValues: content,
@@ -161,6 +207,10 @@ export default function AdminSettings() {
               <TabsTrigger value="pricing" className="h-10">Pricing & Add-ons</TabsTrigger>
               <TabsTrigger value="footer" className="h-10">Footer</TabsTrigger>
               <TabsTrigger value="resources" className="h-10">Resources Page</TabsTrigger>
+              <TabsTrigger value="settings" className="h-10">
+                <Settings className="h-4 w-4 mr-1.5" />
+                Settings
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="general">
@@ -423,6 +473,53 @@ export default function AdminSettings() {
                   <div className="grid gap-2">
                     <Label>Subheadline</Label>
                     <Textarea {...form.register("resourcesPage.subhead")} placeholder="Learn more about..." />
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="settings">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Site Settings</CardTitle>
+                  <CardDescription>Configure tracking and analytics integrations.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="p-4 border rounded-lg bg-slate-50">
+                    <h3 className="font-semibold mb-4">Google Tag Manager</h3>
+                    <div className="grid gap-4">
+                      <div className="grid gap-2">
+                        <Label htmlFor="gtm-id">Container ID</Label>
+                        <Input 
+                          id="gtm-id"
+                          value={gtmId}
+                          onChange={(e) => setGtmId(e.target.value)}
+                          placeholder="GTM-XXXXXXX"
+                          className="max-w-xs"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Enter your GTM container ID (e.g., GTM-ABC123). Find it in your{" "}
+                          <a 
+                            href="https://tagmanager.google.com" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-primary hover:underline"
+                          >
+                            Google Tag Manager
+                          </a>{" "}
+                          account.
+                        </p>
+                      </div>
+                      <Button 
+                        type="button"
+                        onClick={() => saveSettingsMutation.mutate({ gtmId })}
+                        disabled={saveSettingsMutation.isPending}
+                        className="w-fit"
+                      >
+                        <Save className="mr-2 h-4 w-4" />
+                        {saveSettingsMutation.isPending ? "Saving..." : "Save GTM Settings"}
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
