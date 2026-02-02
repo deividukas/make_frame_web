@@ -1,18 +1,9 @@
 import { useContent } from "@/lib/content-context";
 import { Button } from "@/components/ui/button";
-import { ResponsiveImage } from "@/components/ui/responsive-image";
-import demoScreenshot from "@assets/Screenshot_2026-01-18_at_22.52.49_1768769601506.png";
-
-function isObjectStorageUrl(src: string): boolean {
-  return src.startsWith("/objects/") || src.startsWith("/api/objects/");
-}
 
 export function Hero() {
   const { content } = useContent();
 
-  const heroImage = content.hero.backgroundImage || demoScreenshot;
-
-  // Get Demo link from navigation
   const demoLink = content.navigation.links.find(link => link.label === "Demo");
   const demoHref = demoLink?.href || "#demo";
 
@@ -51,37 +42,40 @@ export function Hero() {
           >
              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-border/50 bg-gradient-to-b from-white to-slate-50">
                 <div className="h-[400px] md:h-[480px] overflow-hidden">
-                  {isObjectStorageUrl(heroImage) ? (
-                    <ResponsiveImage 
-                      src={heroImage} 
-                      alt="Make-frame Demo - Photo Frame Generator Interface" 
-                      className="w-full h-auto object-cover object-top"
-                      mobileWidth={600}
-                      desktopWidth={700}
-                      sizes="(max-width: 768px) 100vw, 676px"
-                      loading="eager"
-                      fetchPriority="high"
-                      width={676}
-                      height={535}
+                  <picture>
+                    <source 
+                      type="image/avif" 
+                      srcSet="/assets/hero.avif"
+                      media="(min-width: 640px)"
                     />
-                  ) : (
+                    <source 
+                      type="image/webp" 
+                      srcSet="/assets/hero-mobile.webp"
+                      media="(max-width: 639px)"
+                    />
+                    <source 
+                      type="image/webp" 
+                      srcSet="/assets/hero.webp"
+                      media="(min-width: 640px)"
+                    />
                     <img 
-                      src={heroImage} 
+                      src="/assets/hero.webp"
                       alt="Make-frame Demo - Photo Frame Generator Interface" 
                       className="w-full h-auto object-cover object-top"
                       width={700}
-                      height={480}
+                      height={643}
+                      loading="eager"
+                      fetchPriority="high"
+                      decoding="async"
                     />
-                  )}
+                  </picture>
                 </div>
-                {/* Fade overlay at bottom */}
                 <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent pointer-events-none" />
              </div>
           </div>
         </div>
       </div>
       
-      {/* Background decoration */}
       <div className="absolute top-0 right-0 -z-10 h-full w-1/2 bg-gradient-to-l from-indigo-50/50 to-transparent blur-3xl opacity-60" />
       <div className="absolute bottom-0 left-0 -z-10 h-1/2 w-1/2 bg-gradient-to-tr from-blue-50/50 to-transparent blur-3xl opacity-60" />
     </section>
