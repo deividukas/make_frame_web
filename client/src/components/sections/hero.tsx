@@ -56,13 +56,13 @@ export function Hero() {
                       src={heroImage} 
                       alt="Make-frame Demo - Photo Frame Generator Interface" 
                       className="w-full h-auto object-cover object-top"
-                      mobileWidth={800}
-                      desktopWidth={1400}
-                      sizes="(max-width: 768px) 100vw, 700px"
+                      mobileWidth={600}
+                      desktopWidth={700}
+                      sizes="(max-width: 768px) 100vw, 676px"
                       loading="eager"
                       fetchPriority="high"
-                      width={700}
-                      height={480}
+                      width={676}
+                      height={535}
                     />
                   ) : (
                     <img 
