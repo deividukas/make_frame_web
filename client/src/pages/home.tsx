@@ -40,7 +40,7 @@ export default function Home() {
           <div className="container relative z-10 text-center space-y-8 px-4 mx-auto max-w-7xl">
             <div className="flex flex-col items-center justify-center gap-8">
               <div className="space-y-4 max-w-3xl mx-auto">
-                <h2 className="text-3xl font-bold sm:text-4xl md:text-5xl">Experience it like your attendees will</h2>
+                <h2 className="text-3xl font-bold sm:text-4xl md:text-5xl md:whitespace-nowrap">Experience it like your attendees will</h2>
                 <p className="text-xl opacity-90 max-w-2xl mx-auto">
                   Don't just take our word for it. Try our live demo to see how seamless the photo experience is.
                 </p>
