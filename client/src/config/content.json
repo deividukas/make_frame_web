@@ -40,6 +40,10 @@
     },
     "premium": { 
       "price": "$69", 
+      "annualPrice": "$34.50",
+      "annualTotal": "$414",
+      "annualOriginalTotal": "$828",
+      "savingsPercent": "50",
       "title": "Premium", 
       "description": "Best for: Professional organizers and marketing teams.",
       "features": ["200 photo frames per month", "Extended Usage Statistics", "Rollover Credits", "Top-up Eligibility", "Everything in Free Trial"] 
