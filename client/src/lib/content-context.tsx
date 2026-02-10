@@ -13,6 +13,34 @@ interface ContentContextType {
 
 const ContentContext = createContext<ContentContextType | undefined>(undefined);
 
+function deepMerge<T extends Record<string, unknown>>(defaults: T, overrides: Record<string, unknown>): T {
+  const result = { ...defaults } as Record<string, unknown>;
+  for (const key of Object.keys(defaults)) {
+    if (key in overrides) {
+      const defaultVal = (defaults as Record<string, unknown>)[key];
+      const overrideVal = overrides[key];
+      if (
+        defaultVal && overrideVal &&
+        typeof defaultVal === "object" && typeof overrideVal === "object" &&
+        !Array.isArray(defaultVal) && !Array.isArray(overrideVal)
+      ) {
+        result[key] = deepMerge(
+          defaultVal as Record<string, unknown>,
+          overrideVal as Record<string, unknown>
+        );
+      } else {
+        result[key] = overrideVal;
+      }
+    }
+  }
+  for (const key of Object.keys(overrides)) {
+    if (!(key in defaults)) {
+      result[key] = overrides[key];
+    }
+  }
+  return result as T;
+}
+
 async function fetchContent(): Promise<Content> {
   const response = await fetch("/api/content");
   if (response.status === 404) {
@@ -21,7 +49,8 @@ async function fetchContent(): Promise<Content> {
   if (!response.ok) {
     throw new Error("Failed to fetch content");
   }
-  return response.json();
+  const apiContent = await response.json();
+  return deepMerge(defaultContent, apiContent);
 }
 
 async function saveContent(content: Content): Promise<Content> {
