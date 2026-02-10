@@ -380,8 +380,28 @@ export default function AdminSettings() {
                       <h3 className="font-semibold mb-4 text-primary">Premium Plan</h3>
                       <div className="grid gap-4">
                         <div className="grid gap-2">
-                           <Label>Price Display</Label>
-                           <Input {...form.register("pricing.premium.price")} />
+                           <Label>Monthly Price Display</Label>
+                           <Input {...form.register("pricing.premium.price")} placeholder="$69" />
+                        </div>
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div className="grid gap-2">
+                            <Label>Annual Price /month</Label>
+                            <Input {...form.register("pricing.premium.annualPrice")} placeholder="$34.50" />
+                          </div>
+                          <div className="grid gap-2">
+                            <Label>Annual Total /year</Label>
+                            <Input {...form.register("pricing.premium.annualTotal")} placeholder="$414" />
+                          </div>
+                        </div>
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div className="grid gap-2">
+                            <Label>Annual Original Total (crossed out)</Label>
+                            <Input {...form.register("pricing.premium.annualOriginalTotal")} placeholder="$828" />
+                          </div>
+                          <div className="grid gap-2">
+                            <Label>Savings Percent</Label>
+                            <Input {...form.register("pricing.premium.savingsPercent")} placeholder="50" />
+                          </div>
                         </div>
                         <div className="grid gap-2">
                            <Label>Features</Label>
