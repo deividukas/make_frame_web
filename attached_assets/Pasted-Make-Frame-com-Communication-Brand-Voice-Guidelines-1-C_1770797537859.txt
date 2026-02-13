@@ -1,0 +1,32 @@
+Make-Frame.com Communication & Brand Voice Guidelines
+1. Core Philosophy
+We are problem solvers, not salespeople. Our language is a tool to help the user, not to dazzle them. We do not shout about "revolutions" – we talk about making the work of event organizers easier.
+2. Voice & Tone
+Direct & Peer-to-Peer: We speak as we would to a colleague over a cup of coffee. No unnecessary distance, but with professional respect.
+Honesty: If a feature is simple, we say so. If there are limitations, we don’t hide them behind flashy words.
+Objectivity: Instead of "the best tool on the market," we say "a tool that helps you do X in Y minutes."
+No Hype: Avoid words like: revolutionary, incredible, magical, world-class, game-changer.
+3. Strict Rules (Zero Tolerance)
+English Only: All public communication, marketing materials, and UI texts must be in English.
+No Icons (Emojis): The text must be clean. We convey emotion through words and meaning, not colored symbols. This ensures seriousness and distinguishes us from "noisy" AI-generated content.
+No Empty Promises: Every claim must be backed by real functionality currently available on the platform.
+Brevity: If a sentence can be shortened without losing meaning – shorten it.
+4. Writing Examples
+Avoid (Standard SaaS)
+Our Style (Make-Frame.com)
+We are thrilled to introduce a revolutionary event solution! 🚀
+We are opening Make-Frame.com to the public. We built this tool for ourselves, and now we’re offering it to others.
+Skyrocket your brand awareness! ✨
+Frames help your attendees share photos that include your logo. That’s it.
+Our powerful AI technology automatically handles everything for you. 🔥
+The system uses face detection to center the photo. If it’s not perfect, you can adjust it manually.
+
+5. Structure & Formatting
+Use simple, clear headings.
+Use bullet points only for technical specifications or step-by-step instructions .
+Provide links directly, without "Click here now" gimmicks.
+6. AI Prompting Instruction
+Whenever generating text using AI, use this instruction:
+"Write on behalf of Make-Frame.com. Tone: direct, friendly, sincere. Avoid all marketing hype, excessive enthusiasm, or boasting. Write only about real features. Strictly forbidden: do not use any icons (emojis). All text must be in English. The text should be professional and suited for the US/Global market, but without the typical 'salesy' American flavor."
+
+
