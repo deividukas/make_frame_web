@@ -8,6 +8,42 @@ Make-frame is a marketing landing page for a photo frame generator service desig
 
 Preferred communication style: Simple, everyday language.
 
+## Brand Voice & Communication Guidelines
+
+All public-facing text on the website must follow these rules:
+
+### Core Philosophy
+- We are problem solvers, not salespeople. Language is a tool to help the user, not to dazzle them.
+- No shouting about "revolutions" — we talk about making event organizers' work easier.
+
+### Voice & Tone
+- **Direct & Peer-to-Peer**: Speak as to a colleague over coffee. No unnecessary distance, but with professional respect.
+- **Honesty**: If a feature is simple, say so. If there are limitations, don't hide them behind flashy words.
+- **Objectivity**: Instead of "the best tool on the market," say "a tool that helps you do X in Y minutes."
+- **No Hype**: Avoid words like: revolutionary, incredible, magical, world-class, game-changer.
+
+### Strict Rules (Zero Tolerance)
+- **English Only**: All public communication, marketing materials, and UI texts must be in English.
+- **No Emojis**: Text must be clean. Convey emotion through words and meaning, not colored symbols.
+- **No Empty Promises**: Every claim must be backed by real functionality currently available on the platform.
+- **Brevity**: If a sentence can be shortened without losing meaning — shorten it.
+
+### Writing Examples
+- AVOID: "We are thrilled to introduce a revolutionary event solution!"
+- USE: "We are opening Make-Frame.com to the public. We built this tool for ourselves, and now we're offering it to others."
+- AVOID: "Skyrocket your brand awareness!"
+- USE: "Frames help your attendees share photos that include your logo. That's it."
+- AVOID: "Our powerful AI technology automatically handles everything for you."
+- USE: "The system uses face detection to center the photo. If it's not perfect, you can adjust it manually."
+
+### Structure & Formatting
+- Use simple, clear headings.
+- Use bullet points only for technical specifications or step-by-step instructions.
+- Provide links directly, without "Click here now" gimmicks.
+
+### AI Prompting Instruction
+When generating any text for Make-Frame.com: "Write on behalf of Make-Frame.com. Tone: direct, friendly, sincere. Avoid all marketing hype, excessive enthusiasm, or boasting. Write only about real features. Strictly forbidden: do not use any icons (emojis). All text must be in English. The text should be professional and suited for the US/Global market, but without the typical 'salesy' American flavor."
+
 ## Technical Standards (SEO & AIO)
 
 ### Core Principles
