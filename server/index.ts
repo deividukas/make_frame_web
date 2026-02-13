@@ -6,6 +6,15 @@ import { createServer } from "http";
 const app = express();
 const httpServer = createServer(app);
 
+app.use((req, res, next) => {
+  const host = req.hostname || req.headers.host || "";
+  if (host.endsWith(".replit.app") || host.endsWith(".repl.co")) {
+    const targetUrl = `https://make-frame.com${req.originalUrl}`;
+    return res.redirect(301, targetUrl);
+  }
+  next();
+});
+
 declare module "http" {
   interface IncomingMessage {
     rawBody: unknown;
