@@ -18,6 +18,8 @@ const Contacts = lazy(() => import("@/pages/contacts"));
 const Resources = lazy(() => import("@/pages/resources"));
 const ResourceArticle = lazy(() => import("@/pages/resource-article"));
 const FAQ = lazy(() => import("@/pages/faq"));
+const AdminLandingPages = lazy(() => import("@/pages/admin-landing-pages"));
+const LandingPageView = lazy(() => import("@/pages/landing-page"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 
 function PageLoader() {
@@ -41,6 +43,8 @@ function Router() {
       <Route path="/resources" component={Resources} />
       <Route path="/resources/:slug" component={ResourceArticle} />
       <Route path="/faq" component={FAQ} />
+      <Route path="/admin-settings/landing-pages" component={AdminLandingPages} />
+      <Route path="/lp/:slug" component={LandingPageView} />
       <Route component={NotFound} />
     </Switch>
   );

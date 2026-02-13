@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type SiteContent, type Resource, type InsertResource, type SeoMetadata, type InsertSeoMetadata, type FaqItem, type InsertFaqItem, type SiteSettings, type InsertSiteSettings, users, siteContent, resources, seoMetadata, faqItems, siteSettings } from "@shared/schema";
+import { type User, type InsertUser, type SiteContent, type Resource, type InsertResource, type SeoMetadata, type InsertSeoMetadata, type FaqItem, type InsertFaqItem, type SiteSettings, type InsertSiteSettings, type LandingPage, type InsertLandingPage, users, siteContent, resources, seoMetadata, faqItems, siteSettings, landingPages } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, asc } from "drizzle-orm";
 
@@ -33,6 +33,14 @@ export interface IStorage {
 
   getSiteSettings(): Promise<SiteSettings | undefined>;
   upsertSiteSettings(settings: InsertSiteSettings): Promise<SiteSettings>;
+
+  getAllLandingPages(): Promise<LandingPage[]>;
+  getPublishedLandingPages(): Promise<LandingPage[]>;
+  getLandingPageById(id: number): Promise<LandingPage | undefined>;
+  getLandingPageBySlug(slug: string): Promise<LandingPage | undefined>;
+  createLandingPage(page: InsertLandingPage): Promise<LandingPage>;
+  updateLandingPage(id: number, page: Partial<InsertLandingPage>): Promise<LandingPage | undefined>;
+  deleteLandingPage(id: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -185,6 +193,43 @@ export class DatabaseStorage implements IStorage {
       })
       .returning();
     return result;
+  }
+
+  async getAllLandingPages(): Promise<LandingPage[]> {
+    return db.select().from(landingPages).orderBy(desc(landingPages.createdAt));
+  }
+
+  async getPublishedLandingPages(): Promise<LandingPage[]> {
+    return db.select().from(landingPages).where(eq(landingPages.isPublished, true)).orderBy(desc(landingPages.createdAt));
+  }
+
+  async getLandingPageById(id: number): Promise<LandingPage | undefined> {
+    const [page] = await db.select().from(landingPages).where(eq(landingPages.id, id));
+    return page;
+  }
+
+  async getLandingPageBySlug(slug: string): Promise<LandingPage | undefined> {
+    const [page] = await db.select().from(landingPages).where(eq(landingPages.slug, slug));
+    return page;
+  }
+
+  async createLandingPage(page: InsertLandingPage): Promise<LandingPage> {
+    const [result] = await db.insert(landingPages).values(page).returning();
+    return result;
+  }
+
+  async updateLandingPage(id: number, page: Partial<InsertLandingPage>): Promise<LandingPage | undefined> {
+    const [result] = await db
+      .update(landingPages)
+      .set({ ...page, updatedAt: new Date() })
+      .where(eq(landingPages.id, id))
+      .returning();
+    return result;
+  }
+
+  async deleteLandingPage(id: number): Promise<boolean> {
+    const result = await db.delete(landingPages).where(eq(landingPages.id, id)).returning();
+    return result.length > 0;
   }
 }
 

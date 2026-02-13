@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
 import { MailerSend, EmailParams, Sender, Recipient } from "mailersend";
-import { insertResourceSchema, insertSeoMetadataSchema } from "@shared/schema";
+import { insertResourceSchema, insertSeoMetadataSchema, insertLandingPageSchema } from "@shared/schema";
 import { registerObjectStorageRoutes } from "./replit_integrations/object_storage";
 import { registerImageOptimizationRoutes } from "./image-optimizer";
 
@@ -346,6 +346,18 @@ export async function registerRoutes(
   </url>`;
       }
       
+      const publishedPages = await storage.getPublishedLandingPages();
+      for (const page of publishedPages) {
+        const lastmod = page.updatedAt ? new Date(page.updatedAt).toISOString().split('T')[0] : '';
+        sitemap += `
+  <url>
+    <loc>${baseUrl}/lp/${page.slug}</loc>
+    ${lastmod ? `<lastmod>${lastmod}</lastmod>` : ''}
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>`;
+      }
+
       sitemap += `
 </urlset>`;
       
@@ -838,6 +850,96 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Error updating site settings:", error);
       res.status(500).json({ error: "Failed to update site settings" });
+    }
+  });
+
+  // ============ LANDING PAGES API ============
+
+  app.get("/api/admin/landing-pages", async (req, res) => {
+    try {
+      if (!verifyAdminPassword(req)) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      const pages = await storage.getAllLandingPages();
+      res.json(pages);
+    } catch (error) {
+      console.error("Error fetching landing pages:", error);
+      res.status(500).json({ error: "Failed to fetch landing pages" });
+    }
+  });
+
+  app.get("/api/landing-pages/:slug", async (req, res) => {
+    try {
+      const page = await storage.getLandingPageBySlug(req.params.slug);
+      if (!page || !page.isPublished) {
+        return res.status(404).json({ error: "Page not found" });
+      }
+      res.json(page);
+    } catch (error) {
+      console.error("Error fetching landing page:", error);
+      res.status(500).json({ error: "Failed to fetch landing page" });
+    }
+  });
+
+  app.post("/api/admin/landing-pages", async (req, res) => {
+    try {
+      if (!verifyAdminPassword(req)) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      const parseResult = insertLandingPageSchema.safeParse(req.body);
+      if (!parseResult.success) {
+        return res.status(400).json({ error: "Invalid data", details: parseResult.error.errors });
+      }
+      const existing = await storage.getLandingPageBySlug(parseResult.data.slug);
+      if (existing) {
+        return res.status(400).json({ error: "A page with this slug already exists" });
+      }
+      const page = await storage.createLandingPage(parseResult.data);
+      res.status(201).json(page);
+    } catch (error) {
+      console.error("Error creating landing page:", error);
+      res.status(500).json({ error: "Failed to create landing page" });
+    }
+  });
+
+  app.put("/api/admin/landing-pages/:id", async (req, res) => {
+    try {
+      if (!verifyAdminPassword(req)) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      const id = parseInt(req.params.id);
+      const existing = await storage.getLandingPageById(id);
+      if (!existing) {
+        return res.status(404).json({ error: "Page not found" });
+      }
+      if (req.body.slug && req.body.slug !== existing.slug) {
+        const slugPage = await storage.getLandingPageBySlug(req.body.slug);
+        if (slugPage) {
+          return res.status(400).json({ error: "A page with this slug already exists" });
+        }
+      }
+      const page = await storage.updateLandingPage(id, req.body);
+      res.json(page);
+    } catch (error) {
+      console.error("Error updating landing page:", error);
+      res.status(500).json({ error: "Failed to update landing page" });
+    }
+  });
+
+  app.delete("/api/admin/landing-pages/:id", async (req, res) => {
+    try {
+      if (!verifyAdminPassword(req)) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deleteLandingPage(id);
+      if (!deleted) {
+        return res.status(404).json({ error: "Page not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting landing page:", error);
+      res.status(500).json({ error: "Failed to delete landing page" });
     }
   });
 
