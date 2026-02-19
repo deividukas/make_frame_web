@@ -6,11 +6,24 @@ import { createServer } from "http";
 const app = express();
 const httpServer = createServer(app);
 
+app.disable("x-powered-by");
+
 app.use((req, res, next) => {
-  const host = req.hostname || req.headers.host || "";
+  const host = (req.headers.host || "").split(":")[0].toLowerCase();
   if (host.endsWith(".replit.app") || host.endsWith(".repl.co")) {
     const targetUrl = `https://make-frame.com${req.originalUrl}`;
     return res.redirect(301, targetUrl);
+  }
+  if (host.startsWith("www.")) {
+    const targetUrl = `https://make-frame.com${req.originalUrl}`;
+    return res.redirect(301, targetUrl);
+  }
+  next();
+});
+
+app.use((req, res, next) => {
+  if (req.path.startsWith("/api") || req.path.startsWith("/auth")) {
+    res.setHeader("X-Robots-Tag", "noindex, nofollow");
   }
   next();
 });
