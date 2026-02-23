@@ -355,6 +355,9 @@ export async function registerRoutes(
         )
       );
 
+      const totalUrls = staticPages.length + resourcePages.length + lpPages.length;
+      console.log(`Sitemap: ${resources.length} resources, ${landingPages.length} landing pages, ${totalUrls} total URLs`);
+
       const xml = [
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>',
@@ -362,6 +365,7 @@ export async function registerRoutes(
         ...staticPages,
         ...resourcePages,
         ...lpPages,
+        `  <!-- urls-total: ${totalUrls} -->`,
         "</urlset>",
         "",
       ].join("\n");
