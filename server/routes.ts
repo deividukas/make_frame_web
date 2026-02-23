@@ -298,71 +298,75 @@ export async function registerRoutes(
   // ============ SITEMAP ============
   
   app.get("/sitemap.xml", async (req, res) => {
-    try {
-      const resources = await storage.getPublishedResources();
-      const baseUrl = "https://make-frame.com";
-      
-      let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>${baseUrl}/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>${baseUrl}/resources</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>${baseUrl}/contacts</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>${baseUrl}/privacy</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>${baseUrl}/terms</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>${baseUrl}/faq</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>`;
-      
-      for (const resource of resources) {
-        const lastmod = resource.updatedAt ? new Date(resource.updatedAt).toISOString().split('T')[0] : '';
-        sitemap += `
-  <url>
-    <loc>${baseUrl}/resources/${resource.slug}</loc>
-    ${lastmod ? `<lastmod>${lastmod}</lastmod>` : ''}
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>`;
-      }
-      
-      const publishedPages = await storage.getPublishedLandingPages();
-      for (const page of publishedPages) {
-        const lastmod = page.updatedAt ? new Date(page.updatedAt).toISOString().split('T')[0] : '';
-        sitemap += `
-  <url>
-    <loc>${baseUrl}/lp/${page.slug}</loc>
-    ${lastmod ? `<lastmod>${lastmod}</lastmod>` : ''}
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>`;
-      }
+    const BASE_URL = "https://make-frame.com";
+    const today = new Date().toISOString().split("T")[0];
 
-      sitemap += `
-</urlset>`;
-      
-      res.set('Content-Type', 'application/xml');
-      res.send(sitemap);
+    const toDate = (value: string | Date | null | undefined): string => {
+      if (!value) return today;
+      const d = new Date(value);
+      return isNaN(d.getTime()) ? today : d.toISOString().split("T")[0];
+    };
+
+    const urlEntry = (
+      loc: string,
+      lastmod: string,
+      changefreq: string,
+      priority: string
+    ): string =>
+      [
+        "  <url>",
+        `    <loc>${loc}</loc>`,
+        `    <lastmod>${lastmod}</lastmod>`,
+        `    <changefreq>${changefreq}</changefreq>`,
+        `    <priority>${priority}</priority>`,
+        "  </url>",
+      ].join("\n");
+
+    try {
+      const [resources, landingPages] = await Promise.all([
+        storage.getPublishedResources(),
+        storage.getPublishedLandingPages(),
+      ]);
+
+      const staticPages = [
+        urlEntry(`${BASE_URL}/`, today, "weekly", "1.0"),
+        urlEntry(`${BASE_URL}/resources`, today, "daily", "0.8"),
+        urlEntry(`${BASE_URL}/faq`, today, "weekly", "0.8"),
+        urlEntry(`${BASE_URL}/contacts`, today, "monthly", "0.5"),
+        urlEntry(`${BASE_URL}/privacy`, today, "yearly", "0.3"),
+        urlEntry(`${BASE_URL}/terms`, today, "yearly", "0.3"),
+      ];
+
+      const resourcePages = resources.map((r) =>
+        urlEntry(
+          `${BASE_URL}/resources/${r.slug}`,
+          toDate(r.updatedAt),
+          "weekly",
+          "0.7"
+        )
+      );
+
+      const lpPages = landingPages.map((p) =>
+        urlEntry(
+          `${BASE_URL}/lp/${p.slug}`,
+          toDate(p.updatedAt),
+          "weekly",
+          "0.6"
+        )
+      );
+
+      const xml = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+        ...staticPages,
+        ...resourcePages,
+        ...lpPages,
+        "</urlset>",
+        "",
+      ].join("\n");
+
+      res.set("Content-Type", "application/xml");
+      res.send(xml);
     } catch (error) {
       console.error("Error generating sitemap:", error);
       res.status(500).send("Error generating sitemap");
