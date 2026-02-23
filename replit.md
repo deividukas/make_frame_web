@@ -122,6 +122,14 @@ When generating any text for Make-Frame.com: "Write on behalf of Make-Frame.com.
 - **Animations**: Framer Motion for page animations
 - **Build Tool**: Vite with custom plugins for Replit integration
 
+### SEO & Crawling Infrastructure
+- **robots.txt**: Granular Allow/Disallow rules -- public API routes (`/api/content`, `/api/resources`, `/api/seo`) allowed for crawlers; admin/auth routes blocked
+- **X-Robots-Tag middleware**: Applied only to non-public API routes and auth; public GET/HEAD routes exempted (`server/index.ts`)
+- **Bot SSR**: Server-side rendered HTML served to search engine bots at `/resources/:slug` with full meta tags, JSON-LD, and `Link` canonical header (`server/routes.ts`)
+- **Sitemap**: Dynamic `/sitemap.xml` generated from PostgreSQL (static pages + published resources + landing pages)
+- **Absolute URLs**: All og:image, twitter:image, canonical URLs use `https://make-frame.com` prefix
+- **Verification script**: `test-seo.sh` validates all SEO/indexing rules
+
 ### Backend Architecture
 - **Runtime**: Node.js with Express.js
 - **Language**: TypeScript (ESM modules)

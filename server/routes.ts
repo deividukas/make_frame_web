@@ -388,8 +388,11 @@ export async function registerRoutes(
       const baseUrl = "https://make-frame.com";
       const rawTitle = resource.metaTitle || resource.title;
       const rawDescription = resource.metaDescription || resource.excerpt || '';
-      const image = resource.featuredImage || '';
+      const rawImage = resource.featuredImage || '/opengraph.png';
+      const image = rawImage.startsWith("/") ? `${baseUrl}${rawImage}` : rawImage;
       const url = `${baseUrl}/resources/${resource.slug}`;
+
+      res.setHeader("Link", `<${url}>; rel="canonical"`);
       
       const safeTitle = escapeHtml(rawTitle);
       const safeDescription = escapeHtml(rawDescription);
@@ -421,7 +424,7 @@ export async function registerRoutes(
       };
       
       const html = `<!DOCTYPE html>
-<html lang="lt">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -431,11 +434,13 @@ export async function registerRoutes(
   <meta property="og:title" content="${safeTitle}">
   <meta property="og:description" content="${safeDescription}">
   <meta property="og:url" content="${url}">
-  ${image ? `<meta property="og:image" content="${escapeHtml(image)}">` : ''}
+  <meta property="og:image" content="${escapeHtml(image)}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${safeTitle}">
   <meta name="twitter:description" content="${safeDescription}">
-  ${image ? `<meta name="twitter:image" content="${escapeHtml(image)}">` : ''}
+  <meta name="twitter:image" content="${escapeHtml(image)}">
   <link rel="canonical" href="${url}">
   <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
 </head>

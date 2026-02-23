@@ -13,7 +13,7 @@ import type { Resource } from "@shared/schema";
 export default function ResourceArticle() {
   const { slug } = useParams<{ slug: string }>();
 
-  const { data: resource, isLoading, error } = useQuery<Resource>({
+  const { data: resource, isLoading, error, isFetched } = useQuery<Resource>({
     queryKey: ["resource", slug],
     queryFn: async () => {
       const res = await fetch(`/api/resources/${slug}`);
@@ -22,6 +22,10 @@ export default function ResourceArticle() {
     },
     enabled: !!slug,
   });
+
+  const BASE_URL = "https://make-frame.com";
+  const toAbsolute = (url: string) =>
+    url && url.startsWith("/") ? `${BASE_URL}${url}` : url;
 
   useEffect(() => {
     if (resource) {
@@ -45,16 +49,13 @@ export default function ResourceArticle() {
       updateMeta("og:title", resource.metaTitle || resource.title);
       updateMeta("og:description", description);
       updateMeta("og:type", "article");
-      updateMeta("og:url", window.location.href);
-      if (resource.featuredImage) {
-        updateMeta("og:image", resource.featuredImage);
-      }
+      updateMeta("og:url", `${BASE_URL}/resources/${slug}`);
+      const ogImage = toAbsolute(resource.featuredImage || "/opengraph.png");
+      updateMeta("og:image", ogImage);
       updateMeta("twitter:card", "summary_large_image");
       updateMeta("twitter:title", resource.metaTitle || resource.title);
       updateMeta("twitter:description", description);
-      if (resource.featuredImage) {
-        updateMeta("twitter:image", resource.featuredImage);
-      }
+      updateMeta("twitter:image", ogImage);
 
       const existingSchema = document.querySelector('script[type="application/ld+json"][data-resource]');
       if (existingSchema) {
@@ -65,22 +66,22 @@ export default function ResourceArticle() {
         "@type": "Article",
         headline: resource.title,
         description: description,
-        image: resource.featuredImage || undefined,
+        image: toAbsolute(resource.featuredImage || "/opengraph.png"),
         datePublished: resource.publishedAt,
         dateModified: resource.updatedAt,
         author: {
           "@type": "Organization",
           name: "Make-frame",
-          url: "https://make-frame.com"
+          url: BASE_URL
         },
         publisher: {
           "@type": "Organization",
           name: "Make-frame",
-          url: "https://make-frame.com"
+          url: BASE_URL
         },
         mainEntityOfPage: {
           "@type": "WebPage",
-          "@id": window.location.href
+          "@id": `${BASE_URL}/resources/${slug}`
         }
       };
       const script = document.createElement("script");
@@ -127,7 +128,7 @@ export default function ResourceArticle() {
     );
   }
 
-  if (error || !resource) {
+  if (!isLoading && isFetched && (error || !resource)) {
     return (
       <div className="min-h-screen flex flex-col">
         <Navbar />
@@ -138,6 +139,18 @@ export default function ResourceArticle() {
               <Button>Back to articles</Button>
             </Link>
           </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!resource) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <main className="flex-1 flex items-center justify-center">
+          <p className="text-muted-foreground">Loading...</p>
         </main>
         <Footer />
       </div>

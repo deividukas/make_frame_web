@@ -22,7 +22,15 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
-  if (req.path.startsWith("/api") || req.path.startsWith("/auth")) {
+  const p = req.path;
+  const isReadOnly = req.method === "GET" || req.method === "HEAD";
+  const isPublicRoute = isReadOnly && (
+    p === "/api/content" ||
+    p.startsWith("/api/resources") ||
+    p.startsWith("/api/seo")
+  );
+
+  if (p.startsWith("/auth") || (p.startsWith("/api") && !isPublicRoute)) {
     res.setHeader("X-Robots-Tag", "noindex, nofollow");
   }
   next();
