@@ -40,8 +40,20 @@ export async function sendEmail(options: SendEmailOptions): Promise<SendEmailRes
     await mailerSend.email.send(emailParams);
     return { success: true };
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err);
-    console.error("[sendEmail] MailerSend error:", message);
+    // MailerSend SDK throws response objects, not standard Errors — serialize fully
+    let message: string;
+    if (err instanceof Error) {
+      message = err.message;
+    } else if (typeof err === "object" && err !== null) {
+      try {
+        message = JSON.stringify(err);
+      } catch {
+        message = String(err);
+      }
+    } else {
+      message = String(err);
+    }
+    console.error("[sendEmail] MailerSend error (full):", message);
     return { success: false, error: message };
   }
 }
