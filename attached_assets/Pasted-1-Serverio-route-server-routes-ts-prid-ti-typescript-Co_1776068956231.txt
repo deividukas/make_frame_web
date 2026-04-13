@@ -1,0 +1,184 @@
+1. Serverio route — server/routes.ts (pridėti)
+typescript// Contact form endpoint
+app.post('/api/contact', async (req, res) => {
+  try {
+    const { name, email, message, _timestamp } = req.body;
+
+    // Anti-spam: forma negali būti užpildyta greičiau nei per 3 sekundes
+    const now = Date.now();
+    if (_timestamp && now - Number(_timestamp) < 3000) {
+      console.warn('[CONTACT] ⚠️ Spam suspected - form filled too fast');
+      // Grąžiname "sėkmę" bet nesiunčiame — spam botai nežinos
+      return res.json({ success: true });
+    }
+
+    // Validacija
+    if (!name?.trim() || !email?.trim() || !message?.trim()) {
+      return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ error: 'Invalid email address' });
+    }
+
+    const { sendEmail } = await import('./utils/sendEmail');
+
+    const result = await sendEmail({
+      to: process.env.CONTACT_EMAIL || 'your@email.com', // ← jūsų el. paštas
+      subject: `Contact form: ${name}`,
+      html: `
+        <h2>New message from make-frame.com</h2>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
+        <p><strong>Message:</strong></p>
+        <p style="white-space: pre-wrap;">${message}</p>
+      `,
+      text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
+    });
+
+    if (!result.success) {
+      console.error('[CONTACT] ❌ MailerSend error:', result.error);
+      return res.status(500).json({ error: 'Failed to send message. Please try again.' });
+    }
+
+    console.log(`[CONTACT] ✅ Message from ${email} sent successfully`);
+    res.json({ success: true });
+
+  } catch (error) {
+    console.error('[CONTACT] ❌ Unexpected error:', error);
+    res.status(500).json({ error: 'Server error. Please try again.' });
+  }
+});
+
+2. Kliento komponentas — client/src/components/contact-form.tsx (naujas failas)
+tsximport { useState, useEffect, useRef } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+
+export function ContactForm() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
+  const timestampRef = useRef<number>(Date.now());
+
+  // Kai forma pradedama pildyti — fiksуojame laiką
+  const handleFirstInteraction = () => {
+    timestampRef.current = Date.now();
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setStatus('idle');
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          email,
+          message,
+          _timestamp: timestampRef.current,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // ← ČIA buvo klaida — dabar tikrinamas response.ok
+        setStatus('error');
+        setErrorMessage(data.error || 'Something went wrong. Please try again.');
+        return;
+      }
+
+      setStatus('success');
+      setName('');
+      setEmail('');
+      setMessage('');
+
+    } catch {
+      setStatus('error');
+      setErrorMessage('Network error. Please check your connection and try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (status === 'success') {
+    return (
+      <div className="text-center py-8">
+        <p className="text-lg font-medium text-slate-900">Message sent.</p>
+        <p className="text-slate-500 mt-1">We will get back to you within one business day.</p>
+        <button
+          className="mt-4 text-sm text-violet-600 underline"
+          onClick={() => setStatus('idle')}
+        >
+          Send another message
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <Label htmlFor="name">Name</Label>
+        <Input
+          id="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          onFocus={handleFirstInteraction}
+          placeholder="Your name"
+          required
+        />
+      </div>
+
+      <div>
+        <Label htmlFor="email">Email</Label>
+        <Input
+          id="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="your@email.com"
+          required
+        />
+      </div>
+
+      <div>
+        <Label htmlFor="message">Message</Label>
+        <Textarea
+          id="message"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="How can we help?"
+          rows={5}
+          required
+        />
+      </div>
+
+      {status === 'error' && (
+        <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-2">
+          {errorMessage}
+        </p>
+      )}
+
+      <Button type="submit" disabled={isLoading} className="w-full">
+        {isLoading ? 'Sending...' : 'Send message'}
+      </Button>
+    </form>
+  );
+}
+```
+
+---
+
+**3. Replit Secrets — pridėti vieną kintamąjį:**
+```
+CONTACT_EMAIL = jusu@email.com

@@ -2,7 +2,6 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
-import { MailerSend, EmailParams, Sender, Recipient } from "mailersend";
 import { insertResourceSchema, insertSeoMetadataSchema, insertLandingPageSchema } from "@shared/schema";
 import { registerObjectStorageRoutes } from "./replit_integrations/object_storage";
 import { registerImageOptimizationRoutes } from "./image-optimizer";
@@ -209,89 +208,59 @@ export async function registerRoutes(
   const contactSchema = z.object({
     name: z.string().min(1).max(100),
     email: z.string().email().max(255),
-    subject: z.string().min(1).max(200),
     message: z.string().min(1).max(5000),
-    confirm_email_address: z.string().optional(),
-    loadTime: z.number(),
-    submitTime: z.number()
+    _timestamp: z.number().optional(),
   });
-
-  // HTML escape helper
-  function escapeHtml(text: string): string {
-    return text
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
-  }
 
   // Contact form endpoint with spam protection
   app.post("/api/contact", async (req, res) => {
     try {
-      // Validate input
       const parseResult = contactSchema.safeParse(req.body);
       if (!parseResult.success) {
         return res.status(400).json({ error: "Invalid form data" });
       }
 
-      const { name, email, subject, message, confirm_email_address, loadTime, submitTime } = parseResult.data;
+      const { name, email, message, _timestamp } = parseResult.data;
 
-      // 1. Honeypot check
-      if (confirm_email_address) {
-        console.log("Spam detected: Honeypot field filled");
+      // Timing check — bots fill forms instantly
+      const now = Date.now();
+      if (_timestamp && now - _timestamp < 3000) {
+        console.warn("[CONTACT] Spam suspected — form filled too fast");
         return res.json({ success: true });
       }
 
-      // 2. Timestamp check (5 second threshold)
-      const duration = submitTime - loadTime;
-      if (duration < 5000) {
-        console.log(`Spam detected: Form submitted in ${duration}ms`);
-        return res.json({ success: true });
-      }
-
-      // Send email via MailerSend
-      const apiKey = process.env.MAILERSEND_API_KEY;
       const adminEmail = process.env.ADMIN_EMAIL;
-
-      if (!apiKey || !adminEmail) {
-        console.log("MailerSend not configured, logging contact form:", { name, email, subject, message });
-        return res.json({ success: true });
+      if (!adminEmail) {
+        console.error("[CONTACT] ADMIN_EMAIL not set");
+        return res.status(500).json({ error: "Email service not configured" });
       }
 
-      const mailerSend = new MailerSend({ apiKey });
+      const { sendEmail } = await import("./utils/sendEmail.js");
 
-      const sentFrom = new Sender("noreply@make-frame.com", "Make-Frame Contact Form");
-      const recipients = [new Recipient(adminEmail, "Admin")];
-
-      // Escape HTML to prevent injection
-      const safeName = escapeHtml(name);
-      const safeEmail = escapeHtml(email);
-      const safeSubject = escapeHtml(subject);
-      const safeMessage = escapeHtml(message);
-
-      const emailParams = new EmailParams()
-        .setFrom(sentFrom)
-        .setTo(recipients)
-        .setReplyTo(new Recipient(email, name))
-        .setSubject(`Contact Form: ${subject}`)
-        .setHtml(`
-          <h2>New Contact Form Submission</h2>
-          <p><strong>From:</strong> ${safeName} (${safeEmail})</p>
-          <p><strong>Subject:</strong> ${safeSubject}</p>
-          <hr>
+      const result = await sendEmail({
+        to: adminEmail,
+        subject: `Contact form: ${name}`,
+        html: `
+          <h2>New message from make-frame.com</h2>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
           <p><strong>Message:</strong></p>
-          <p>${safeMessage.replace(/\n/g, '<br>')}</p>
-        `)
-        .setText(`New Contact Form Submission\n\nFrom: ${name} (${email})\nSubject: ${subject}\n\nMessage:\n${message}`);
+          <p style="white-space: pre-wrap;">${message}</p>
+        `,
+        text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
+        replyTo: { email, name },
+      });
 
-      await mailerSend.email.send(emailParams);
-      console.log("Contact form email sent successfully to:", adminEmail);
+      if (!result.success) {
+        console.error("[CONTACT] MailerSend error:", result.error);
+        return res.status(500).json({ error: "Failed to send message. Please try again." });
+      }
 
+      console.log(`[CONTACT] Message from ${email} sent successfully`);
       res.json({ success: true });
     } catch (error) {
-      console.error("Error processing contact form:", error);
-      res.status(500).json({ error: "Internal server error" });
+      console.error("[CONTACT] Unexpected error:", error);
+      res.status(500).json({ error: "Server error. Please try again." });
     }
   });
 
