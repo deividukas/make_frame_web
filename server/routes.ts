@@ -359,6 +359,15 @@ export async function registerRoutes(
   });
 
   // ============ SEO META FOR BOTS ============
+
+  const escapeHtml = (value: string): string =>
+    String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+
   
   app.get("/resources/:slug", async (req, res, next) => {
     const userAgent = req.headers['user-agent'] || '';
@@ -386,7 +395,8 @@ export async function registerRoutes(
       const safeTitle = escapeHtml(rawTitle);
       const safeDescription = escapeHtml(rawDescription);
       const safeHeadline = escapeHtml(resource.title);
-      const safeContent = escapeHtml(resource.content);
+      // Article body is admin-authored HTML (rendered raw on the client too); only strip scripts for the bot view.
+      const safeContent = String(resource.content ?? "").replace(/<script[\s\S]*?<\/script>/gi, "");
       
       const jsonLd = {
         "@context": "https://schema.org",
