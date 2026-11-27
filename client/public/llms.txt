@@ -1,0 +1,26 @@
+# Make-frame.com
+
+> Make-frame is a self-service photo frame generator for events. Organizers upload branded PNG frames; attendees add their photo on a public page (or an embedded iframe) and share the result. Agents can set up an account through a REST API with an API key (MCP connector coming).
+
+## Start here
+- [Frame design guide](https://app.make-frame.com/api/v1/design-guide): sizes, transparent photo area, safe zones, badge rules. Read before creating frames.
+- [OpenAPI (API v1)](https://app.make-frame.com/api/v1/openapi.json): all endpoints, schemas, errors.
+- [Pricing](https://make-frame.com/#pricing): Free 200 frames/month with a small Make-frame badge; Extra Frame Packages (never expire, badge-free); Premium $69/month or $414/year, 750 frames/month, rollover, no badge, 35% off packages.
+- [FAQ](https://make-frame.com/faq)
+
+## Using the API
+- Base URL: https://app.make-frame.com/api/v1 — header `Authorization: Bearer mf_live_...`. Keys are created in the app under Admin → Integrations & API (all plans).
+- First call: `GET /overview` (plan, remaining frames, public page URL, embed code, setup checklist). Then `GET /design-guide`.
+- Content: `PUT /theme` (8 keys: primaryColor, secondaryColor, backgroundColor, textColor, borderColor, iconColor, fontFamily, borderRadius), `PUT /texts` (known keys only; `GET /texts` lists them), `PUT /banner`, `PUT /profile`.
+- Frames: `POST /frames` with `name`, `type` (square | story | profile) and `image_url` or `image_base64` (PNG with a transparent photo area); `POST /frames/validate` to check without saving; `PATCH /frames/{id}`; `DELETE /frames/{id}` with `confirm: true`.
+- Rules: deletes and resets need `confirm: true`; no purchases or plan changes via API; 60 requests/min, 10 uploads/min per key.
+
+## Product facts
+- Public page: https://app.make-frame.com/{public_slug}; embed: `?embed=true` inside an auto-resizing iframe.
+- Frame types and sizes: square 1080x1080, story 1080x1920, profile 1080x1080 exported through a circular mask.
+- Face detection centers the attendee's face in the transparent area; attendees can drag/zoom.
+- Company: UAB ALL DIGITAL GROUP, Vilnius, Lithuania. Contact: https://make-frame.com/contacts
+
+## Optional
+- [Full version of this file](https://make-frame.com/llms-full.txt)
+- [Resources & articles](https://make-frame.com/resources)

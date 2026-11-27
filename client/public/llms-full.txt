@@ -1,0 +1,46 @@
+# Make-frame.com — full guide for AI agents
+
+## What Make-frame is
+Make-frame (https://make-frame.com, app at https://app.make-frame.com) is a self-service photo frame generator for events: conferences, festivals, sports clubs, campaigns. An organizer (the "tenant") uploads branded PNG frames with a transparent photo area, customizes colors and texts, and gets a public page (https://app.make-frame.com/{public_slug}) or an embeddable iframe. Attendees upload a selfie, the face is detected and centered in the frame, and they download or share the result (1080x1080 or 1080x1920 PNG).
+
+## Plans (USD, as of November 2026)
+- Free: $0, 200 frames per month (from the signup anniversary). Frames generated from the free allowance carry a small "# make-frame.com" badge inside the photo area, and the public page shows a "Powered by Make-frame.com" link. All features included.
+- Extra Frame Packages: S 200 frames $29, M 500 frames $59, L 1,500 frames $149. Never expire, work on every plan, carry no badge. On Free they are used before the monthly allowance. Premium subscribers pay 35% less automatically.
+- Premium: $69 per month or $414 per year ($34.50/month). 750 frames per month, no badge, unused frames roll over for up to 3 months (up to 300% of the monthly allowance), extended usage statistics.
+- Consumption order: Free — purchased packages, then monthly allowance. Premium — rollover, then monthly, then packages.
+- Purchases and plan changes happen only in the app (Admin → Billing); the API cannot buy or change plans.
+
+## Setting up an account through the API (recommended agent workflow)
+1. Ask the human for: event name and date, how many frames and which formats (square / story / profile), brand colors and font (or a brand book), logos and sponsors, page texts and language, whether a banner is wanted, and the API key from Admin → Integrations & API.
+2. `GET /api/v1/overview` — current state and a setup checklist (public_slug, frames, theme, texts, banner).
+3. `GET /api/v1/design-guide` — read it fully before producing frames.
+4. Produce PNG frames at exact sizes with a fully transparent photo area. Check each with `POST /api/v1/frames/validate` and look at `photo_area` and `warnings`.
+5. Upload with `POST /api/v1/frames` (`name`, `type`, `image_url` or `image_base64`). Show the human the returned photo area and any warnings.
+6. `PUT /api/v1/theme` with the brand colors and font; `PUT /api/v1/texts` for title, subtitle, buttons, share message (use `GET /api/v1/texts` to see the keys and current values); optionally `PUT /api/v1/banner`.
+7. Return the public page URL and the embed code from `GET /api/v1/overview` and ask the human to review the page.
+Never delete or reset without asking; those calls require `confirm: true`.
+
+## API reference (summary; OpenAPI at https://app.make-frame.com/api/v1/openapi.json)
+Auth: `Authorization: Bearer mf_live_...`. Scope "read" for GET, "write" for everything else. Errors: `{ "error": { "code", "message", "details?" } }`. Limits: 60 requests/min, 10 uploads/min per key.
+- GET /overview — account, plan and remaining frames, public_page {url, embed_url, embed_code}, frames {count, limit, types}, theme, setup_checklist, design_guide link.
+- GET /usage — remaining frames by bucket, used this cycle, next reset, last 30 days (frames, with_badge).
+- GET /profile, PUT /profile {name, share_message, public_slug, confirm} — slug change needs confirm (breaks existing links).
+- GET /theme, PUT /theme {primaryColor, secondaryColor, backgroundColor, textColor, borderColor, iconColor, fontFamily, borderRadius}, POST /theme/reset {confirm}.
+- GET /texts, PUT /texts {key: value, ...} (unknown keys ignored and reported), POST /texts/reset {confirm}.
+- GET /banner, PUT /banner {desktop_image_url|desktop_image_base64, mobile_image_url|mobile_image_base64, link_url, enabled} (1200x200 and 600x200, up to 400 KB each), DELETE /banner {confirm}.
+- GET /frames, POST /frames {name, type, image_url|image_base64, order, confirm}, POST /frames/validate {type, image_url|image_base64}, PATCH /frames/{id} {name, type, order}, DELETE /frames/{id}?confirm=true.
+- GET /design-guide (Markdown), GET /openapi.json — no key needed.
+
+## Frame design rules (short form; the design guide is authoritative)
+- PNG with alpha. square 1080x1080, story 1080x1920, profile 1080x1080 (exported through the inscribed circle).
+- One contiguous fully transparent photo area, at least 60% of the width and 50% of the height. Nothing opaque inside it.
+- Keep text and logos 48 px from the edges (200 px top/bottom for stories). Text at least 36 px.
+- On the Free plan the badge is drawn inside the photo area, preferring its top corners (top-center inside the circle for profile frames). Keep those spots free of important content.
+
+## Public page behaviour
+- URL https://app.make-frame.com/{public_slug}; embed with `?embed=true` inside an auto-resizing iframe (embed code in GET /overview).
+- Attendees: upload photo → face detected and centered → choose a frame → adjust (drag, zoom, mirror, rotate) → Download or Share. Each download or share consumes one frame from the tenant's balance.
+- Theme keys affect colors, font and corner radius of the public page; texts cover every visible label.
+
+## Company
+UAB ALL DIGITAL GROUP, Vilnius, Lithuania. Contact form: https://make-frame.com/contacts. Terms: https://make-frame.com/terms. Privacy: https://make-frame.com/privacy.
