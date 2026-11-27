@@ -108,6 +108,11 @@ export default function AdminSettings() {
     name: "pricing.addOns"
   });
 
+  const { fields: fairUsageFields } = useFieldArray({
+    control: form.control,
+    name: "pricing.fairUsage.points"
+  });
+
   // Reset form when content changes (e.g. on reset)
   useEffect(() => {
     form.reset(content);
@@ -369,9 +374,19 @@ export default function AdminSettings() {
                     <div className="p-4 border rounded-lg bg-slate-50">
                       <h3 className="font-semibold mb-4">Free Plan</h3>
                       <div className="grid gap-4">
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div className="grid gap-2">
+                             <Label>Title</Label>
+                             <Input {...form.register("pricing.free.title")} />
+                          </div>
+                          <div className="grid gap-2">
+                             <Label>Price Display</Label>
+                             <Input {...form.register("pricing.free.price")} />
+                          </div>
+                        </div>
                         <div className="grid gap-2">
-                           <Label>Price Display</Label>
-                           <Input {...form.register("pricing.free.price")} />
+                           <Label>Description</Label>
+                           <Input {...form.register("pricing.free.description")} />
                         </div>
                         <div className="grid gap-2">
                            <Label>Features</Label>
@@ -385,9 +400,19 @@ export default function AdminSettings() {
                     <div className="p-4 border rounded-lg bg-indigo-50/50 border-indigo-100">
                       <h3 className="font-semibold mb-4 text-primary">Premium Plan</h3>
                       <div className="grid gap-4">
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div className="grid gap-2">
+                             <Label>Title</Label>
+                             <Input {...form.register("pricing.premium.title")} />
+                          </div>
+                          <div className="grid gap-2">
+                             <Label>Monthly Price Display</Label>
+                             <Input {...form.register("pricing.premium.price")} placeholder="$69" />
+                          </div>
+                        </div>
                         <div className="grid gap-2">
-                           <Label>Monthly Price Display</Label>
-                           <Input {...form.register("pricing.premium.price")} placeholder="$69" />
+                           <Label>Description</Label>
+                           <Input {...form.register("pricing.premium.description")} />
                         </div>
                         <div className="grid md:grid-cols-2 gap-4">
                           <div className="grid gap-2">
@@ -426,6 +451,10 @@ export default function AdminSettings() {
                     <CardDescription>Manage prices and details for extra frame packages.</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
+                    <div className="grid gap-2">
+                      <Label>Note under the heading (optional)</Label>
+                      <Input {...form.register("pricing.addOnsNote")} placeholder="Packages never expire…" />
+                    </div>
                     {addOnsFields.map((field, i) => (
                       <div key={field.id} className="p-4 border rounded-lg bg-white grid md:grid-cols-4 gap-4 items-end">
                          <div className="grid gap-2">
@@ -444,6 +473,35 @@ export default function AdminSettings() {
                            <Label>Per Frame Cost</Label>
                            <Input {...form.register(`pricing.addOns.${i}.perFrame`)} />
                          </div>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Fair Usage Policy</CardTitle>
+                    <CardDescription>The grey block below the packages: headline, subhead and three points.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div className="grid gap-2">
+                      <Label>Headline</Label>
+                      <Input {...form.register("pricing.fairUsage.headline")} />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label>Subhead</Label>
+                      <Input {...form.register("pricing.fairUsage.subhead")} />
+                    </div>
+                    {fairUsageFields.map((field, i) => (
+                      <div key={field.id} className="p-4 border rounded-lg bg-white grid gap-4">
+                        <div className="grid gap-2">
+                          <Label>Point {i + 1} — Title</Label>
+                          <Input {...form.register(`pricing.fairUsage.points.${i}.title`)} />
+                        </div>
+                        <div className="grid gap-2">
+                          <Label>Point {i + 1} — Description</Label>
+                          <Textarea rows={3} {...form.register(`pricing.fairUsage.points.${i}.description`)} />
+                        </div>
                       </div>
                     ))}
                   </CardContent>
