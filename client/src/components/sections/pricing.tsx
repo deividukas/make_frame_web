@@ -119,7 +119,10 @@ export function Pricing() {
 
         {/* Addons */}
         <div className="max-w-4xl mx-auto mb-20">
-          <h3 className="text-xl font-bold mb-8 text-center">Need More Power? (Extra Frame Packages)</h3>
+          <h3 className="text-xl font-bold mb-3 text-center">Need More Power? (Extra Frame Packages)</h3>
+          {content.pricing.addOnsNote && (
+            <p className="text-center text-muted-foreground mb-8" data-testid="text-addons-note">{content.pricing.addOnsNote}</p>
+          )}
           <div className="grid gap-6 md:grid-cols-3">
             {content.pricing.addOns.map((addon: { size: string; count: string; price: string; perFrame: string }, i: number) => (
               <div key={i} className="rounded-xl border bg-white p-6 shadow-sm flex flex-col items-center text-center">
