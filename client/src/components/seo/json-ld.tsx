@@ -32,7 +32,7 @@ export function SoftwareApplicationJsonLd() {
       "@type": "Offer",
       "price": "0",
       "priceCurrency": "USD",
-      "description": "Free trial available with 5 frames per day"
+      "description": "Free plan with 200 frames per month; Premium from $34.50 per month"
     },
     "featureList": [
       "Branded photo frame templates",

@@ -40,30 +40,35 @@ const defaultContent = {
     { title: "Grassroots Movements", description: "Amplify your voice without a marketing budget. Whether it's a social cause or a local rally, help supporters spread a unified message across Facebook and X. Turn every selfie into a digital placard that makes your movement impossible to ignore in social discussions." }
   ],
   pricing: {
-    free: { 
-      price: "$0", 
-      title: "Free Trial", 
-      description: "Best for: Testing the experience or small, daily activations.",
-      features: ["5 photo frames per day", "Full Admin Dashboard Access", "Frame & Theme Editor", "Iframe Integration Guide"] 
+    free: {
+      price: "$0",
+      title: "Free",
+      description: "Best for: Trying Make-frame or small, occasional activations.",
+      features: ["200 photo frames per month", "Full Admin Dashboard Access", "Frame & Theme Editor", "Iframe Integration Guide", "Extra Frame Packages available anytime"]
     },
-    premium: { 
-      price: "$69", 
-      title: "Premium", 
+    premium: {
+      price: "$69",
+      annualPrice: "$34.50",
+      annualTotal: "$414",
+      annualOriginalTotal: "$828",
+      savingsPercent: "50",
+      title: "Premium",
       description: "Best for: Professional organizers and marketing teams.",
-      features: ["200 photo frames per month", "Extended Usage Statistics", "Rollover Credits", "Top-up Eligibility", "Everything in Free Trial"] 
+      features: ["750 photo frames per month", "Unused frames roll over for up to 3 months", "35% off every Extra Frame Package", "Extended Usage Statistics", "Everything in Free"]
     },
     addOns: [
-      { size: "Small", count: "1,000 frames", price: "$40", perFrame: "$0.04 / frame" },
-      { size: "Medium", count: "5,000 frames", price: "$150", perFrame: "$0.03 / frame" },
-      { size: "Large", count: "20,000 frames", price: "$400", perFrame: "$0.02 / frame" }
+      { size: "S", count: "200 frames", price: "$29", perFrame: "$0.15 / frame" },
+      { size: "M — Event", count: "500 frames", price: "$59", perFrame: "$0.12 / frame" },
+      { size: "L", count: "1,500 frames", price: "$149", perFrame: "$0.10 / frame" }
     ],
+    addOnsNote: "Packages never expire and work on every plan. Premium subscribers get 35% off automatically.",
     fairUsage: {
       headline: "Never Lose What You Pay For",
-      subhead: "Our Fair Usage Policy ensures you get every bit of value from your subscription.",
+      subhead: "Our Fair Usage Policy ensures you get every bit of value from your plan.",
       points: [
-        { title: "Smart Rollover", description: "Unused monthly credits don't just vanish. They automatically roll over to the next month. You can accumulate up to 600 compositions (300% of your base plan)." },
-        { title: "Fair Usage Logic", description: "Our system is built with your budget in mind. We always use your rolled-over credits first, followed by your current monthly limit. Your purchased Extra Frame Packages are only touched once everything else is used up." },
-        { title: "Permanent Add-ons", description: "Need extra capacity for a massive event? Our Extra Frame Packages never expire. As long as your Premium subscription is active, those credits stay in your account until you actually use them." }
+        { title: "Smart Rollover", description: "Unused Premium frames don't vanish. They roll over for up to 3 months, and you can accumulate up to 300% of your monthly plan (2,250 frames)." },
+        { title: "Fair Usage Logic", description: "On Premium we use your rolled-over frames first, then the current month, and your purchased packages only after that. On Free, purchased packages are used first, so paid frames never wait behind the free allowance." },
+        { title: "Permanent Add-ons", description: "Extra Frame Packages never expire and don't require a subscription. Buy them on Free or Premium — the frames stay in your account until you use them." }
       ]
     }
   },
@@ -113,6 +118,10 @@ const contentSchema = z.object({
     }),
     premium: z.object({
       price: z.string(),
+      annualPrice: z.string().optional(),
+      annualTotal: z.string().optional(),
+      annualOriginalTotal: z.string().optional(),
+      savingsPercent: z.string().optional(),
       title: z.string(),
       description: z.string(),
       features: z.array(z.string())
@@ -123,6 +132,7 @@ const contentSchema = z.object({
       price: z.string(),
       perFrame: z.string()
     })),
+    addOnsNote: z.string().optional(),
     fairUsage: z.object({
       headline: z.string(),
       subhead: z.string(),
