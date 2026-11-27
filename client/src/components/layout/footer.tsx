@@ -1,4 +1,4 @@
-import { useContent } from "@/lib/content-context";
+import { useContent } from "@/lib/use-content";
 import { Link } from "wouter";
 import Logo from "@/components/ui/logo";
 

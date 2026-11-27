@@ -1,4 +1,4 @@
-import { useContent } from "@/lib/content-context";
+import { useContent } from "@/lib/use-content";
 import { Briefcase, Music, Users } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 

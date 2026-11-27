@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { Hero } from "@/components/sections/hero";
-import { useContent } from "@/lib/content-context";
+import { useContent } from "@/lib/use-content";
 import { SoftwareApplicationJsonLd, OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo/json-ld";
 import { Suspense, lazy } from "react";
 

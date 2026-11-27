@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import Calendar from "lucide-react/dist/esm/icons/calendar";
 import ArrowRight from "lucide-react/dist/esm/icons/arrow-right";
 import { format } from "date-fns";
-import { useContent } from "@/lib/content-context";
+import { useContent } from "@/lib/use-content";
 import type { Resource } from "@shared/schema";
 
 export default function Resources() {

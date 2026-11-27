@@ -1,0 +1,1 @@
+- [React live updates](react-live-updates.md) — preserve context identity across live updates; mixed provider/hook exports previously disconnected consumers.

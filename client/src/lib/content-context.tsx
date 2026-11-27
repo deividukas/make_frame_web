@@ -1,17 +1,7 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import type React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import defaultContent from "../config/content.json";
-
-type Content = typeof defaultContent;
-
-interface ContentContextType {
-  content: Content;
-  updateContent: (newContent: Content) => void;
-  resetContent: () => void;
-  isLoading: boolean;
-}
-
-const ContentContext = createContext<ContentContextType | undefined>(undefined);
+import { ContentContext, type Content } from "./use-content";
 
 function deepMerge<T extends Record<string, unknown>>(defaults: T, overrides: Record<string, unknown>): T {
   const result = { ...defaults } as Record<string, unknown>;
@@ -145,10 +135,3 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function useContent() {
-  const context = useContext(ContentContext);
-  if (context === undefined) {
-    throw new Error("useContent must be used within a ContentProvider");
-  }
-  return context;
-}

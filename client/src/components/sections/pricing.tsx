@@ -1,4 +1,4 @@
-import { useContent } from "@/lib/content-context";
+import { useContent } from "@/lib/use-content";
 import { useState } from "react";
 import Check from "lucide-react/dist/esm/icons/check";
 import Info from "lucide-react/dist/esm/icons/info";

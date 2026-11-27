@@ -1,4 +1,4 @@
-import { useContent } from "@/lib/content-context";
+import { useContent } from "@/lib/use-content";
 import { Button } from "@/components/ui/button";
 
 export function Hero() {

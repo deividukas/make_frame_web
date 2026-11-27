@@ -1,4 +1,4 @@
-import { useContent } from "@/lib/content-context";
+import { useContent } from "@/lib/use-content";
 import { useForm, useFieldArray } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

@@ -1,4 +1,4 @@
-import { useContent } from "@/lib/content-context";
+import { useContent } from "@/lib/use-content";
 import { Upload, Share2, TrendingUp } from "lucide-react";
 
 const icons = [Upload, Share2, TrendingUp];

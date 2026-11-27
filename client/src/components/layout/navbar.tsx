@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { useContent } from "@/lib/content-context";
+import { useContent } from "@/lib/use-content";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
