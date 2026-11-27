@@ -44,6 +44,36 @@ All public-facing text on the website must follow these rules:
 ### AI Prompting Instruction
 When generating any text for Make-Frame.com: "Write on behalf of Make-Frame.com. Tone: direct, friendly, sincere. Avoid all marketing hype, excessive enthusiasm, or boasting. Write only about real features. Strictly forbidden: do not use any icons (emojis). All text must be in English. The text should be professional and suited for the US/Global market, but without the typical 'salesy' American flavor."
 
+## Visual Design System (Style Guide for AI Agents)
+
+### Color Palette
+- **Primary**: `#7c3aed` (Vibrant Violet) - Buttons, links, accents, focus rings.
+- **Secondary**: `#4f46e5` (Indigo) - Supporting accents.
+- **Accent**: `#db2777` (Pink) - Gradient highlights only.
+- **Background**: `#ffffff` (White) - Main page background.
+- **Section Alt**: `#f8fafc` (Slate-50) - Alternating sections (Pricing, Footer).
+- **Text Primary**: `#0f172a` (Slate-900) - Headings and body.
+- **Text Secondary**: `#64748b` (Slate-500) - Descriptions, muted text.
+- **Border**: `#e2e8f0` (Slate-200) - Cards, dividers.
+
+### Typography
+- **Body**: Inter (Sans), 16px base, line-height 1.5, font-weight 300-400.
+- **Headings**: Geist (Sans), `tracking-tight`, `font-medium` to `font-bold`.
+- **H1**: 4xl (mobile) to 7xl (desktop), `font-bold`.
+- **H2**: 3xl (mobile) to 5xl (desktop), `font-bold`.
+
+### Layout & Components
+- **Max Width**: `max-w-7xl` (1280px) with `px-4 md:px-6` padding.
+- **Radius**: `0.5rem` (8px) global, `rounded-2xl` (16px) for hero assets.
+- **Shadows**: `shadow-sm` for cards, `shadow-2xl` for hero, `shadow-xl shadow-primary/20` for primary CTAs.
+- **Sections**: Alternating white and Slate-50 backgrounds, `py-24` vertical padding.
+- **Buttons**: `h-12 px-8 text-lg font-bold` for main CTAs; `rounded-md` standard.
+
+### Animations
+- **fade-in-up**: 20px slide + opacity, 0.5s duration.
+- **fade-in-scale**: 0.95 to 1 scale + opacity, 0.7s duration.
+- **Transitions**: `transition-all` for hovers on buttons and links.
+
 ## Technical Standards (SEO & AIO)
 
 ### Core Principles
@@ -91,6 +121,14 @@ When generating any text for Make-Frame.com: "Write on behalf of Make-Frame.com.
 - **Styling**: Tailwind CSS v4 with shadcn/ui component library (New York style)
 - **Animations**: Framer Motion for page animations
 - **Build Tool**: Vite with custom plugins for Replit integration
+
+### SEO & Crawling Infrastructure
+- **robots.txt**: Granular Allow/Disallow rules -- public API routes (`/api/content`, `/api/resources`, `/api/seo`) allowed for crawlers; admin/auth routes blocked
+- **X-Robots-Tag middleware**: Applied only to non-public API routes and auth; public GET/HEAD routes exempted (`server/index.ts`)
+- **Bot SSR**: Server-side rendered HTML served to search engine bots at `/resources/:slug` with full meta tags, JSON-LD, and `Link` canonical header (`server/routes.ts`)
+- **Sitemap**: Dynamic `/sitemap.xml` generated from PostgreSQL (static pages + published resources + landing pages)
+- **Absolute URLs**: All og:image, twitter:image, canonical URLs use `https://make-frame.com` prefix
+- **Verification script**: `test-seo.sh` validates all SEO/indexing rules
 
 ### Backend Architecture
 - **Runtime**: Node.js with Express.js

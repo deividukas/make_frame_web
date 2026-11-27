@@ -1,8 +1,11 @@
 User-agent: *
+Allow: /api/content
+Allow: /api/resources
+Allow: /api/seo
+Disallow: /api/
 Disallow: /super-admin
 Disallow: /admin
 Disallow: /admin-settings
-Disallow: /api
 Disallow: /auth
 
 Sitemap: https://make-frame.com/sitemap.xml

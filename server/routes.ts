@@ -2,7 +2,6 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
-import { MailerSend, EmailParams, Sender, Recipient } from "mailersend";
 import { insertResourceSchema, insertSeoMetadataSchema, insertLandingPageSchema } from "@shared/schema";
 import { registerObjectStorageRoutes } from "./replit_integrations/object_storage";
 import { registerImageOptimizationRoutes } from "./image-optimizer";
@@ -219,160 +218,140 @@ export async function registerRoutes(
   const contactSchema = z.object({
     name: z.string().min(1).max(100),
     email: z.string().email().max(255),
-    subject: z.string().min(1).max(200),
     message: z.string().min(1).max(5000),
-    confirm_email_address: z.string().optional(),
-    loadTime: z.number(),
-    submitTime: z.number()
+    _timestamp: z.number().optional(),
   });
-
-  // HTML escape helper
-  function escapeHtml(text: string): string {
-    return text
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
-  }
 
   // Contact form endpoint with spam protection
   app.post("/api/contact", async (req, res) => {
     try {
-      // Validate input
       const parseResult = contactSchema.safeParse(req.body);
       if (!parseResult.success) {
         return res.status(400).json({ error: "Invalid form data" });
       }
 
-      const { name, email, subject, message, confirm_email_address, loadTime, submitTime } = parseResult.data;
+      const { name, email, message, _timestamp } = parseResult.data;
 
-      // 1. Honeypot check
-      if (confirm_email_address) {
-        console.log("Spam detected: Honeypot field filled");
+      // Timing check — bots fill forms instantly
+      const now = Date.now();
+      if (_timestamp && now - _timestamp < 3000) {
+        console.warn("[CONTACT] Spam suspected — form filled too fast");
         return res.json({ success: true });
       }
 
-      // 2. Timestamp check (5 second threshold)
-      const duration = submitTime - loadTime;
-      if (duration < 5000) {
-        console.log(`Spam detected: Form submitted in ${duration}ms`);
-        return res.json({ success: true });
-      }
-
-      // Send email via MailerSend
-      const apiKey = process.env.MAILERSEND_API_KEY;
       const adminEmail = process.env.ADMIN_EMAIL;
-
-      if (!apiKey || !adminEmail) {
-        console.log("MailerSend not configured, logging contact form:", { name, email, subject, message });
-        return res.json({ success: true });
+      if (!adminEmail) {
+        console.error("[CONTACT] ADMIN_EMAIL not set");
+        return res.status(500).json({ error: "Email service not configured" });
       }
 
-      const mailerSend = new MailerSend({ apiKey });
+      const { sendEmail } = await import("./utils/sendEmail.js");
 
-      const sentFrom = new Sender("noreply@make-frame.com", "Make-Frame Contact Form");
-      const recipients = [new Recipient(adminEmail, "Admin")];
-
-      // Escape HTML to prevent injection
-      const safeName = escapeHtml(name);
-      const safeEmail = escapeHtml(email);
-      const safeSubject = escapeHtml(subject);
-      const safeMessage = escapeHtml(message);
-
-      const emailParams = new EmailParams()
-        .setFrom(sentFrom)
-        .setTo(recipients)
-        .setReplyTo(new Recipient(email, name))
-        .setSubject(`Contact Form: ${subject}`)
-        .setHtml(`
-          <h2>New Contact Form Submission</h2>
-          <p><strong>From:</strong> ${safeName} (${safeEmail})</p>
-          <p><strong>Subject:</strong> ${safeSubject}</p>
-          <hr>
+      const result = await sendEmail({
+        to: adminEmail,
+        subject: `Contact form: ${name}`,
+        html: `
+          <h2>New message from make-frame.com</h2>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
           <p><strong>Message:</strong></p>
-          <p>${safeMessage.replace(/\n/g, '<br>')}</p>
-        `)
-        .setText(`New Contact Form Submission\n\nFrom: ${name} (${email})\nSubject: ${subject}\n\nMessage:\n${message}`);
+          <p style="white-space: pre-wrap;">${message}</p>
+        `,
+        text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
+        replyTo: { email, name },
+      });
 
-      await mailerSend.email.send(emailParams);
-      console.log("Contact form email sent successfully to:", adminEmail);
+      if (!result.success) {
+        console.error("[CONTACT] MailerSend error:", result.error);
+        return res.status(500).json({ error: "Failed to send message. Please try again." });
+      }
 
+      console.log(`[CONTACT] Message from ${email} sent successfully`);
       res.json({ success: true });
     } catch (error) {
-      console.error("Error processing contact form:", error);
-      res.status(500).json({ error: "Internal server error" });
+      console.error("[CONTACT] Unexpected error:", error);
+      res.status(500).json({ error: "Server error. Please try again." });
     }
   });
 
   // ============ SITEMAP ============
   
   app.get("/sitemap.xml", async (req, res) => {
-    try {
-      const resources = await storage.getPublishedResources();
-      const baseUrl = "https://make-frame.com";
-      
-      let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>${baseUrl}/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>${baseUrl}/resources</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>${baseUrl}/contacts</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>${baseUrl}/privacy</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>${baseUrl}/terms</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>${baseUrl}/faq</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>`;
-      
-      for (const resource of resources) {
-        const lastmod = resource.updatedAt ? new Date(resource.updatedAt).toISOString().split('T')[0] : '';
-        sitemap += `
-  <url>
-    <loc>${baseUrl}/resources/${resource.slug}</loc>
-    ${lastmod ? `<lastmod>${lastmod}</lastmod>` : ''}
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>`;
-      }
-      
-      const publishedPages = await storage.getPublishedLandingPages();
-      for (const page of publishedPages) {
-        const lastmod = page.updatedAt ? new Date(page.updatedAt).toISOString().split('T')[0] : '';
-        sitemap += `
-  <url>
-    <loc>${baseUrl}/lp/${page.slug}</loc>
-    ${lastmod ? `<lastmod>${lastmod}</lastmod>` : ''}
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>`;
-      }
+    const BASE_URL = "https://make-frame.com";
+    const today = new Date().toISOString().split("T")[0];
 
-      sitemap += `
-</urlset>`;
-      
-      res.set('Content-Type', 'application/xml');
-      res.send(sitemap);
+    const toDate = (value: string | Date | null | undefined): string => {
+      if (!value) return today;
+      const d = new Date(value);
+      return isNaN(d.getTime()) ? today : d.toISOString().split("T")[0];
+    };
+
+    const urlEntry = (
+      loc: string,
+      lastmod: string,
+      changefreq: string,
+      priority: string
+    ): string =>
+      [
+        "  <url>",
+        `    <loc>${loc}</loc>`,
+        `    <lastmod>${lastmod}</lastmod>`,
+        `    <changefreq>${changefreq}</changefreq>`,
+        `    <priority>${priority}</priority>`,
+        "  </url>",
+      ].join("\n");
+
+    try {
+      const [resources, landingPages] = await Promise.all([
+        storage.getPublishedResources(),
+        storage.getPublishedLandingPages(),
+      ]);
+
+      const staticPages = [
+        urlEntry(`${BASE_URL}/`, today, "weekly", "1.0"),
+        urlEntry(`${BASE_URL}/resources`, today, "daily", "0.8"),
+        urlEntry(`${BASE_URL}/faq`, today, "weekly", "0.8"),
+        urlEntry(`${BASE_URL}/contacts`, today, "monthly", "0.5"),
+        urlEntry(`${BASE_URL}/privacy`, today, "yearly", "0.3"),
+        urlEntry(`${BASE_URL}/terms`, today, "yearly", "0.3"),
+      ];
+
+      const resourcePages = resources.map((r) =>
+        urlEntry(
+          `${BASE_URL}/resources/${r.slug}`,
+          toDate(r.updatedAt),
+          "weekly",
+          "0.7"
+        )
+      );
+
+      const lpPages = landingPages.map((p) =>
+        urlEntry(
+          `${BASE_URL}/lp/${p.slug}`,
+          toDate(p.updatedAt),
+          "weekly",
+          "0.6"
+        )
+      );
+
+      const totalUrls = staticPages.length + resourcePages.length + lpPages.length;
+      console.log(`Sitemap: ${resources.length} resources, ${landingPages.length} landing pages, ${totalUrls} total URLs`);
+
+      const xml = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+        ...staticPages,
+        ...resourcePages,
+        ...lpPages,
+        `  <!-- urls-total: ${totalUrls} -->`,
+        "</urlset>",
+        "",
+      ].join("\n");
+
+      res.header("Content-Type", "application/xml; charset=utf-8");
+      res.header("Cache-Control", "public, max-age=3600");
+      res.send(xml);
     } catch (error) {
       console.error("Error generating sitemap:", error);
       res.status(500).send("Error generating sitemap");
@@ -380,6 +359,15 @@ export async function registerRoutes(
   });
 
   // ============ SEO META FOR BOTS ============
+
+  const escapeHtml = (value: string): string =>
+    String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+
   
   app.get("/resources/:slug", async (req, res, next) => {
     const userAgent = req.headers['user-agent'] || '';
@@ -398,13 +386,17 @@ export async function registerRoutes(
       const baseUrl = "https://make-frame.com";
       const rawTitle = resource.metaTitle || resource.title;
       const rawDescription = resource.metaDescription || resource.excerpt || '';
-      const image = resource.featuredImage || '';
+      const rawImage = resource.featuredImage || '/opengraph.png';
+      const image = rawImage.startsWith("/") ? `${baseUrl}${rawImage}` : rawImage;
       const url = `${baseUrl}/resources/${resource.slug}`;
+
+      res.setHeader("Link", `<${url}>; rel="canonical"`);
       
       const safeTitle = escapeHtml(rawTitle);
       const safeDescription = escapeHtml(rawDescription);
       const safeHeadline = escapeHtml(resource.title);
-      const safeContent = escapeHtml(resource.content);
+      // Article body is admin-authored HTML (rendered raw on the client too); only strip scripts for the bot view.
+      const safeContent = String(resource.content ?? "").replace(/<script[\s\S]*?<\/script>/gi, "");
       
       const jsonLd = {
         "@context": "https://schema.org",
@@ -431,7 +423,7 @@ export async function registerRoutes(
       };
       
       const html = `<!DOCTYPE html>
-<html lang="lt">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -441,11 +433,13 @@ export async function registerRoutes(
   <meta property="og:title" content="${safeTitle}">
   <meta property="og:description" content="${safeDescription}">
   <meta property="og:url" content="${url}">
-  ${image ? `<meta property="og:image" content="${escapeHtml(image)}">` : ''}
+  <meta property="og:image" content="${escapeHtml(image)}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${safeTitle}">
   <meta name="twitter:description" content="${safeDescription}">
-  ${image ? `<meta name="twitter:image" content="${escapeHtml(image)}">` : ''}
+  <meta name="twitter:image" content="${escapeHtml(image)}">
   <link rel="canonical" href="${url}">
   <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
 </head>

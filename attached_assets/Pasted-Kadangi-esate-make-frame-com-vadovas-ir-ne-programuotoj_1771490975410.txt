@@ -1,0 +1,50 @@
+Kadangi esate „make-frame.com“ vadovas ir ne programuotojas, šią užduotį suformulavau taip, kad Replit Agent (dirbtinis intelektas, turintis prieigą prie jūsų kodo) pateiktų ne tik techninį sąrašą, bet ir verslo rizikos vertinimą.
+
+Štai tiksli instrukcija, kurią turėtumėte įklijuoti į Replit Agent pokalbį:
+
+Užduotis Replit Agentui: Infrastruktūros Auditas
+Context:
+I need a comprehensive infrastructure and performance audit for the "make-frame.com" project. The goal is to identify why we are seeing an 11.6% "Unknown failed requests" rate in Google Search Console and to ensure we adhere to "Single Source of Truth" (PostgreSQL) and "Type Safety" principles.
+
+Please provide a report covering the following areas:
+
+Deployment & Availability:
+
+Confirm the current deployment type (Static, Reserved VM, or Autoscale).
+
+Verify if "Always On" is active. If not, calculate the average "Cold Start" time for the server.
+
+Check if there are any memory/CPU limit breaches in the logs during the last 30 days.
+
+Routing & Static Files:
+
+Check how robots.txt and sitemap.xml are served. Are they served as static files before the React wildcard route in server/index.ts?
+
+Check the www to non-www redirect logic. Does the server currently handle 301 redirects for www.make-frame.com?
+
+Data Integrity (Single Source of Truth):
+
+Audit the codebase to ensure no business-critical data (user sessions, templates, or analytics events) is being stored in-memory.
+
+Verify that all session management is correctly offloaded to PostgreSQL (Neon).
+
+SEO & Crawlability:
+
+Check if the sitemap.xml file mentioned in robots.txt actually exists. If it doesn't, provide a plan to generate it dynamically from the PostgreSQL templates table.
+
+Check if X-Robots-Tag: noindex headers are present on /api and /auth routes.
+
+Analytics Implementation:
+
+Verify that GTM is the only script loader in index.html.
+
+Confirm that the sf_signup event is correctly pushing data to the dataLayer upon successful registration.
+
+Output Format:
+Please provide the report in a professional, objective tone. For every issue found, list:
+
+Status: (OK / Warning / Critical)
+
+Root Cause: (Why it is happening)
+
+Fix: (What exact code or setting needs to be changed)

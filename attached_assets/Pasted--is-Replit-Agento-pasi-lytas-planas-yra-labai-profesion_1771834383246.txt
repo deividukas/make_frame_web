@@ -1,0 +1,44 @@
+Šis Replit Agento pasiūlytas planas yra labai profesionalus ir tikslus. Agentas teisingai identifikavo visas tris „mirtinas“ klaidas: robots.txt blokavimą, X-Robots-Tag draudimą ir React būsenų (loading vs error) logiką.
+
+Tačiau, kad planas būtų 100 % išbaigtas ir tavo marketinginis puslapis make-frame.com taptų SEO lyderiu, siūlau įtraukti dar du kritinius papildymus:
+
+Sitemap.xml generavimas: Jei Google botas dabar „atrakins“ API, jam vis tiek reikia žemėlapio, kad jis žinotų, kokius straipsnius skenuoti.
+
+Serverio pusės statuso kodai: Jei straipsnio tikrai nėra, serveris turi grąžinti tikrą 404 kodą, o ne 200 (OK) su užrašu „Not found“.
+
+Štai tavo patikslinta ir galutinė užduotis Agentui (suformuluota taip, kad neliktų vietos interpretacijoms):
+
+Final Refined Task for Replit Agent: SEO & Indexing Restoration
+Objective: Fully resolve Google Search Console 'Soft 404' issues and enable social media previews for make-frame.com.
+
+Phase 1: Unlocking the API (T001 & T002)
+Action: Update robots.txt and server/index.ts as planned.
+
+Refinement: Ensure that the Allow rules in robots.txt are placed before any Disallow rules to ensure proper priority.
+
+Crucial: Verify that the X-Robots-Tag is removed specifically for GET requests on public routes, but remains for POST/PUT/DELETE to maintain security.
+
+Phase 2: Robust React Rendering (T003 & T004)
+Action: Fix the loading logic in resource-article.tsx.
+
+Refinement: Implement a "Metadata First" approach. Ensure that <title> and <meta name="description"> yra užpildomi iškart, kai tik gaunami duomenys, naudojant react-helmet-async.
+
+Absolute URLs: Ensure every link in the <head> (Canonical, OG Tags, Twitter Tags) starts with https://make-frame.com.
+
+Phase 3: ADDED TASK - Sitemap & Indexing signals
+New Task (T006): Create a dynamic /sitemap.xml route in the Express server.
+
+This route should fetch all resource slugs from the database and return a valid XML sitemap.
+
+Add the Sitemap URL to the bottom of robots.txt.
+
+New Task (T007): Ensure that for any /resources/:slug route, the server-side response includes a Link header pointing to the canonical URL.
+
+Phase 4: Validation (T005)
+Requirement: Provide a test-seo.sh script or a series of curl commands that I can run in the Replit shell to verify that:
+
+robots.txt allows /api/resources.
+
+Public API calls do NOT return noindex.
+
+The HTML output contains absolute image URLs.

@@ -6,6 +6,36 @@ import { createServer } from "http";
 const app = express();
 const httpServer = createServer(app);
 
+app.disable("x-powered-by");
+
+app.use((req, res, next) => {
+  const host = (req.headers.host || "").split(":")[0].toLowerCase();
+  if (host.endsWith(".replit.app") || host.endsWith(".repl.co")) {
+    const targetUrl = `https://make-frame.com${req.originalUrl}`;
+    return res.redirect(301, targetUrl);
+  }
+  if (host.startsWith("www.")) {
+    const targetUrl = `https://make-frame.com${req.originalUrl}`;
+    return res.redirect(301, targetUrl);
+  }
+  next();
+});
+
+app.use((req, res, next) => {
+  const p = req.path;
+  const isReadOnly = req.method === "GET" || req.method === "HEAD";
+  const isPublicRoute = isReadOnly && (
+    p === "/api/content" ||
+    p.startsWith("/api/resources") ||
+    p.startsWith("/api/seo")
+  );
+
+  if (p.startsWith("/auth") || (p.startsWith("/api") && !isPublicRoute)) {
+    res.setHeader("X-Robots-Tag", "noindex, nofollow");
+  }
+  next();
+});
+
 declare module "http" {
   interface IncomingMessage {
     rawBody: unknown;
